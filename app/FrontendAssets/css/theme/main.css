@@ -1,0 +1,158 @@
+/* NAV START */
+::selection {
+    background: rgba(255,235,20,.7);
+    color: #111;
+}
+*, :after, :before, html {
+    box-sizing: border-box;
+}
+
+.button, a.button, button {
+    -webkit-appearance: none;
+    display: inline-block;
+    border: 2px solid #5183f5;
+    border-radius: 4px;
+    background: #5183f5;
+    color: #fff;
+    font-weight: 600;
+    font-family: BlinkMacSystemFont,-apple-system,Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 1.1rem;
+    text-transform: none;
+    padding: .6rem .9rem;
+    margin: 0 0 .5rem;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1;
+}
+
+/* NAV END */
+
+.button:hover {
+    background: #0062cc;
+}
+.page-button {
+    display: inline-block;
+    padding: .5rem .75rem;
+    background: #f2f2f2;
+    border-radius: 4px;
+    color: #5f5f5f;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 1rem 0 0;
+}
+.page-button:hover {
+    text-decoration: none;
+    color: inherit;
+}
+.page-button.active {
+    background: #5083f5;
+    color: white;
+}
+[type=text], select {
+    display: block;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: .75rem;
+    outline: none;
+    margin-bottom: .5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    width: 100%;
+    max-width: 100%;
+    line-height: 1;
+}
+table {
+    width: 100%;
+    text-align: left;
+}
+.excerpt, .profile .city {
+    font-size: 1rem;
+    display: block;
+    color: rgba(0,0,0,.4);
+    font-weight: 400;
+}
+
+.search {
+    width: 400px;
+    box-shadow: 0 0 10px #c7c7c7;
+    padding: 16px;
+    border-radius: 5px;
+    height: fit-content;
+}
+
+.search label {
+    display: block;
+}
+
+.search .age-range {
+    display: flex;
+}
+.search .age-range input {
+    margin-right: 10px;
+}
+
+.main-page {
+    display: flex;
+}
+.results {
+    margin-left: 20px;
+    display: flex;
+    flex-flow: wrap;
+}
+
+.results .profile {
+    width: 160px;
+    height: 250px;
+    margin-right: 24px;
+    margin-bottom: 16px;
+}
+
+.results .profile .image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 200px;
+    border-radius: 2px;
+}
+
+.results .profile .name {
+    color: chocolate;
+    font-weight: bold;
+}
+
+.results .profile .about {
+    color: #525252;
+}
+
+.profile-page {
+    display: flex;
+}
+
+.profile-page .image {
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 400px;
+    width: 300px;
+    margin-right: 20px;
+}
+
+.chat-page {
+    display: flex;
+}
+
+.chat-page .messages {
+    width: 100%;
+}
+
+.chat-page .messages .area {
+    height: calc(100vh - 320px);
+    padding: 15px;
+}
+
+.chat-page .profile {
+    height: 20px;
+    margin-bottom: 10px;
+    width: 140px;
+}

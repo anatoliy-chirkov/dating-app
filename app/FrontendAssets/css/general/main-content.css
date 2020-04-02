@@ -1,0 +1,21 @@
+#main-content {
+    margin-top: 50px;
+    padding: 10px 0 0;
+    min-height: calc(100vh - 112px);
+}
+.container {
+    max-width: 850px;
+    padding: 0 1.5rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (min-width: 620px) {
+    #main-content {
+        margin-top: 20px;
+        padding: 50px 0 0;
+        min-height: calc(100vh - 122px);
+    }
+    .container {
+        padding: 0 2rem;
+    }
+}
