@@ -43,6 +43,12 @@ abstract class BaseController
         $notification  = $serviceContainer->get('notification_service')->flush();
         $isAuthorized  = $serviceContainer->get('auth_service')->verifyCookieToken();
 
+        if ($isAuthorized) {
+            $me = $serviceContainer->get('auth_service')->getUser();
+        } else {
+            $me = [];
+        }
+
         foreach ($vars as $varName => $varValue) {
             $$varName = $varValue;
         }

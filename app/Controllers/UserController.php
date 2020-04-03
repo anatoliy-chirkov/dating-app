@@ -47,10 +47,14 @@ class UserController extends BaseController
         $userRepository = ServiceContainer::getInstance()->get('user_repository');
         $user = $userRepository->getById($userId);
 
-        /** @var AuthService $authService */
         $authService = ServiceContainer::getInstance()->get('auth_service');
-        $me = $authService->getUser();
 
-        return $this->render(['user' => $user, 'isMe' => $me['id'] === $user['id']]);
+        if ($authService->verifyCookieToken()) {
+            /** @var AuthService $authService */
+            $authService = ServiceContainer::getInstance()->get('auth_service');
+            $me = $authService->getUser();
+        }
+
+        return $this->render(['user' => $user, 'isMe' => isset($me) ? $me['id'] === $user['id'] : false]);
     }
 }

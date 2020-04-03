@@ -14,12 +14,21 @@
             ></div>
         </div>
         <div class="title">
-            <h1><?=$user['name']?>, <?=$user['age']?></h1>
+            <div style="display: flex;">
+                <h1 style="margin-right: 10px"><?=$user['name']?>, <?=$user['age']?></h1>
+                <?php if ($isMe): ?>
+                <form method="post" action="/logout" style="margin: 0; display: flex; justify-content: center; flex-direction: column">
+                    <button style="background: none; padding: 0; margin: 0; border: none" type="submit"><img height="24" src="/svg/logout.svg"></button>
+                </form>
+                <?php endif; ?>
+            </div>
             <div class="city"><?=$user['city']?></div>
             <div class="button-group">
                 <?php if ($isAuthorized): ?>
                     <?php if (!$isMe): ?>
                         <a class="button" href="/user/<?=$user['id']?>/chat">Написать сообщение</a>
+                    <?php else: ?>
+                        <a class="button button-white" href="/profile">Настройки профиля</a>
                     <?php endif; ?>
                 <?php else: ?>
                     <div class="message-need-auth">Чтобы написать сообщение <a href="/login">войдите</a> или <a href="/register">зарегестрируйтесь</a></div>

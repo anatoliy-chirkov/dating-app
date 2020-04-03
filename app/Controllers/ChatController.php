@@ -73,6 +73,6 @@ class ChatController extends BaseController implements IProtected
         $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
         $chats = $chatRepository->getChatsByUserId($me['id']);
 
-        return $this->render(['chats' => $chats, 'receiver' => $receiver, 'messages' => $messages, 'me' => $me]);
+        return $this->render(['chats' => $chats, 'receiver' => $receiver, 'messages' => $messages]);
     }
 }

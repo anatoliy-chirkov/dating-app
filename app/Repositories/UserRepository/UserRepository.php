@@ -20,7 +20,8 @@ class UserRepository
     public function getUserByToken(string $token)
     {
         $sql = <<<SQL
-SELECT user.*, image.path 
+SELECT user.*, 
+CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path
 FROM user 
 LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
 LEFT JOIN token ON token.userId = user.id 
@@ -68,14 +69,14 @@ SQL;
 
     public function getByEmail(string $email)
     {
-        $sql = "SELECT user.*, image.path FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.email = ? LIMIT 1";
+        $sql = "SELECT user.*, CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.email = ? LIMIT 1";
         $rows = $this->dbContext->query($sql, [$email]);
         return empty($rows) ? null : $rows[0];
     }
 
     public function getById(int $userId)
     {
-        $sql = "SELECT user.*, image.path FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.id = ? LIMIT 1";
+        $sql = "SELECT user.*, CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.id = ? LIMIT 1";
         $rows = $this->dbContext->query($sql, [$userId]);
         return empty($rows) ? [] : $rows[0];
     }
@@ -83,7 +84,8 @@ SQL;
     public function search(array $sex = null, int $ageFrom = null, int $ageTo = null, string $city = null, int $page = 1)
     {
         $sql = <<<SQL
-SELECT user.*, image.path 
+SELECT user.*, 
+CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path
 FROM user 
 LEFT JOIN image ON image.userId = user.id AND image.isMain = 1
 SQL;

@@ -3,3 +3,4 @@
 */vendor
 */node_modules
 */mysql/data/*
+*.DS_Store

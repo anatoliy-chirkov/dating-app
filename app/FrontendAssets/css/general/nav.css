@@ -1,10 +1,11 @@
 .nav .brand .text {
-    display: none;
+    /*display: none;*/
 }
 .nav .nav-container {
     display: flex;
     align-items: center;
 }
+
 .nav .brand {
     margin-right: 14px;
 }

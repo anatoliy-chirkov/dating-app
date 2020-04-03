@@ -80,12 +80,51 @@ form .form-title {
     line-height: 1;
 }
 
+.main form .button-group button, .button-group a.button {
+    width: 162px;
+    background: linear-gradient(90deg, rgba(249,155,74,1) 0%, rgba(235,91,78,1) 35%, rgba(216,44,125,1) 100%);
+    border: none;
+}
+
 .button-regular {
     background: white;
     border: none;
     color: #454545;
     font-weight: 400;
     padding: 0;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.button-group a.button-white, form button.button-white {
+    background: white;
+    border: #efefef;
+    color: #454545;
+    font-weight: 400;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.login-button {
+    background: white;
+    border: #efefef;
+    color: #454545;
+    padding: .6rem .9rem;
+    border-radius: 3px;
+}
+.register-button {
+    background: linear-gradient(90deg, rgba(249,155,74,1) 0%, rgba(235,91,78,1) 35%, rgba(216,44,125,1) 100%);
+    border: none;
+    color: white !important;
+    padding: .6rem .9rem;
+    border-radius: 3px;
+}
+
+@media (max-width: 386px) {
+    .login-button, .register-button {
+        font-size: 10px !important;
+    }
 }
 /*
 MAIN BEGIN
@@ -152,12 +191,6 @@ MAIN BEGIN
     margin-bottom: 10px;
 }
 
-.main form .button-group button, .button-group a.button {
-    width: 162px;
-    background: linear-gradient(90deg, rgba(249,155,74,1) 0%, rgba(235,91,78,1) 35%, rgba(216,44,125,1) 100%);
-    border: none;
-}
-
 .results {
     display: flex;
     justify-content: space-between;
@@ -175,7 +208,7 @@ MAIN BEGIN
     background-size: contain;
     background-repeat: no-repeat;
     border-radius: 4px;
-    background-color: #000000;
+    background-color: #f6f6f6;
     background-position: center;
     margin-bottom: 4px;
 }
@@ -259,7 +292,7 @@ PROFILE PAGE BEGIN
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    background-color: black;
+    background-color: #f6f6f6;
 }
 .profile-page .main-info .title .button-group {
     margin-top: 10px;
@@ -324,7 +357,7 @@ CHAT PAGE BEGIN
 .chats .chat-list .profile .image {
     background-size: contain;
     background-repeat: no-repeat;
-    background-color: #000000;
+    background-color: #f6f6f6;
     background-position: center;
     border-radius: 40px;
     width: 40px;
@@ -358,6 +391,7 @@ CHAT PAGE BEGIN
     height: calc(100vh - 236px);
     overflow-y: scroll;
     margin-left: 24px;
+    margin-right: 12px;
 }
 .chats .chat-view .messages form {
     border-top: 1px solid #efefef;
@@ -425,11 +459,14 @@ CHAT PAGE BEGIN
     text-align: center;
 }
 @media (max-width: 680px) {
-    .chats .chat-list {
+    #messages-page .chat-list {
         display: none;
     }
-    .chats .chat-view .messages {
+    #messages-page .chat-view .messages {
         border: none;
+    }
+    #chat-list-page .messages {
+        display: none;
     }
 }
 /*

@@ -6,7 +6,7 @@
  * @var array $me
  */
 ?>
-<div class="chats">
+<div class="chats" id="messages-page">
     <div class="heading"><a href="/user/<?=$receiver['id']?>"><?=$receiver['name']?></a></div>
 
     <div class="chat-view">
@@ -35,8 +35,8 @@
             <div class="messages-list">
                 <?php
                 if (count($messages) === 0):
-                    ?>
-                    <p>Пока нет сообщений, напишите что-нибудь</p>
+                ?>
+                    <div>Пока нет сообщений, напишите что-нибудь</div>
                 <?php
                 endif;
                 ?>
