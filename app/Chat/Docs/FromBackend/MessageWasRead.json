@@ -1,0 +1,7 @@
+{
+  "type": "MESSAGE",
+  "payload": {
+    "messageId": 0,
+    "chatId": 0
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "MESSAGE_WAS_READ",
+  "payload": {
+    "messageId": 0
+  }
+}

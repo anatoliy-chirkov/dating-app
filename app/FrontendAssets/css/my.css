@@ -348,6 +348,7 @@ CHAT PAGE BEGIN
     display: flex;
     justify-content: flex-start;
     padding: 10px 18px;
+    position: relative;
 }
 .chats .chat-list .profile .about {
     display: flex;
@@ -367,18 +368,44 @@ CHAT PAGE BEGIN
 .chats .chat-list .profile .about .title {
     color: #1f1f1f;
 }
+.chats .chat-list .active-chat .about .title {
+    color: #fff;
+}
 .chats .chat-list .profile .about .message {
     color: #5f5f5f;
     font-weight: 400;
 }
+.chats .chat-list .active-chat .about .message {
+    color: #fff;
+}
 .chats .chat-list .profile:hover {
     background-color: rgb(255, 242, 241);
+}
+.chats .chat-list .active-chat, .chats .chat-list .active-chat:hover {
+    background-color: #eb5b4e;
 }
 .chats .chat-view {
     display: flex;
 }
 .chats .chat-view .chat-list {
     flex: 4;
+    overflow-y: scroll;
+    height: calc(100vh - 180px);
+}
+.chats .chat-view .chat-list .profile .label {
+    margin-left: 12px;
+    /*position: absolute;*/
+    /*right: 10px;*/
+    background-color: rgba(235,91,78,1);
+    color: white;
+    font-size: 10px;
+    height: 18px;
+    width: 18px;
+    border-radius: 18px;
+    font-weight: 600;
+    display: none;
+    justify-content: center;
+    align-items: center;
 }
 .chats .chat-view .messages {
     flex: 9;
@@ -497,4 +524,65 @@ CHAT PAGE END
 .page-button.active {
     background: rgba(249,155,74,1);
     color: white;
+}
+#message-notification {
+    position: fixed;
+    display: none;
+    width: 280px;
+    background-color: #000000c4;
+    z-index: 5;
+    top: 20px;
+    left: 20px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: white;
+    font-size: 13px;
+}
+#message-notification div.title {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+#message-notification .close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    cursor: pointer;
+}
+#message-notification .body {
+    display: flex;
+}
+#message-notification .body .user-image {
+    background-size: cover;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+}
+#message-notification .body .more {
+    margin-left: 12px;
+    color: white;
+}
+#message-notification .body .more span.user-name {
+    font-weight: 600;
+}
+#message-notification .body .more span.user-message {
+    font-weight: 400;
+    margin-left: 5px;
+}
+
+#message-tip {
+    position: absolute;
+    background-color: rgba(235,91,78,1);
+    color: white;
+    font-size: 10px;
+    height: 18px;
+    width: 18px;
+    border-radius: 18px;
+    font-weight: 600;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    /*bottom: 8px;*/
+    /*margin-left: -3px;*/
+    bottom: 17px;
+    margin-left: -5px;
 }

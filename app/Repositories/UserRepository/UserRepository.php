@@ -53,6 +53,18 @@ SQL;
         return;
     }
 
+    public function setOnline(int $userId)
+    {
+        $sql = "UPDATE user SET isConnected = 1, lastConnected = NOW() WHERE id = ?";
+        $this->dbContext->query($sql, [$userId]);
+    }
+
+    public function setOffline(int $userId)
+    {
+        $sql = "UPDATE user SET isConnected = 0 WHERE id = ?";
+        $this->dbContext->query($sql, [$userId]);
+    }
+
     public function isExist(string $email)
     {
         $sql = "SELECT id FROM user WHERE email = ? LIMIT 1";

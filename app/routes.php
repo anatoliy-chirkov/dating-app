@@ -33,7 +33,7 @@ return [
         '/user/:id/chat',
         ChatController::class,
         'concrete',
-        [IMethod::GET, IMethod::POST]
+        [IMethod::GET]
     ),
     new Route(
         '/profile',

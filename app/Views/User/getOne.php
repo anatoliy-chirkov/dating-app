@@ -26,7 +26,7 @@
             <div class="button-group">
                 <?php if ($isAuthorized): ?>
                     <?php if (!$isMe): ?>
-                        <a class="button" href="/user/<?=$user['id']?>/chat">Написать сообщение</a>
+                        <a class="button" href="/user/<?=$user['id']?>/chat#last-message">Написать сообщение</a>
                     <?php else: ?>
                         <a class="button button-white" href="/profile">Настройки профиля</a>
                     <?php endif; ?>

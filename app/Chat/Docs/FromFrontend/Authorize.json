@@ -1,0 +1,6 @@
+{
+  "type": "AUTHORIZE",
+  "payload": {
+    "token": "32symbolsToken(sha256)"
+  }
+}

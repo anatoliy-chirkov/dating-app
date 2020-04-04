@@ -1,0 +1,12 @@
+{
+    "name": "anatoliy-chirkov/dating-app",
+    "authors": [
+        {
+            "name": "Anatoliy Chirkov",
+            "email": "chirkoff.ab@gmail.com"
+        }
+    ],
+    "require": {
+        "cboden/ratchet": "^0.4.2"
+    }
+}

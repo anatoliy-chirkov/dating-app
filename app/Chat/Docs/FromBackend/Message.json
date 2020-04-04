@@ -1,0 +1,14 @@
+{
+  "type": "MESSAGE",
+  "payload": {
+    "id": 0,
+    "chatId": 0,
+    "text": "",
+    "createdAt": "01 Jan 13:01",
+    "user": {
+      "id": 0,
+      "name": "",
+      "image": "/path-to-image"
+    }
+  }
+}

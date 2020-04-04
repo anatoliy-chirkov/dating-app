@@ -78,10 +78,23 @@ SQL;
         $rows = $this->dbContext->query($sql, [$userId, $userId]);
 
         foreach ($rows as &$row) {
-            $sql = "SELECT text FROM message WHERE chatId = ? ORDER BY createdAt DESC LIMIT 1";
+            $sql = "SELECT count(id) FROM message WHERE chatId = ? AND isRead = 0 AND authorId != ?";
+            $notReadCount = $this->dbContext->query($sql, [$row['chatId'], $userId])[0][0];
+
+            $sql = "SELECT text, createdAt FROM message WHERE chatId = ? ORDER BY createdAt DESC LIMIT 1";
             $messageRows = $this->dbContext->query($sql, [$row['chatId']]);
             $row['text'] = !empty($messageRows) ? $messageRows[0]['text'] : null;
+            $row['createdAt'] = !empty($messageRows) ? $messageRows[0]['createdAt'] : null;
+            $row['notReadCount'] = $notReadCount;
         }
+
+        usort($rows, static function ($a, $b) {
+            if ($a['createdAt'] === $b['createdAt']) {
+                return 0;
+            }
+
+            return ($a['createdAt'] > $b['createdAt']) ? -1 : 1;
+        });
 
         return $rows;
     }

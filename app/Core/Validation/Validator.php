@@ -57,6 +57,29 @@ class Validator
         return $this->errors;
     }
 
+    public function validateLength($value, $length)
+    {
+        return strlen($value) <= $length;
+    }
+
+    public function validateEmail($value)
+    {
+        $matches = [];
+        preg_match('/[a-z-]+@[a-z-]+\.[a-z]+/', $value, $matches);
+
+        return count($matches) > 0;
+    }
+
+    public function validateXss($value)
+    {
+        return strpos($value, '<script') === false;
+    }
+
+    public function validateRequired($value)
+    {
+        return !empty($value);
+    }
+
     private function getErrorText($key, string $type, $additionalParam = null)
     {
         $key = ucfirst($key);
@@ -72,28 +95,5 @@ class Validator
             default:
                 return "{$key} is invalid";
         }
-    }
-
-    private function validateLength($value, $length)
-    {
-        return strlen($value) <= $length;
-    }
-
-    private function validateEmail($value)
-    {
-        $matches = [];
-        preg_match('/[a-z]+@[a-z]+\.[a-z]+/', $value, $matches);
-
-        return count($matches) > 0;
-    }
-
-    private function validateXss($value)
-    {
-        return strpos($value, '<script') === false;
-    }
-
-    private function validateRequired($value)
-    {
-        return !empty($value);
     }
 }

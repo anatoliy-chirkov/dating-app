@@ -6,7 +6,7 @@
  * 1. Setup configuration and services
  * 2. Run app
  */
-session_start();
+
 define('APP_PATH', __DIR__);
 define('ROOT_PATH', __DIR__ . '/..');
 

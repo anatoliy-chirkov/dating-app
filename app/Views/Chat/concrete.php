@@ -6,7 +6,7 @@
  * @var array $me
  */
 ?>
-<div class="chats" id="messages-page">
+<div class="chats" id="messages-page" data-userId="<?=$receiver['id']?>">
     <div class="heading"><a href="/user/<?=$receiver['id']?>"><?=$receiver['name']?></a></div>
 
     <div class="chat-view">
@@ -14,7 +14,7 @@
             <?php
             foreach ($chats as $chat):
                 ?>
-                <a href="/user/<?=$chat['userId']?>/chat" class="profile">
+                <a href="/user/<?=$chat['userId']?>/chat#last-message" class="profile chat <?php if ($chat['userId'] === $receiver['id']): ?>active-chat<?php endif; ?>" data-id="<?=$chat['chatId']?>">
                     <div class="image" style="background-image: url('<?=str_replace('FrontendAssets', '', $chat['path'])?>')"></div>
                     <div class="about">
                         <div class="title"><?=$chat['name']?>, <?=$chat['age']?></div>
@@ -26,6 +26,7 @@
                             <?php endif; ?>
                         </div>
                     </div>
+                    <div class="label" <?php if ($chat['notReadCount'] > 0): ?> style="display: flex" <?php endif; ?>><?=$chat['notReadCount']?></div>
                 </a>
             <?php
             endforeach;
@@ -40,20 +41,19 @@
                 <?php
                 endif;
                 ?>
-                <?php
-                foreach ($messages as $message):
-                    ?>
+                <?php $i = 0; foreach ($messages as $message): $i++ ?>
                     <div class="message">
                         <div class="about">
                             <div class="title"><?php if ($message['userId'] === $me['id']): ?>Вы<?php else: ?><?=$message['name']?><?php endif;?><span class="time"><?=$message['createdAt']?></span></div>
                             <div class="content"><?=$message['text']?></div>
                         </div>
                     </div>
-                <?
-                endforeach;
-                ?>
+                    <?php if (count($messages) === $i): ?>
+                        <section id="last-message"></section>
+                    <?php endif; ?>
+                <?php endforeach; ?>
             </div>
-            <form method="POST" action="/user/<?=$receiver['id']?>/chat">
+            <form id="chat-form" method="POST" data-receiverId="<?=$receiver['id']?>">
                 <input type="text" name="text" placeholder="Ваше сообщение" autocomplete="off">
                 <button type="submit">Отправить</button>
             </form>

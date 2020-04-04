@@ -11,7 +11,7 @@
             <?php
             foreach ($chats as $chat):
                 ?>
-                <a href="/user/<?=$chat['userId']?>/chat" class="profile">
+                <a href="/user/<?=$chat['userId']?>/chat#last-message" class="profile chat" data-id="<?=$chat['chatId']?>">
                     <div class="image" style="background-image: url('<?=str_replace('FrontendAssets', '', $chat['path'])?>')"></div>
                     <div class="about">
                         <div class="title"><?=$chat['name']?>, <?=$chat['age']?></div>
@@ -23,6 +23,7 @@
                             <?php endif; ?>
                         </div>
                     </div>
+                    <div class="label" <?php if ($chat['notReadCount'] > 0): ?> style="display: flex" <?php endif; ?>><?=$chat['notReadCount']?></div>
                 </a>
             <?php
             endforeach;

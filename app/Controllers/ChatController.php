@@ -46,25 +46,12 @@ class ChatController extends BaseController implements IProtected
         $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
         $chatId = $chatRepository->getChatIdByUsers([$me['id'], $receiver['id']]);
 
-            if ($request->isPost()) {
-                /** @var Validator $validator */
-                $validator = ServiceContainer::getInstance()->get('validator');
-
-                if ($validator->isValid($request->post(), ['text' => 'required'])) {
-                    if ($chatId === null) {
-                        $chatId = $chatRepository->createChat([(int) $me['id'], (int) $receiver['id']]);
-                    }
-
-                    /** @var MessageRepository $messageRepository */
-                    $messageRepository = ServiceContainer::getInstance()->get('message_repository');
-                    $messageRepository->addMessage($chatId, $me['id'], $request->post('text'));
-                }
-            }
-
         if ($chatId !== null) {
             /** @var MessageRepository $messageRepository */
             $messageRepository = ServiceContainer::getInstance()->get('message_repository');
             $messages = $messageRepository->getMessagesByChatId($chatId);
+
+            $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
         } else {
             $messages = [];
         }

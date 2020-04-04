@@ -45,8 +45,10 @@ abstract class BaseController
 
         if ($isAuthorized) {
             $me = $serviceContainer->get('auth_service')->getUser();
+            $countNotReadMessages = $serviceContainer->get('message_repository')->getCountNotReadMessages($me['id']);
         } else {
             $me = [];
+            $countNotReadMessages = 0;
         }
 
         foreach ($vars as $varName => $varValue) {
