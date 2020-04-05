@@ -48,7 +48,7 @@
         for ($i = 0; $i <= 3; $i++):
             ?>
             <a href="/user/<?=$women[$i]['id']?>" class="profile">
-                <div class="image" style="background-image: url('<?=str_replace('FrontendAssets', '', $women[$i]['path'])?>')"></div>
+                <div class="image" style="background-image: url('<?=$women[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$women[$i]['name']?></span>, <?=$women[$i]['age']?></div>
                     <div class="city"><?=$women[$i]['city']?></div>
@@ -65,7 +65,7 @@
         for ($i = 0; $i <= 3; $i++):
             ?>
             <a href="/user/<?=$men[$i]['id']?>" class="profile">
-                <div class="image" style="background-image: url('<?=str_replace('FrontendAssets', '', $men[$i]['path'])?>')"></div>
+                <div class="image" style="background-image: url('<?=$men[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$men[$i]['name']?></span>, <?=$men[$i]['age']?></div>
                     <div class="city"><?=$men[$i]['city']?></div>

@@ -586,3 +586,14 @@ CHAT PAGE END
     bottom: 17px;
     margin-left: -5px;
 }
+
+.choose-main-photo-form .image-list {
+    display: flex;
+}
+.choose-main-photo-form .image {
+    background-size: cover;
+    height: 120px;
+    width: 120px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

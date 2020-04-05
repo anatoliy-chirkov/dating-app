@@ -15,16 +15,28 @@ class ImageRepository
         $this->dbContext = ServiceContainer::getInstance()->get('db_context');
     }
 
-    public function create(int $userId, string $path, bool $isMain = false)
+    public function create(int $userId, string $serverPath, string $clientPath, bool $isMain = false)
     {
-        $sql = "INSERT INTO image (userId, path, isMain, createdAt) VALUES (?, ?, ?, NOW())";
-        $this->dbContext->query($sql, [$userId, $path, (int) $isMain]);
+        $sql = "INSERT INTO image (userId, serverPath, clientPath, isMain, createdAt) VALUES (?, ?, ?, ?, NOW())";
+        $this->dbContext->query($sql, [$userId, $serverPath, $clientPath, (int) $isMain]);
     }
 
-    public function getByPath(string $path)
+    public function getByClientPath(string $clientPath)
     {
-        $sql = "SELECT id FROM image WHERE path = ?";
-        $rows = $this->dbContext->query($sql, [$path]);
+        $sql = "SELECT id FROM image WHERE clientPath = ?";
+        $rows = $this->dbContext->query($sql, [$clientPath]);
         return empty($rows) ? null : $rows[0];
+    }
+
+    public function getUserImages(int $userId)
+    {
+        $sql = "SELECT * FROM image WHERE userId = ?";
+        return $this->dbContext->query($sql, [$userId]);
+    }
+
+    public function markImageAsMain(int $imageId, int $userId)
+    {
+        $sql = "UPDATE image SET isMain = 1 WHERE id = ? AND userId = ?";
+        $this->dbContext->query($sql, [$imageId, $userId]);
     }
 }

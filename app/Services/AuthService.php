@@ -31,6 +31,17 @@ class AuthService
         return $this->userRepository->getUserByToken($token);
     }
 
+    public function checkPasswordsByUserId(int $userId, string $password)
+    {
+        $user = $this->userRepository->getById($userId);
+
+        if ($user === null) {
+            throw new \Exception('Пользовтаель не найден', 1000);
+        }
+
+        return $this->verifyPassword($password, $user['passwordHash']);
+    }
+
     public function checkEmailAndPassword(string $email, string $password)
     {
         $user = $this->userRepository->getByEmail($email);

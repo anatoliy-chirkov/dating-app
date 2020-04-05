@@ -18,21 +18,29 @@ class ImageService
 
     public function save(File $file, int $userId)
     {
-        $file->saveTo($this->getUserImgDir($userId));
-        $this->imageRepository->create($userId, $file->getPath());
-        return $this->imageRepository->getByPath($file->getPath());
+        [$userImgServerDir, $userImgClientDir] = $this->getUserImgDirs($userId);
+
+        $file->saveTo($userImgServerDir, $userImgClientDir);
+        $this->imageRepository->create($userId, $file->getServerPath(), $file->getClientPath());
+        return $this->imageRepository->getByClientPath($file->getClientPath());
     }
 
     public function saveMainPhoto(File $file, int $userId)
     {
-        $file->saveTo($this->getUserImgDir($userId));
-        $this->imageRepository->create($userId, $file->getPath(), true);
-        return $this->imageRepository->getByPath($file->getPath());
+        [$userImgServerDir, $userImgClientDir] = $this->getUserImgDirs($userId);
+
+        $file->saveTo($userImgServerDir, $userImgClientDir);
+        $this->imageRepository->create($userId, $file->getServerPath(), $file->getClientPath(), true);
+        return $this->imageRepository->getByClientPath($file->getClientPath());
     }
 
-    private function getUserImgDir(int $userId)
+    private function getUserImgDirs(int $userId)
     {
         $usersImgDir = ServiceContainer::getInstance()->get('users_img_dir');
-        return $usersImgDir . '/' . $userId;
+
+        return [
+            $usersImgDir['server'] . '/' . $userId,
+            $usersImgDir['client'] . '/' . $userId
+        ];
     }
 }

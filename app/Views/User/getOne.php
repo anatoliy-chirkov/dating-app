@@ -10,7 +10,7 @@
         <div class="avatar-box">
             <div
                     class="avatar"
-                    style="background-image: url('<?=str_replace('FrontendAssets', '', $user['path'])?>')"
+                    style="background-image: url('<?=$user['clientPath']?>')"
             ></div>
         </div>
         <div class="title">

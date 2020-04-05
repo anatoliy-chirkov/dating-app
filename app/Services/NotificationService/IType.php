@@ -6,6 +6,6 @@ interface IType
 {
     public const
         SUCCESS = 'success',
-        FAIL = 'fail'
+        FAIL    = 'fail'
     ;
 }

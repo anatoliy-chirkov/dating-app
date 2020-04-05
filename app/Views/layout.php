@@ -58,7 +58,7 @@
                 <?php endif; ?>
             </a>
             <a href="/user/<?=$me['id']?>">
-                <div style="background-image: url('<?=$me['path']?>'); height: 24px; width: 24px; background-size: cover; background-position: center center; border-radius: 24px;"></div>
+                <div style="background-image: url('<?=$me['clientPath']?>'); height: 24px; width: 24px; background-size: cover; background-position: center center; border-radius: 24px;"></div>
             </a>
             <? else: ?>
                 <a href="/login" class="login-button">Вход</a>

@@ -17,7 +17,8 @@ class File
     /** @var File extension */
     private $ext;
 
-    private $path;
+    private $serverPath;
+    private $clientPath;
 
     public function __construct(array $file)
     {
@@ -34,18 +35,32 @@ class File
         return $this->size / 1000;
     }
 
-    public function getPath()
+    public function getServerPath()
     {
-        return $this->path;
+        return $this->serverPath;
     }
 
-    public function saveTo(string $dir)
+    public function getClientPath()
     {
-        $path = $dir . '/' . $this->generateFileName();
-        $isSaved = move_uploaded_file($this->tmpName, $path);
+        return $this->clientPath;
+    }
+
+    public function saveTo(string $serverDir, string $clientDir)
+    {
+        $fileName = $this->generateFileName();
+
+        $serverPath = $serverDir . '/' . $fileName;
+        $clientPath = $clientDir . '/' . $fileName;
+
+        if (!file_exists($serverDir)) {
+            mkdir($serverDir, 0775, true);
+        }
+
+        $isSaved = move_uploaded_file($this->tmpName, $serverPath);
 
         if ($isSaved) {
-            $this->path = $path;
+            $this->serverPath = $serverPath;
+            $this->clientPath = $clientPath;
         }
     }
 

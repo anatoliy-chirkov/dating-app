@@ -42,6 +42,24 @@ return [
         [IMethod::GET]
     ),
     new Route(
+        '/profile/add-photo',
+        ProfileController::class,
+        'addPhoto',
+        [IMethod::POST]
+    ),
+    new Route(
+        '/profile/change-password',
+        ProfileController::class,
+        'changePassword',
+        [IMethod::POST]
+    ),
+    new Route(
+        '/profile/choose-main-photo',
+        ProfileController::class,
+        'chooseMainPhoto',
+        [IMethod::POST]
+    ),
+    new Route(
         '/register',
         AuthController::class,
         'register',

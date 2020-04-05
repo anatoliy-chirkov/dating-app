@@ -7,6 +7,8 @@
  * 2. Run app
  */
 
+session_start();
+
 define('APP_PATH', __DIR__);
 define('ROOT_PATH', __DIR__ . '/..');
 
@@ -21,7 +23,7 @@ Autoloader::register();
 $serviceContainer = ServiceContainer::getInstance();
 
 $serviceContainer
-    ->set('users_img_dir', APP_PATH . '/FrontendAssets/img/user')
+    ->set('users_img_dir', ['server' => APP_PATH . '/FrontendAssets/img/user', 'client' => '/img/user'])
     ->set('env', new \Core\DotEnv(ROOT_PATH . '/.env'))
     ->set('routes', require_once APP_PATH . '/routes.php')
     ->set('request', new \Core\Http\Request())
@@ -46,6 +48,7 @@ $serviceContainer
     // Services
     ->set('auth_service', new \Services\AuthService())
     ->set('user_service', new \Services\UserService\UserService())
+    ->set('image_service', new \Services\ImageService())
 ;
 
 try {

@@ -12,7 +12,7 @@
             foreach ($chats as $chat):
                 ?>
                 <a href="/user/<?=$chat['userId']?>/chat#last-message" class="profile chat" data-id="<?=$chat['chatId']?>">
-                    <div class="image" style="background-image: url('<?=str_replace('FrontendAssets', '', $chat['path'])?>')"></div>
+                    <div class="image" style="background-image: url('<?=$chat['clientPath']?>')"></div>
                     <div class="about">
                         <div class="title"><?=$chat['name']?>, <?=$chat['age']?></div>
                         <div class="message">

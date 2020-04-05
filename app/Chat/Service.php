@@ -31,7 +31,7 @@ class Service
             $this->store->setUserData($user['id'], [
                 'name' => $user['name'],
                 'age'  => $user['age'],
-                'path' => str_replace('FrontendAssets', '', $user['path']),
+                'path' => $user['clientPath'],
             ]);
 
             unset($user);

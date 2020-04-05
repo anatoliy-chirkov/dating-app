@@ -33,4 +33,10 @@ class TokenRepository
         $sql = "DELETE FROM token WHERE token = ?";
         $this->dbContext->query($sql, [$token]);
     }
+
+    public function removeAllUserTokens(int $userId)
+    {
+        $sql = "DELETE FROM token WHERE userId = ?";
+        $this->dbContext->query($sql, [$userId]);
+    }
 }

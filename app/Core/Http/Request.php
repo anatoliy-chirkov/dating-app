@@ -66,7 +66,7 @@ class Request
             return null;
         }
 
-        if (is_array($_FILES[$key])) {
+        if (is_array($_FILES[$key][0])) {
             return new File($_FILES[$key][0]);
 //            $files = [];
 //            foreach ($_FILES[$key] as $file) {

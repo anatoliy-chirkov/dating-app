@@ -21,7 +21,7 @@ class UserRepository
     {
         $sql = <<<SQL
 SELECT user.*, 
-CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path
+CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath
 FROM user 
 LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
 LEFT JOIN token ON token.userId = user.id 
@@ -65,6 +65,12 @@ SQL;
         $this->dbContext->query($sql, [$userId]);
     }
 
+    public function setNewPasswordHash(int $userId, string $passwordHash)
+    {
+        $sql = "UPDATE user SET passwordHash = ? WHERE id = ?";
+        $this->dbContext->query($sql, [$passwordHash, $userId]);
+    }
+
     public function isExist(string $email)
     {
         $sql = "SELECT id FROM user WHERE email = ? LIMIT 1";
@@ -81,14 +87,14 @@ SQL;
 
     public function getByEmail(string $email)
     {
-        $sql = "SELECT user.*, CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.email = ? LIMIT 1";
+        $sql = "SELECT user.*, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.email = ? LIMIT 1";
         $rows = $this->dbContext->query($sql, [$email]);
         return empty($rows) ? null : $rows[0];
     }
 
     public function getById(int $userId)
     {
-        $sql = "SELECT user.*, CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.id = ? LIMIT 1";
+        $sql = "SELECT user.*, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.id = ? LIMIT 1";
         $rows = $this->dbContext->query($sql, [$userId]);
         return empty($rows) ? [] : $rows[0];
     }
@@ -97,7 +103,7 @@ SQL;
     {
         $sql = <<<SQL
 SELECT user.*, 
-CASE WHEN image.path is NULL THEN '/img/default.jpg' ELSE image.path END AS path
+CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath
 FROM user 
 LEFT JOIN image ON image.userId = user.id AND image.isMain = 1
 SQL;

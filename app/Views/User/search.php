@@ -49,7 +49,7 @@
             foreach ($users as $user):
         ?>
                 <a href="/user/<?=$user['id']?>" class="profile">
-                    <div class="image" style="background-image: url('<?=str_replace('FrontendAssets', '', $user['path'])?>')"></div>
+                    <div class="image" style="background-image: url('<?=$user['clientPath']?>')"></div>
                     <div class="about-wrap">
                         <div class="about"><span class="name"><?=$user['name']?></span>, <?=$user['age']?></div>
                         <div class="city"><?=$user['city']?></div>

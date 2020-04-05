@@ -1,5 +1,5 @@
 <div class="register">
-    <form method="POST" action="/register">
+    <form method="POST" action="/register" enctype="multipart/form-data">
         <h1>Регистрация</h1>
 
         <div class="form-title">Общее</div>
