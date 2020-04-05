@@ -5,6 +5,7 @@ namespace Controllers;
 use Core\Controllers\BaseController;
 use Core\Http\Request;
 use Core\ServiceContainer;
+use Repositories\ImageRepository;
 use Repositories\UserRepository\UserRepository;
 use Services\AuthService;
 
@@ -55,6 +56,14 @@ class UserController extends BaseController
             $me = $authService->getUser();
         }
 
-        return $this->render(['user' => $user, 'isMe' => isset($me) ? $me['id'] === $user['id'] : false]);
+        /** @var ImageRepository $imageRepository */
+        $imageRepository = ServiceContainer::getInstance()->get('image_repository');
+        $images = $imageRepository->getUserImages($userId);
+
+        return $this->render([
+            'user' => $user,
+            'isMe' => isset($me) ? $me['id'] === $user['id'] : false,
+            'images' => $images,
+        ]);
     }
 }

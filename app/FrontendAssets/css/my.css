@@ -356,7 +356,7 @@ CHAT PAGE BEGIN
     justify-content: center;
 }
 .chats .chat-list .profile .image {
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-color: #f6f6f6;
     background-position: center;
@@ -589,6 +589,7 @@ CHAT PAGE END
 
 .choose-main-photo-form .image-list {
     display: flex;
+    flex-wrap: wrap;
 }
 .choose-main-photo-form .image {
     background-size: cover;
@@ -596,4 +597,43 @@ CHAT PAGE END
     width: 120px;
     background-repeat: no-repeat;
     background-position: center center;
+}
+
+.profile-page .images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 34px;
+}
+.profile-page .images .image {
+    background-size: cover;
+    height: 200px;
+    width: 200px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+#image-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 6;
+    background-color: #000000c9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#image-view .content {
+    /*height: 80%;*/
+    /*width: 70%;*/
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 3px;
 }

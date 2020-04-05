@@ -60,6 +60,18 @@ return [
         [IMethod::POST]
     ),
     new Route(
+        '/profile/delete-photo',
+        ProfileController::class,
+        'deletePhoto',
+        [IMethod::POST]
+    ),
+    new Route(
+        '/profile/update',
+        ProfileController::class,
+        'update',
+        [IMethod::POST]
+    ),
+    new Route(
         '/register',
         AuthController::class,
         'register',

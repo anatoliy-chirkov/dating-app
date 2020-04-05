@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Core\Controllers\BaseController;
+use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Core\Validation\Validator;
@@ -13,8 +14,13 @@ use Services\AuthService;
 use Services\ImageService;
 use Services\NotificationService\NotificationService;
 
-class ProfileController extends BaseController
+class ProfileController extends BaseController implements IProtected
 {
+    public function getProtectedMethods()
+    {
+        return ['settings', 'update', 'addPhoto', 'chooseMainPhoto', 'deletePhoto', 'changePassword'];
+    }
+
     public function settings()
     {
         /** @var AuthService $authService */
@@ -25,7 +31,47 @@ class ProfileController extends BaseController
         $imageRepository = ServiceContainer::getInstance()->get('image_repository');
         $images = $imageRepository->getUserImages($me['id']);
 
-        return $this->render(['images' => $images]);
+        return $this->render(['images' => $images, 'me' => $me]);
+    }
+
+    public function update(Request $request)
+    {
+        /** @var Validator $validator */
+        $validator = ServiceContainer::getInstance()->get('validator');
+
+        if (
+            !$validator->isValid($request->post(), ['name' => 'required', 'age' => 'required', 'city' => 'required'])
+            || !$validator->validateXss($request->post('weight'))
+            || !$validator->validateXss($request->post('height'))
+            || !$validator->validateXss($request->post('about'))
+        ) {
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('error', 'Данные содержат недопустимые символы');
+            $request->redirect('/profile');
+        }
+
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        $me = $authService->getUser();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = ServiceContainer::getInstance()->get('user_repository');
+        $userRepository->update(
+            $me['id'],
+            $request->post('name'),
+            $request->post('age'),
+            $request->post('city'),
+            $request->post('height', null),
+            $request->post('weight', null),
+            $request->post('about', null)
+        );
+
+        /** @var NotificationService $notificationService */
+        $notificationService = ServiceContainer::getInstance()->get('notification_service');
+        $notificationService->set('success', 'Данные обновлены');
+
+        $request->redirect('/profile');
     }
 
     public function addPhoto(Request $request)
@@ -90,6 +136,34 @@ class ProfileController extends BaseController
         /** @var NotificationService $notificationService */
         $notificationService = ServiceContainer::getInstance()->get('notification_service');
         $notificationService->set('success', 'Главное фото профиля обновлено');
+
+        $request->redirect('/profile');
+    }
+
+    public function deletePhoto(Request $request)
+    {
+        $photoIds = $request->post('photo');
+
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        $me = $authService->getUser();
+
+        /** @var ImageService $imageService */
+        $imageService = ServiceContainer::getInstance()->get('image_service');
+
+        try {
+            foreach ($photoIds as $photoId) {
+                $imageService->deleteOne($photoId, $me['id']);
+            }
+
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('success', 'Фото удалены');
+        } catch (\Exception $e) {
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('error', $e->getMessage());
+        }
 
         $request->redirect('/profile');
     }

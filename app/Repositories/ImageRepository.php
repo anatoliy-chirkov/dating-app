@@ -21,6 +21,13 @@ class ImageRepository
         $this->dbContext->query($sql, [$userId, $serverPath, $clientPath, (int) $isMain]);
     }
 
+    public function getByIdAndUserId(int $id, int $userId)
+    {
+        $sql = 'SELECT * FROM image WHERE id = ? AND userId = ?';
+        $rows = $this->dbContext->query($sql, [$id, $userId]);
+        return empty($rows) ? null : $rows[0];
+    }
+
     public function getByClientPath(string $clientPath)
     {
         $sql = "SELECT id FROM image WHERE clientPath = ?";
@@ -36,7 +43,16 @@ class ImageRepository
 
     public function markImageAsMain(int $imageId, int $userId)
     {
+        $sql = "UPDATE image SET isMain = 0 WHERE userId = ?";
+        $this->dbContext->query($sql, [$userId]);
+
         $sql = "UPDATE image SET isMain = 1 WHERE id = ? AND userId = ?";
+        $this->dbContext->query($sql, [$imageId, $userId]);
+    }
+
+    public function deleteOne(int $imageId, int $userId)
+    {
+        $sql = 'DELETE FROM image WHERE id = ? AND userId = ?';
         $this->dbContext->query($sql, [$imageId, $userId]);
     }
 }

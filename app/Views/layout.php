@@ -25,6 +25,7 @@
 
 </head>
 <body>
+<script type="application/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <?php if (!empty($me)): ?>
     <span id="user-token" data-token="<?=$_COOKIE['_token']?>"></span>
 <?php endif; ?>
@@ -105,7 +106,6 @@
         </div>
     </div>
 </footer>
-<script type="application/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
     $(document).ready(function() {
         if ($('#user-token').length > 0) {

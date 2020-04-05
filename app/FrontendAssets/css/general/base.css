@@ -15,6 +15,7 @@ nav {
 }
 footer, main {
     background-color: #f6f6f6;
+    overflow-y: hidden;
 }
 footer .container .bottom-block {
     padding: 16px 0;

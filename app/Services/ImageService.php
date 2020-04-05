@@ -34,6 +34,19 @@ class ImageService
         return $this->imageRepository->getByClientPath($file->getClientPath());
     }
 
+    public function deleteOne(int $imageId, int $userId)
+    {
+        $image = $this->imageRepository->getByIdAndUserId($imageId, $userId);
+
+        if ($image === null) {
+            throw new \Exception('This image already removed or it is not your image', 422);
+        }
+
+        unlink($image['serverPath']);
+
+        $this->imageRepository->deleteOne($imageId, $userId);
+    }
+
     private function getUserImgDirs(int $userId)
     {
         $usersImgDir = ServiceContainer::getInstance()->get('users_img_dir');

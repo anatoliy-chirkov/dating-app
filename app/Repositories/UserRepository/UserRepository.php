@@ -34,6 +34,12 @@ SQL;
         return !empty($rows) ? $rows[0] : null;
     }
 
+    public function update(int $userId, string $name, int $age, string $city, ?int $height, ?int $weight, ?string $about)
+    {
+        $sql = 'UPDATE user SET name = ?, age = ?, city = ?, height = ?, weight = ?, about = ? WHERE id = ?';
+        $this->dbContext->query($sql, [$name, $age, $city, $height, $weight, $about, $userId]);
+    }
+
     public function createUser(User $user)
     {
         $sql = <<<SQL

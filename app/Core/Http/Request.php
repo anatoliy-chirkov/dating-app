@@ -48,7 +48,7 @@ class Request
             return $this->postData;
         }
 
-        return isset($this->postData[$key]) ? $this->postData[$key] : $default;
+        return empty($this->postData[$key]) ? $default : $this->postData[$key];
     }
 
     public function get(string $key = null, $default = null)
