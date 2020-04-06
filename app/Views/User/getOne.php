@@ -24,6 +24,7 @@
                 <?php endif; ?>
             </div>
             <div class="city"><?=$user['city']?></div>
+            <?=\Core\ServiceContainer::getInstance()->get('is_user_online_service')->getViewElement($user['sex'], $user['isConnected'], $user['lastConnected'])?>
             <div class="button-group">
                 <?php if ($isAuthorized): ?>
                     <?php if (!$isMe): ?>

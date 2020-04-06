@@ -205,18 +205,61 @@ MAIN BEGIN
 .results .profile .image {
     width: 200px;
     height: 200px;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     border-radius: 4px;
     background-color: #f6f6f6;
     background-position: center;
     margin-bottom: 4px;
 }
-
 .results .profile .about {
     color: #eb5b4e;
 }
-
+.results .profile .status, .profile-page .main-info .title .status {
+    font-weight: 400;
+}
+.results .profile .status {
+    margin: -2px 0 2px 0;
+    font-size: 13px;
+}
+.profile-page .main-info .title .status {
+    font-size: 14px;
+}
+.results .profile .status .circle, .profile-page .main-info .title .status .circle {
+    height: 6px;
+    width: 6px;
+    display: inline-block;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 1px;
+    margin-right: 4px;
+}
+.chat-list .profile .image .user-status-circle {
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    border-radius: 10px;
+    bottom: 3px;
+    right: 1px;
+}
+.results .profile .status.active, .profile-page .main-info .title .status.active {
+    color: #04ad04;
+}
+.results .profile .status.active .circle, .profile-page .main-info .title .status.active .circle, .chat-list .profile .image .user-status-circle.active {
+    background-color: #04ad04;
+}
+.results .profile .status.recently, .profile-page .main-info .title .status.recently {
+    color: rgba(216,44,125,1);
+}
+.results .profile .status.recently .circle, .profile-page .main-info .title .status.recently .circle, .chat-list .profile .image .user-status-circle.recently {
+    background-color: rgba(216,44,125,1);
+}
+.results .profile .status.long, .profile-page .main-info .title .status.long {
+    color: #838383;
+}
+.results .profile .status.long .circle, .profile-page .main-info .title .status.long .circle, .chat-list .profile .image .user-status-circle.long {
+    background-color: #838383;
+}
 .results .profile .city {
     color: gray;
     font-weight: 400;
@@ -364,6 +407,7 @@ CHAT PAGE BEGIN
     width: 40px;
     height: 40px;
     margin-right: 10px;
+    position: relative;
 }
 .chats .chat-list .profile .about .title {
     color: #1f1f1f;

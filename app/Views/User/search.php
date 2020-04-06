@@ -21,7 +21,7 @@
                     <label for="sexChoice1">👨 Мужчину</label>
                     <br>
                     <input type="checkbox" id="sexChoice2" name="sex[]" value="woman" <?php if(array_search('woman', $sex) !== false): echo 'checked'; endif; ?>>
-                    <label for="sexChoice2">👩 Женщину</label>
+                    <label for="sexChoice2">👩 Девушку</label>
                 </label>
             </div>
 
@@ -52,6 +52,7 @@
                     <div class="image" style="background-image: url('<?=$user['clientPath']?>')"></div>
                     <div class="about-wrap">
                         <div class="about"><span class="name"><?=$user['name']?></span>, <?=$user['age']?></div>
+                        <?=\Core\ServiceContainer::getInstance()->get('is_user_online_service')->getViewElement($user['sex'], $user['isConnected'], $user['lastConnected'])?>
                         <div class="city"><?=$user['city']?></div>
                     </div>
                 </a>

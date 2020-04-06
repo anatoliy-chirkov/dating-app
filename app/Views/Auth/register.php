@@ -10,7 +10,7 @@
                 <label for="sexChoice1">👨 Мужчина</label>
                 <br>
                 <input type="radio" id="sexChoice2" name="sex" value="women">
-                <label for="sexChoice2">👩 Женщина</label>
+                <label for="sexChoice2">👩 Девушка</label>
             </label>
         </div>
         <div class="form-group">

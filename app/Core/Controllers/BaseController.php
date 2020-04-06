@@ -4,6 +4,7 @@ namespace Core\Controllers;
 
 use Core\Controllers\Exceptions\ForbiddenException;
 use Core\ServiceContainer;
+use Repositories\UserRepository\UserRepository;
 use Services\AuthService;
 use Services\NotificationService\Notification;
 
@@ -46,6 +47,10 @@ abstract class BaseController
         if ($isAuthorized) {
             $me = $serviceContainer->get('auth_service')->getUser();
             $countNotReadMessages = $serviceContainer->get('message_repository')->getCountNotReadMessages($me['id']);
+
+            /** @var UserRepository $userRepository */
+            $userRepository = $serviceContainer->get('user_repository');
+            $userRepository->setTemporaryOnline($me['id']);
         } else {
             $me = [];
             $countNotReadMessages = 0;

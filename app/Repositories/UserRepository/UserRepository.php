@@ -43,8 +43,8 @@ SQL;
     public function createUser(User $user)
     {
         $sql = <<<SQL
-INSERT INTO user (sex, age, name, email, passwordHash, city, height, weight, createdAt)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+INSERT INTO user (sex, age, name, email, passwordHash, city, height, weight, createdAt, lastConnected)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
 SQL;
         $this->dbContext->query($sql, [
             $user->sex,
@@ -68,6 +68,12 @@ SQL;
     public function setOffline(int $userId)
     {
         $sql = "UPDATE user SET isConnected = 0 WHERE id = ?";
+        $this->dbContext->query($sql, [$userId]);
+    }
+
+    public function setTemporaryOnline(int $userId)
+    {
+        $sql = "UPDATE user SET lastConnected = NOW() WHERE id = ?";
         $this->dbContext->query($sql, [$userId]);
     }
 

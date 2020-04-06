@@ -66,7 +66,7 @@ SQL;
     public function getChatsByUserId(int $userId): array
     {
         $sql = <<<SQL
-SELECT DISTINCT chatUser.userId, chatUser.chatId, user.name, user.age, user.city, 
+SELECT DISTINCT chatUser.userId, chatUser.chatId, user.name, user.age, user.city, user.lastConnected, user.isConnected, 
 CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath
 FROM chatUser 
 INNER JOIN (SELECT DISTINCT chatId FROM chatUser WHERE userId = ?) t ON t.chatId = chatUser.chatId 

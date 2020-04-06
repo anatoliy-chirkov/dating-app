@@ -18,7 +18,7 @@
                         <label for="sexChoice1">👨 Мужчину</label>
                         <br>
                         <input type="checkbox" id="sexChoice2" name="sex[]" value="woman">
-                        <label for="sexChoice2">👩 Женщину</label>
+                        <label for="sexChoice2">👩 Девушку</label>
                     </label>
                 </div>
 
@@ -51,6 +51,7 @@
                 <div class="image" style="background-image: url('<?=$women[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$women[$i]['name']?></span>, <?=$women[$i]['age']?></div>
+                    <?=\Core\ServiceContainer::getInstance()->get('is_user_online_service')->getViewElement($women[$i]['sex'], $women[$i]['isConnected'], $women[$i]['lastConnected'])?>
                     <div class="city"><?=$women[$i]['city']?></div>
                 </div>
             </a>
@@ -68,6 +69,7 @@
                 <div class="image" style="background-image: url('<?=$men[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$men[$i]['name']?></span>, <?=$men[$i]['age']?></div>
+                    <?=\Core\ServiceContainer::getInstance()->get('is_user_online_service')->getViewElement($men[$i]['sex'], $men[$i]['isConnected'], $men[$i]['lastConnected'])?>
                     <div class="city"><?=$men[$i]['city']?></div>
                 </div>
             </a>

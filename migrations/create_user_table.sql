@@ -12,5 +12,5 @@ CREATE TABLE user (
     money int NOT NULL default(0),
     createdAt datetime NOT NULL,
     isConnected tinyint NOT NULL default(0),
-    lastConnected datetime NULL
+    lastConnected datetime NOT NULL
 );

@@ -12,7 +12,8 @@ session_start();
 define('APP_PATH', __DIR__);
 define('ROOT_PATH', __DIR__ . '/..');
 
-require_once APP_PATH . '/Core/Autoloader.php';
+require APP_PATH . '/vendor/autoload.php';
+require APP_PATH . '/Core/Autoloader.php';
 
 use Core\Autoloader;
 use Core\Bootstrapper;
@@ -49,6 +50,7 @@ $serviceContainer
     ->set('auth_service', new \Services\AuthService())
     ->set('user_service', new \Services\UserService\UserService())
     ->set('image_service', new \Services\ImageService())
+    ->set('is_user_online_service', new \Services\IsUserOnlineService())
 ;
 
 try {
