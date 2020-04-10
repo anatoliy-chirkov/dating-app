@@ -1,0 +1,9 @@
+{
+  "name": "FrontendAssets",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "select2": "^4.0.13"
+  }
+}

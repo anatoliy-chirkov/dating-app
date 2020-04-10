@@ -123,7 +123,7 @@ SQL;
         return empty($rows) ? [] : $rows[0];
     }
 
-    public function search(array $sex = null, int $ageFrom = null, int $ageTo = null, int $googleGeoId = null, int $page = 1)
+    public function search(array $sex = null, int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, int $page = 1)
     {
         $sql = <<<SQL
 SELECT user.*, g.fullName AS city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
@@ -137,10 +137,10 @@ SQL;
         return $this->dbContext->query($sql);
     }
 
-    public function count(array $sex = null, int $ageFrom = null, int $ageTo = null, int $googleGeoId = null): int
+    public function count(array $sex = null, int $ageFrom = null, int $ageTo = null, array $googleGeoId = null): int
     {
         $sql = <<<SQL
-SELECT count(id) 
+SELECT count(user.id) 
 FROM user 
 SQL;
 
@@ -148,16 +148,17 @@ SQL;
             $sql .= ' ' . 'INNER JOIN googleGeo g ON g.id = user.googleGeoId';
         }
 
-        $sql .= $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
+        $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
 
         return $this->dbContext->query($sql)[0][0];
     }
 
-    private function addSQLWhereStatementToSearch(string $sql, array $sex = null, int $ageFrom = null, int $ageTo = null, int $googleGeoId = null)
+    private function addSQLWhereStatementToSearch(string $sql, array $sex = null, int $ageFrom = null, int $ageTo = null, array $googleGeoId = null)
     {
         if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $googleGeoId) {
             $sql .= ' ' . 'WHERE';
         }
+
         if (array_search('man', $sex) !== false || array_search('woman', $sex) !== false) {
             if (array_search('man', $sex) !== false && array_search('woman', $sex) !== false) {
                 $sql .= ' ' . "sex IN ('man', 'woman')";
@@ -167,31 +168,31 @@ SQL;
                 $sql .= ' ' . "sex = 'woman'";
             }
         }
-        if ($ageFrom !== null && $ageTo !== null) {
-            if (preg_match('/WHERE \w+/', $sql) === 1) {
-                $sql .= ' ' . 'AND';
-            }
 
+        if ($ageFrom !== null && $ageTo !== null) {
+            $sql = $this->addSQLOperatorAND($sql);
             $sql .= ' ' . "age BETWEEN {$ageFrom} AND {$ageTo}";
         } else if ($ageFrom !== null) {
-            if (preg_match('/WHERE \w+/', $sql) === 1) {
-                $sql .= ' ' . 'AND';
-            }
-
+            $sql = $this->addSQLOperatorAND($sql);
             $sql .= ' ' . "age >= {$ageFrom}";
         } else if ($ageTo !== null) {
-            if (preg_match('/WHERE \w+/', $sql) === 1) {
-                $sql .= ' ' . 'AND';
-            }
-
+            $sql = $this->addSQLOperatorAND($sql);
             $sql .= ' ' . "age <= {$ageTo}";
         }
-        if ($googleGeoId !== null) {
-            if (preg_match('/WHERE \w+/', $sql) === 1) {
-                $sql .= ' ' . 'AND';
-            }
 
-            $sql .= ' ' . "g.id = {$googleGeoId}";
+        if ($googleGeoId !== null) {
+            $sql = $this->addSQLOperatorAND($sql);
+            $googleGeoIdIN = implode(', ', $googleGeoId);
+            $sql .= ' ' . "g.id IN ({$googleGeoIdIN}) OR g.parentId IN ({$googleGeoIdIN})";
+        }
+
+        return $sql;
+    }
+
+    private function addSQLOperatorAND(string $sql)
+    {
+        if (preg_match('/WHERE \w+/', $sql) === 1) {
+            $sql .= ' ' . 'AND';
         }
 
         return $sql;

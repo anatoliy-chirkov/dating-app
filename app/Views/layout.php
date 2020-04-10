@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="/css/general/notification.css">
 
     <link rel="stylesheet" href="/css/my.css">
+    <link rel="stylesheet" href="/node_modules/select2/dist/css/select2.css">
 
 </head>
 <body>

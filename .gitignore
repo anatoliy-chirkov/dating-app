@@ -1,7 +1,7 @@
 .env
 .idea
 */vendor
-*/node_modules
 */mysql/data/*
 *.DS_Store
+app/FrontendAssets/node_modules
 app/FrontendAssets/img/user*

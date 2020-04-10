@@ -4,7 +4,7 @@
  * @var array $sex
  * @var string $ageFrom
  * @var string $ageTo
- * @var string $city
+ * @var array $googleGeo
  * @var int $page
  * @var int $pages
  */
@@ -28,7 +28,11 @@
             <div class="form-group">
                 <label>
                     Город <br>
-                    <input type="text" name="city" value="<?=$city?>">
+                    <select name="googleGeoId[]" class="google-geo-select" multiple="">
+                        <?php foreach ($googleGeo as $googleGeoSingle): ?>
+                            <option value="<?=$googleGeoSingle['id']?>" selected><?=$googleGeoSingle['name']?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </label>
             </div>
         </div>
@@ -63,10 +67,38 @@
     <div class="pagination">
         <? for($i = 1; $i <= $pages; $i++): ?>
             <? if ($i != $page): ?>
-                <a class="page-button" href="?page=<?=$i?>&ageFrom=<?=$ageFrom?>&ageTo=<?=$ageTo?>&city=<?=$city?><?php foreach($sex as $sexItem): echo '&sex[]=' . $sexItem; endforeach; ?>"><?=$i?></a>
+                <a class="page-button" href="?page=<?=$i?>&ageFrom=<?=$ageFrom?>&ageTo=<?=$ageTo?><?php foreach($googleGeo as $googleGeoSingle): echo '&googleGeoId[]=' . $googleGeoSingle['id']; endforeach; ?><?php foreach($sex as $sexItem): echo '&sex[]=' . $sexItem; endforeach; ?>"><?=$i?></a>
             <? else: ?>
                 <div class="page-button active"><?=$page?></div>
             <? endif; ?>
         <? endfor; ?>
     </div>
 </div>
+<script src="/node_modules/select2/dist/js/select2.full.js" type="application/javascript"></script>
+<script>
+    $(".google-geo-select").select2({
+        width: '169px',
+        placeholder: "Выберите город",
+        ajax: {
+            url: '/geo-search',
+            dataType: 'json',
+            type: "GET",
+            quietMillis: 50,
+            data: function (term) {
+                return {
+                    name: term.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data.data, function (item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            }
+        }
+    });
+</script>

@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <label>
                         Город <br>
-                        <input type="text" name="city">
+                        <select name="googleGeoId[]" class="google-geo-select" multiple=""></select>
                     </label>
                 </div>
             </div>
@@ -124,3 +124,31 @@
         </p>
     </div>
 </div>
+<script src="/node_modules/select2/dist/js/select2.full.js" type="application/javascript"></script>
+<script>
+    $(".google-geo-select").select2({
+        width: '169px',
+        placeholder: "Выберите город",
+        ajax: {
+            url: '/geo-search',
+            dataType: 'json',
+            type: "GET",
+            quietMillis: 50,
+            data: function (term) {
+                return {
+                    name: term.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data.data, function (item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            }
+        }
+    });
+</script>

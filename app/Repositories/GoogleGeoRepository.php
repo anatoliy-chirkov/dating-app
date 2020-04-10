@@ -15,10 +15,34 @@ class GoogleGeoRepository
         $this->dbContext = ServiceContainer::getInstance()->get('db_context');
     }
 
+    public function batch(int $page, int $limit)
+    {
+        $offset = ($page - 1) * $limit;
+
+        $sql = "SELECT id, name, fullName FROM googleGeo LIMIT {$limit} OFFSET {$offset}";
+        return $this->dbContext->query($sql);
+    }
+
     public function search(string $cityName)
     {
-        $sql = 'SELECT id, name, type FROM googleGeo WHERE name like ?';
+        $sql = <<<SQL
+SELECT g.id, g.name, g.fullName, g.type, parent.name AS parentName
+FROM googleGeo AS g
+LEFT JOIN googleGeo AS parent ON parent.id = g.parentId
+WHERE g.name like ?
+SQL;
         return $this->dbContext->query($sql, ["%{$cityName}%"]);
+    }
+
+    public function getByIdArray(array $idArr)
+    {
+        if (empty($idArr)) {
+            return $idArr;
+        }
+
+        $idArrIN = implode(', ', $idArr);
+        $sql = "SELECT id, name, fullName, type FROM googleGeo WHERE id IN ({$idArrIN})";
+        return $this->dbContext->query($sql);
     }
 
     public function create(
