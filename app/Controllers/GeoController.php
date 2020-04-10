@@ -5,8 +5,8 @@ namespace Controllers;
 use Core\Controllers\BaseController;
 use Core\Http\Request;
 use Core\ServiceContainer;
-use Core\Validation\Validator;
 use Repositories\GoogleGeoRepository;
+use Services\GoogleGeoService\IGoogleGeoType;
 
 class GeoController extends BaseController
 {
@@ -17,13 +17,13 @@ class GeoController extends BaseController
 
         if (empty($request->get('name'))) {
             $this->renderJson([
-                'data'  => $googleGeoRepository->batch(1, 10),
+                'data'  => $googleGeoRepository->batch(1, 10, IGoogleGeoType::CITY),
                 'error' => false,
             ]);
         }
 
         $this->renderJson([
-            'data'  => $googleGeoRepository->search($request->get('name')),
+            'data'  => $googleGeoRepository->search($request->get('name'), IGoogleGeoType::CITY),
             'error' => false,
         ]);
     }

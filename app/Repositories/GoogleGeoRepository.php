@@ -15,23 +15,39 @@ class GoogleGeoRepository
         $this->dbContext = ServiceContainer::getInstance()->get('db_context');
     }
 
-    public function batch(int $page, int $limit)
+    public function batch(int $page, int $limit, string $type = null)
     {
         $offset = ($page - 1) * $limit;
 
-        $sql = "SELECT id, name, fullName FROM googleGeo LIMIT {$limit} OFFSET {$offset}";
-        return $this->dbContext->query($sql);
+        $sql = 'SELECT id, name, fullName FROM googleGeo';
+        $params = [];
+
+        if ($type) {
+            $sql .= ' ' . 'WHERE type = ?';
+            $params[] = $type;
+        }
+
+        $sql .= ' ' . "LIMIT {$limit} OFFSET {$offset}";
+
+        return $this->dbContext->query($sql, $params);
     }
 
-    public function search(string $cityName)
+    public function search(string $name, string $type = null)
     {
         $sql = <<<SQL
 SELECT g.id, g.name, g.fullName, g.type, parent.name AS parentName
 FROM googleGeo AS g
 LEFT JOIN googleGeo AS parent ON parent.id = g.parentId
-WHERE g.name like ?
+WHERE g.fullName like ?
 SQL;
-        return $this->dbContext->query($sql, ["%{$cityName}%"]);
+        $params = ["%{$name}%"];
+
+        if ($type) {
+            $sql .= ' ' . 'AND type = ?';
+            $params[] = $type;
+        }
+
+        return $this->dbContext->query($sql, $params);
     }
 
     public function getByIdArray(array $idArr)
@@ -47,15 +63,15 @@ SQL;
 
     public function create(
         string $name,
+        string $fullName,
         string $type,
         int $parentId = null,
         string $placeId = null,
         float $lat = null,
-        float $lng = null,
-        string $fullName = null
+        float $lng = null
     ) {
-        $sql = 'INSERT INTO googleGeo (name, type, parentId, placeId, lat, lng, fullName) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        $this->dbContext->query($sql, [$name, $type, $parentId, $placeId, $lat, $lng, $fullName]);
+        $sql = 'INSERT INTO googleGeo (name, fullName, type, parentId, placeId, lat, lng) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        $this->dbContext->query($sql, [$name, $fullName, $type, $parentId, $placeId, $lat, $lng]);
     }
 
     public function isExistByNameType(string $name, string $type)

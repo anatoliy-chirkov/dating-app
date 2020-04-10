@@ -41,17 +41,19 @@ class GoogleGeoService
             $cityParentId = $countryId;
 
             if (isset($cityData[IGoogleGeoType::REGION])) {
-                $cityParentId = $this->saveRegionIfNotExistAndGetId($cityData[IGoogleGeoType::REGION], $countryId);
+                $cityParentId = $this->saveRegionIfNotExistAndGetId(
+                    $cityData[IGoogleGeoType::REGION], $cityData[IGoogleGeoType::COUNTRY], $countryId
+                );
             }
 
             $this->googleGeoRepository->create(
                 $cityData[IGoogleGeoType::CITY],
+                $cityData['fullName'],
                 IGoogleGeoType::CITY,
                 $cityParentId,
                 $cityData['placeId'],
                 $cityData['lat'],
-                $cityData['lng'],
-                $cityData['fullName']
+                $cityData['lng']
             );
         }
 
@@ -61,15 +63,20 @@ class GoogleGeoService
     private function saveCountryIfNotExistAndGetId($countryName)
     {
         if (!$this->googleGeoRepository->isExistByNameType($countryName, IGoogleGeoType::COUNTRY)) {
-            $this->googleGeoRepository->create($countryName, IGoogleGeoType::COUNTRY);
+            $this->googleGeoRepository->create($countryName, $countryName, IGoogleGeoType::COUNTRY);
         }
         return $this->googleGeoRepository->getIdByNameType($countryName, IGoogleGeoType::COUNTRY);
     }
 
-    private function saveRegionIfNotExistAndGetId($regionName, $countryId)
+    private function saveRegionIfNotExistAndGetId($regionName, $countryName, $countryId)
     {
         if (!$this->googleGeoRepository->isExistByNameType($regionName, IGoogleGeoType::REGION)) {
-            $this->googleGeoRepository->create($regionName, IGoogleGeoType::REGION, $countryId);
+            $this->googleGeoRepository->create(
+                $regionName,
+                "{$regionName}, {$countryName}",
+                IGoogleGeoType::REGION,
+                $countryId
+            );
         }
         return $this->googleGeoRepository->getIdByNameType($regionName, IGoogleGeoType::REGION);
     }

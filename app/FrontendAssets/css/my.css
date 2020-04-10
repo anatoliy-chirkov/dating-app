@@ -222,7 +222,7 @@ MAIN BEGIN
     margin: -2px 0 2px 0;
     font-size: 13px;
 }
-.profile-page .main-info .title .status {
+.profile-page .main-info .title .status, .profile-page .main-info .title .city {
     font-size: 14px;
 }
 .results .profile .status .circle, .profile-page .main-info .title .status .circle {

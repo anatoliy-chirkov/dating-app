@@ -30,7 +30,7 @@
                     Город <br>
                     <select name="googleGeoId[]" class="google-geo-select" multiple="">
                         <?php foreach ($googleGeo as $googleGeoSingle): ?>
-                            <option value="<?=$googleGeoSingle['id']?>" selected><?=$googleGeoSingle['name']?></option>
+                            <option value="<?=$googleGeoSingle['id']?>" selected><?=$googleGeoSingle['fullName']?></option>
                         <?php endforeach; ?>
                     </select>
                 </label>
@@ -93,7 +93,7 @@
                 return {
                     results: $.map(data.data, function (item) {
                         return {
-                            text: item.name,
+                            text: item.fullName,
                             id: item.id
                         }
                     })

@@ -143,7 +143,7 @@
                 return {
                     results: $.map(data.data, function (item) {
                         return {
-                            text: item.name,
+                            text: item.fullName,
                             id: item.id
                         }
                     })
