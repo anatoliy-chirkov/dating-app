@@ -84,7 +84,7 @@ class AuthController extends BaseController implements IProtected
                 'email' => 'required,email',
                 'password' => 'required',
                 'repeatPassword' => 'required',
-                'city' => 'required',
+                'placeId' => 'required',
             ]);
 
             if (!$isValid) {
@@ -96,7 +96,7 @@ class AuthController extends BaseController implements IProtected
 
             // TODO: move this logic to validator
             if ($file = $request->file('main_photo')) {
-                if (!in_array($file->getExtension(), ['jpg, jpeg'])) {
+                if (!in_array($file->getExtension(), ['jpg', 'jpeg'])) {
                     /** @var NotificationService $notificationService */
                     $notificationService = ServiceContainer::getInstance()->get('notification_service');
                     $notificationService->set('error', 'Файл должен иметь расширение jpg / jpeg');
@@ -123,6 +123,9 @@ class AuthController extends BaseController implements IProtected
 
             try {
                 $user = $userService->createUser($request->post(), $request->file('main_photo'));
+
+                ServiceContainer::getInstance()->get('google_geo_service')
+                    ->saveByPlaceId($request->post('placeId'));
             } catch (\Exception $e) {
                 /** @var NotificationService $notificationService */
                 $notificationService = ServiceContainer::getInstance()->get('notification_service');

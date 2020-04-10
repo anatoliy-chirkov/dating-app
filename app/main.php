@@ -45,12 +45,14 @@ $serviceContainer
     ->set('image_repository', new \Repositories\ImageRepository())
     ->set('chat_repository', new \Repositories\ChatRepository())
     ->set('message_repository', new \Repositories\MessageRepository())
+    ->set('google_geo_repository', new \Repositories\GoogleGeoRepository())
 
     // Services
     ->set('auth_service', new \Services\AuthService())
     ->set('user_service', new \Services\UserService\UserService())
     ->set('image_service', new \Services\ImageService())
     ->set('is_user_online_service', new \Services\IsUserOnlineService())
+    ->set('google_geo_service', new \Services\GoogleGeoService\GoogleGeoService())
 ;
 
 try {

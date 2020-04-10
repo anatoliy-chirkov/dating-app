@@ -16,7 +16,7 @@
         <div class="form-group">
             <label>
                 Ваше имя <br>
-                <input type="text" name="name">
+                <input type="text" name="name" style="width: 200px">
             </label>
         </div>
         <div class="form-group">
@@ -28,7 +28,8 @@
         <div class="form-group">
             <label>
                 Город<br>
-                <input type="text" name="city">
+                <input autocomplete="off" id="google-location-search" type="text" placeholder="Выберите город из списка" style="width: 200px">
+                <input type="text" name="city" id="city-hidden-input" hidden>
             </label>
         </div>
 
@@ -77,3 +78,37 @@
         </div>
     </form>
 </div>
+<script>
+    let geoAutocomplete;
+    let cityInput = $('#city-hidden-input');
+    let cityValue = '';
+
+    function initGeoSearch() {
+        const input = document.getElementById('google-location-search');
+        geoAutocomplete = new google.maps.places.Autocomplete(input, {
+            'fields': ['address_components', 'geometry', 'place_id'],
+            'types':  ['(cities)'],
+        });
+        geoAutocomplete.addListener('place_changed', parseGeoData);
+        input.onchange = () => {
+            input.value = '';
+            cityValue = '';
+            cityInput.val(cityValue);
+        }
+    }
+
+    function parseGeoData() {
+        const place = geoAutocomplete.getPlace();
+        place.address_components.forEach((item) => {
+            const type = item.types.shift();
+            if (['locality', 'administrative_area_level_1', 'country'].includes(type)) {
+                cityValue += type + '=' + item.long_name + ';';
+            }
+        });
+        cityValue += 'placeId=' + place.place_id + ';';
+        cityValue += 'lat=' + place.geometry.location.lat() + ';';
+        cityValue += 'lng=' + place.geometry.location.lng() + ';';
+        cityInput.val(cityValue);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI8azLIXHFPb4dnd1unwytgeY21_Q0bBQ&libraries=places&language=ru&callback=initGeoSearch" async defer></script>

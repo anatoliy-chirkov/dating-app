@@ -85,9 +85,9 @@ SQL;
 
     public function isExist(string $email)
     {
-        $sql = "SELECT id FROM user WHERE email = ? LIMIT 1";
-        $rows = $this->dbContext->query($sql, [$email]);
-        return count($rows) === 1;
+        $sql = "SELECT count(id) FROM user WHERE email = ?";
+        $count = $this->dbContext->query($sql, [$email])[0][0];
+        return $count > 0;
     }
 
     public function getIdByEmail(string $email): int
