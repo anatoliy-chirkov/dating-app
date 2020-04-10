@@ -59,36 +59,6 @@
         <?php
             endforeach;
         ?>
-<!--        <a href="/user/1" class="profile">-->
-<!--            <div class="image" style="background-image: url('/img/users/milana21.jpeg')"></div>-->
-<!--            <div class="about"><span class="name">Милана</span>, 21</div>-->
-<!--            <div class="city">Москва</div>-->
-<!--        </a>-->
-<!--        <a href="/user/1" class="profile">-->
-<!--            <div class="image" style="background-image: url('/img/users/adelia19.jpeg')"></div>-->
-<!--            <div class="about"><span class="name">Adelia</span>, 19</div>-->
-<!--            <div class="city">Москва</div>-->
-<!--        </a>-->
-<!--        <a href="/user/1" class="profile">-->
-<!--            <div class="image" style="background-image: url('/img/users/kamila.jpeg')"></div>-->
-<!--            <div class="about"><span class="name">Kamila</span>, 21</div>-->
-<!--            <div class="city">Москва</div>-->
-<!--        </a>-->
-<!--        <a href="/user/1" class="profile">-->
-<!--            <div class="image" style="background-image: url('/img/users/anastasia21.jpeg')"></div>-->
-<!--            <div class="about"><span class="name">Anastasia</span>, 21</div>-->
-<!--            <div class="city">Москва</div>-->
-<!--        </a>-->
-<!--        <a href="/user/1" class="profile">-->
-<!--            <div class="image" style="background-image: url('/img/users/milayamiss22.jpeg')"></div>-->
-<!--            <div class="about"><span class="name">Milayamiss</span>, 22</div>-->
-<!--            <div class="city">Москва</div>-->
-<!--        </a>-->
-<!--        <a href="/user/1" class="profile">-->
-<!--            <div class="image" style="background-image: url('/img/users/milana21.jpeg')"></div>-->
-<!--            <div class="about"><span class="name">Милана</span>, 21</div>-->
-<!--            <div class="city">Москва</div>-->
-<!--        </a>-->
     </div>
     <div class="pagination">
         <? for($i = 1; $i <= $pages; $i++): ?>

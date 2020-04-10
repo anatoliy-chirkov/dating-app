@@ -8,7 +8,7 @@ class User
     public $name;
     public $email;
     public $passwordHash;
-    public $city;
+    public $googleGeoId;
     public $age;
     public $weight;
     public $height;

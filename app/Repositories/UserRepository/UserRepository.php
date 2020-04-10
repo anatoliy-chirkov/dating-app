@@ -20,30 +20,30 @@ class UserRepository
     public function getUserByToken(string $token)
     {
         $sql = <<<SQL
-SELECT user.*, 
+SELECT user.*, g.fullName as city, 
 CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath
 FROM user 
 LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
 LEFT JOIN token ON token.userId = user.id 
+LEFT JOIN googleGeo g ON g.id = user.googleGeoId 
 WHERE token.token = ? 
 LIMIT 1 
 SQL;
-
         $rows = $this->dbContext->query($sql, [$token]);
 
         return !empty($rows) ? $rows[0] : null;
     }
 
-    public function update(int $userId, string $name, int $age, string $city, ?int $height, ?int $weight, ?string $about)
+    public function update(int $userId, string $name, int $age, int $googleGeoId, ?int $height, ?int $weight, ?string $about)
     {
-        $sql = 'UPDATE user SET name = ?, age = ?, city = ?, height = ?, weight = ?, about = ? WHERE id = ?';
-        $this->dbContext->query($sql, [$name, $age, $city, $height, $weight, $about, $userId]);
+        $sql = 'UPDATE user SET name = ?, age = ?, googleGeoId = ?, height = ?, weight = ?, about = ? WHERE id = ?';
+        $this->dbContext->query($sql, [$name, $age, $googleGeoId, $height, $weight, $about, $userId]);
     }
 
     public function createUser(User $user)
     {
         $sql = <<<SQL
-INSERT INTO user (sex, age, name, email, passwordHash, city, height, weight, createdAt, lastConnected)
+INSERT INTO user (sex, age, name, email, passwordHash, googleGeoId, height, weight, createdAt, lastConnected)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
 SQL;
         $this->dbContext->query($sql, [
@@ -52,7 +52,7 @@ SQL;
             $user->name,
             $user->email,
             $user->passwordHash,
-            $user->city,
+            $user->googleGeoId,
             $user->height,
             $user->weight,
         ]);
@@ -99,86 +99,63 @@ SQL;
 
     public function getByEmail(string $email)
     {
-        $sql = "SELECT user.*, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.email = ? LIMIT 1";
+        $sql = <<<SQL
+SELECT user.*, g.fullName as city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
+FROM user 
+LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
+LEFT JOIN googleGeo g ON g.id = user.googleGeoId 
+WHERE user.email = ? LIMIT 1
+SQL;
         $rows = $this->dbContext->query($sql, [$email]);
         return empty($rows) ? null : $rows[0];
     }
 
     public function getById(int $userId)
     {
-        $sql = "SELECT user.*, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath FROM user LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 WHERE user.id = ? LIMIT 1";
+        $sql = <<<SQL
+SELECT user.*, g.fullName as city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
+FROM user 
+LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
+LEFT JOIN googleGeo g ON g.id = user.googleGeoId 
+WHERE user.id = ? LIMIT 1
+SQL;
         $rows = $this->dbContext->query($sql, [$userId]);
         return empty($rows) ? [] : $rows[0];
     }
 
-    public function search(array $sex = null, int $ageFrom = null, int $ageTo = null, string $city = null, int $page = 1)
+    public function search(array $sex = null, int $ageFrom = null, int $ageTo = null, int $googleGeoId = null, int $page = 1)
     {
         $sql = <<<SQL
-SELECT user.*, 
-CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath
+SELECT user.*, g.fullName AS city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
 FROM user 
-LEFT JOIN image ON image.userId = user.id AND image.isMain = 1
+LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
+LEFT JOIN googleGeo AS g ON g.id = user.googleGeoId 
 SQL;
-        /*
-         * WHERE STATEMENT BEGIN
-         */
-            if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $city) {
-                $sql .= ' ' . 'WHERE';
-            }
-            if (array_search('man', $sex) !== false || array_search('woman', $sex) !== false) {
-                if (array_search('man', $sex) !== false && array_search('woman', $sex) !== false) {
-                    $sql .= ' ' . "sex IN ('man', 'woman')";
-                } else if (array_search('man', $sex) !== false) {
-                    $sql .= ' ' . "sex = 'man'";
-                } else if (array_search('woman', $sex) !== false) {
-                    $sql .= ' ' . "sex = 'woman'";
-                }
-            }
-            if ($ageFrom !== null && $ageTo !== null) {
-                if (preg_match('/WHERE \w+/', $sql) === 1) {
-                    $sql .= ' ' . 'AND';
-                }
-
-                $sql .= ' ' . "age BETWEEN {$ageFrom} AND {$ageTo}";
-            } else if ($ageFrom !== null) {
-                if (preg_match('/WHERE \w+/', $sql) === 1) {
-                    $sql .= ' ' . 'AND';
-                }
-
-                $sql .= ' ' . "age >= {$ageFrom}";
-            } else if ($ageTo !== null) {
-                if (preg_match('/WHERE \w+/', $sql) === 1) {
-                    $sql .= ' ' . 'AND';
-                }
-
-                $sql .= ' ' . "age <= {$ageTo}";
-            }
-            if ($city !== null) {
-                if (preg_match('/WHERE \w+/', $sql) === 1) {
-                    $sql .= ' ' . 'AND';
-                }
-
-                $sql .= ' ' . "city = '{$city}'";
-            }
-        /*
-         * WHERE STATEMENT END
-         */
-
+        $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
         $sql .= ' ' . (new Page($page))->getSql();
 
         return $this->dbContext->query($sql);
     }
 
-    public function count(array $sex = null, int $ageFrom = null, int $ageTo = null, string $city = null): int
+    public function count(array $sex = null, int $ageFrom = null, int $ageTo = null, int $googleGeoId = null): int
     {
         $sql = <<<SQL
 SELECT count(id) 
 FROM user 
 SQL;
-        /*
-         * WHERE STATEMENT BEGIN
-         */
-        if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $city) {
+
+        if ($googleGeoId !== null) {
+            $sql .= ' ' . 'INNER JOIN googleGeo g ON g.id = user.googleGeoId';
+        }
+
+        $sql .= $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
+
+        return $this->dbContext->query($sql)[0][0];
+    }
+
+    private function addSQLWhereStatementToSearch(string $sql, array $sex = null, int $ageFrom = null, int $ageTo = null, int $googleGeoId = null)
+    {
+        if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $googleGeoId) {
             $sql .= ' ' . 'WHERE';
         }
         if (array_search('man', $sex) !== false || array_search('woman', $sex) !== false) {
@@ -209,17 +186,14 @@ SQL;
 
             $sql .= ' ' . "age <= {$ageTo}";
         }
-        if ($city !== null) {
+        if ($googleGeoId !== null) {
             if (preg_match('/WHERE \w+/', $sql) === 1) {
                 $sql .= ' ' . 'AND';
             }
 
-            $sql .= ' ' . "city = '{$city}'";
+            $sql .= ' ' . "g.id = {$googleGeoId}";
         }
-        /*
-         * WHERE STATEMENT END
-         */
 
-        return $this->dbContext->query($sql)[0][0];
+        return $sql;
     }
 }

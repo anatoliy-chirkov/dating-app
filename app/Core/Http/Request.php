@@ -66,16 +66,9 @@ class Request
             return null;
         }
 
-        if (is_array($_FILES[$key][0])) {
-            return new File($_FILES[$key][0]);
-//            $files = [];
-//            foreach ($_FILES[$key] as $file) {
-//                $files[] = new File($file);
-//            }
-//            return $files;
-        }
+        $file = is_array($_FILES[$key][0]) ? new File($_FILES[$key][0]) : new File($_FILES[$key]);
 
-        return new File($_FILES[$key]);
+        return $file->isNotLoaded() ? null : $file;
     }
 
     public function decodedJson(string $key = null)

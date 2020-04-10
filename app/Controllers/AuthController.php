@@ -9,6 +9,7 @@ use Core\ServiceContainer;
 use Core\Validation\Validator;
 use Repositories\UserRepository\UserRepository;
 use Services\AuthService;
+use Services\GoogleGeoService\GoogleGeoService;
 use Services\NotificationService\NotificationService;
 use Services\UserService\UserService;
 
@@ -76,6 +77,8 @@ class AuthController extends BaseController implements IProtected
         if ($request->isPost()) {
             /** @var Validator $validator */
             $validator = ServiceContainer::getInstance()->get('validator');
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
 
             $isValid = $validator->isValid($request->post(), [
                 'sex' => 'required',
@@ -84,37 +87,39 @@ class AuthController extends BaseController implements IProtected
                 'email' => 'required,email',
                 'password' => 'required',
                 'repeatPassword' => 'required',
-                'placeId' => 'required',
+                'city' => 'required',
             ]);
 
             if (!$isValid) {
-                /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
                 $notificationService->set('error', $validator->getFirstError());
                 return $this->render();
             }
 
+            $mainPhoto = $request->file('main_photo');
+
             // TODO: move this logic to validator
-            if ($file = $request->file('main_photo')) {
-                if (!in_array($file->getExtension(), ['jpg', 'jpeg'])) {
-                    /** @var NotificationService $notificationService */
-                    $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            if ($mainPhoto !== null) {
+                if (!in_array($mainPhoto->getExtension(), ['jpg', 'jpeg'])) {
                     $notificationService->set('error', 'Файл должен иметь расширение jpg / jpeg');
                     return $this->render();
                 }
 
-                if ($file->getSizeInKb() > 5000) {
-                    /** @var NotificationService $notificationService */
-                    $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                if ($mainPhoto->getSizeInKb() > 5000) {
                     $notificationService->set('error', 'Максимальный размер файла 5 мегабайт, пожалуйста сожмите фото или загрузите другое');
                     return $this->render();
                 }
             }
 
             if ($request->post('password') !== $request->post('repeatPassword')) {
-                /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
                 $notificationService->set('error', 'Пароли не совпадают');
+                return $this->render();
+            }
+
+            /** @var GoogleGeoService $googleGeoService */
+            $googleGeoService = ServiceContainer::getInstance()->get('google_geo_service');
+
+            if (!$googleGeoService->isValidCityString($request->post('city'))) {
+                $notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
                 return $this->render();
             }
 
@@ -122,10 +127,7 @@ class AuthController extends BaseController implements IProtected
             $userService = ServiceContainer::getInstance()->get('user_service');
 
             try {
-                $user = $userService->createUser($request->post(), $request->file('main_photo'));
-
-                ServiceContainer::getInstance()->get('google_geo_service')
-                    ->saveByPlaceId($request->post('placeId'));
+                $user = $userService->createUser($request->post(), $mainPhoto);
             } catch (\Exception $e) {
                 /** @var NotificationService $notificationService */
                 $notificationService = ServiceContainer::getInstance()->get('notification_service');
@@ -140,7 +142,9 @@ class AuthController extends BaseController implements IProtected
             $request->redirect('/');
         }
 
-        return $this->render();
+        return $this->render([
+            'googleApiKey' => ServiceContainer::getInstance()->get('env')->get('GOOGLE_API_KEY')
+        ]);
     }
 
     public function logout(Request $request)

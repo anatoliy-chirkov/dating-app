@@ -13,17 +13,19 @@ class UserService
     private $userRepository;
     /** @var ImageService */
     private $imageService;
+    /** @var UserObjectFactory */
+    private $userObjectFactory;
 
     public function __construct()
     {
         $this->userRepository = ServiceContainer::getInstance()->get('user_repository');
         $this->imageService = ServiceContainer::getInstance()->get('image_service');
-
+        $this->userObjectFactory = new UserObjectFactory();
     }
 
-    public function createUser(array $data, File $mainUserPhoto = null)
+    public function createUser(array $requestData, File $mainUserPhoto = null)
     {
-        $user = (new DataMutator())->mutateToUser($data);
+        $user = $this->userObjectFactory->build($requestData);
 
         if ($this->userRepository->isExist($user->email)) {
             throw new \Exception('User already exists');

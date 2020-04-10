@@ -5,5 +5,6 @@ CREATE TABLE googleGeo (
     parentId int NULL,
     placeId varchar(255) NULL,
     lat double NULL,
-    lng double NULL
+    lng double NULL,
+    fullName varchar(255) NULL
 );

@@ -31,6 +31,7 @@ abstract class BaseController
         header('Content-Type: application/json');
 
         echo json_encode($response);
+        die;
     }
 
     protected function render($vars = []): string

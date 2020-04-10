@@ -2,7 +2,8 @@
 
 use Core\Http\IMethod;
 use Core\Router\Route;
-use Controllers\{MainController, AuthController, ChatController, UserController, ProfileController};
+use Controllers\{MainController, AuthController, ChatController,
+    UserController, ProfileController, GeoController};
 
 return [
     new Route(
@@ -70,6 +71,12 @@ return [
         ProfileController::class,
         'update',
         [IMethod::POST]
+    ),
+    new Route(
+        '/geo-search',
+        GeoController::class,
+        'search',
+        [IMethod::GET]
     ),
     new Route(
         '/register',

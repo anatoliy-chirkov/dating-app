@@ -65,7 +65,7 @@ class Validator
     public function validateEmail($value)
     {
         $matches = [];
-        preg_match('/[a-z-]+@[a-z-]+\.[a-z]+/', $value, $matches);
+        preg_match('/[a-z-0-9]+@[a-z-0-9]+\.[a-z]+/', $value, $matches);
 
         return count($matches) > 0;
     }

@@ -30,6 +30,11 @@ class File
         $this->ext = pathinfo($this->name, PATHINFO_EXTENSION);
     }
 
+    public function isNotLoaded()
+    {
+        return $this->error === 4;
+    }
+
     public function getSizeInKb()
     {
         return $this->size / 1000;

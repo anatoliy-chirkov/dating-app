@@ -28,7 +28,6 @@ services:
     volumes:
       - ./mysql/config/docker.cnf:/etc/mysql/conf.d/docker.cnf
       - ./mysql/data:/var/lib/mysql
-      - ./mysql/dump:/var/dump
     ports:
       - '3306:3306'
     environment:

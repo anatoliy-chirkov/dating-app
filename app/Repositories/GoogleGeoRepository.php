@@ -17,20 +17,21 @@ class GoogleGeoRepository
 
     public function search(string $cityName)
     {
-        $sql = 'SELECT id, name FROM googleGeo WHERE name like ?';
-        return $this->dbContext->query($sql, [$cityName]);
+        $sql = 'SELECT id, name, type FROM googleGeo WHERE name like ?';
+        return $this->dbContext->query($sql, ["%{$cityName}%"]);
     }
 
-    public function create(string $name, string $type, ?string $placeId = null, ?float $lat = null, ?float $lng = null)
-    {
-        $sql = 'INSERT INTO googleGeo (name, type, placeId, lat, lng) VALUES (?, ?, ?, ?, ?, ?)';
-        $this->dbContext->query($sql, [$name, $type, $placeId, $lat, $lng]);
-    }
-
-    public function setParentId(int $id, int $parentId)
-    {
-        $sql = 'UPDATE googleGeo SET parentId = ? WHERE id = ?';
-        $this->dbContext->query($sql, [$parentId, $id]);
+    public function create(
+        string $name,
+        string $type,
+        int $parentId = null,
+        string $placeId = null,
+        float $lat = null,
+        float $lng = null,
+        string $fullName = null
+    ) {
+        $sql = 'INSERT INTO googleGeo (name, type, parentId, placeId, lat, lng, fullName) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        $this->dbContext->query($sql, [$name, $type, $parentId, $placeId, $lat, $lng, $fullName]);
     }
 
     public function isExistByNameType(string $name, string $type)
@@ -55,7 +56,7 @@ class GoogleGeoRepository
 
     public function isExistByPlaceId(string $placeId)
     {
-        $sql = 'SELECT count(id) FROM googleGeo WHERE name = ? AND type = ?';
+        $sql = 'SELECT count(id) FROM googleGeo WHERE placeId = ?';
         return $this->dbContext->query($sql, [$placeId])[0][0] > 0;
     }
 }

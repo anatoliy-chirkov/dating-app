@@ -4,7 +4,7 @@
  */
 ?>
 <div class="chats" id="chat-list-page">
-    <div class="heading">Выберите диалог</div>
+    <div class="heading" style="border-bottom: 1px solid #efefef">Выберите диалог</div>
 
     <div class="chat-view">
         <div class="chat-list">
@@ -33,7 +33,15 @@
         </div>
         <div class="messages">
             <div class="messages-list">
-                <div>Выберите диалог или создайте новый. Начать новый диалог можно на странице интересующего пользователя</div>
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    justify-content: center;
+                    text-align: center;
+                ">
+                    <div>Выберите диалог или создайте новый. Начать новый диалог можно на странице интересующего пользователя</div>
+                </div>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@ CREATE TABLE user (
     name varchar(40) NOT NULL,
     email varchar(60) NOT NULL,
     passwordHash varchar(64) NOT NULL,
-    placeId varchar(40) NOT NULL,
+    googleGeoId int NOT NULL,
     age int NULL,
     weight int NULL,
     height int NULL,

@@ -4,94 +4,83 @@ namespace Services\GoogleGeoService;
 
 use Core\ServiceContainer;
 use Repositories\GoogleGeoRepository;
-use Services\GoogleGeoService\Exceptions\GoogleResponseError;
-use Services\GoogleGeoService\Exceptions\NoBindRegionOrCountryException;
-use Services\GoogleGeoService\Exceptions\NoGoogleApiKeyException;
 
 class GoogleGeoService
 {
-    public function save(string $placeId)
+    /** @var GoogleGeoRepository $googleGeoRepository */
+    private $googleGeoRepository;
+
+    public function __construct()
     {
-        $placeData = $this->getDataFromGoogle($placeId);
-
-        /** @var GoogleGeoRepository $googleGeoRepository */
-        $googleGeoRepository = ServiceContainer::getInstance()->get('google_geo_repository');
-
-        if (!$googleGeoRepository->isExistByPlaceId($placeId)) {
-            foreach ($placeData->address_components as $component) {
-                switch (array_shift($component->types)) {
-                    case IGoogleGeoType::COUNTRY:
-                        if (!$googleGeoRepository->isExistByNameType($component->long_name, IGoogleGeoType::COUNTRY)) {
-                            $googleGeoRepository->create($component->long_name, IGoogleGeoType::COUNTRY);
-                        }
-                        $countryId = $googleGeoRepository->getIdByNameType(
-                            $component->long_name,
-                            IGoogleGeoType::COUNTRY
-                        );
-                        break;
-                    case IGoogleGeoType::REGION:
-                        if (!$googleGeoRepository->isExistByNameType($component->long_name, IGoogleGeoType::REGION)) {
-                            $googleGeoRepository->create($component->long_name, IGoogleGeoType::REGION);
-                        }
-                        $regionId = $googleGeoRepository->getIdByNameType(
-                            $component->long_name,
-                            IGoogleGeoType::COUNTRY
-                        );
-                        break;
-                    case IGoogleGeoType::CITY:
-                        $googleGeoRepository->create(
-                            $component->long_name,
-                            IGoogleGeoType::CITY,
-                            $placeId,
-                            $placeData->location->lat,
-                            $placeData->location->lng
-                        );
-                        break;
-                }
-            }
-
-            $cityId = $googleGeoRepository->getIdByPlaceId($placeId);
-
-            if (!empty($countryId) && !empty($regionId)) {
-                $googleGeoRepository->setParentId($cityId, $regionId);
-                $googleGeoRepository->setParentId($regionId, $countryId);
-            } else {
-                throw new NoBindRegionOrCountryException();
-            }
-        }
+        $this->googleGeoRepository = ServiceContainer::getInstance()->get('google_geo_repository');
     }
 
-    private const
-        GOOGLE_PLACE_API_SETTINGS = [
-            'language' => 'ru',
-            'fields'   => 'address_component,geometry',
-        ]
-    ;
-
-    private function getDataFromGoogle(string $placeId)
+    public function isValidCityString(string $cityString)
     {
-        $googleApiKey = ServiceContainer::getInstance()->get('env')->get('GOOGLE_API_KEY');
+        $cityData = $this->fillArrayFromString($cityString);
 
-        if (empty($googleApiKey)) {
-            throw new NoGoogleApiKeyException();
+        return array_diff(
+                [
+                    IGoogleGeoType::COUNTRY,
+                    IGoogleGeoType::CITY,
+                    'lat',
+                    'lng',
+                    'placeId',
+                    'fullName',
+                ],
+                array_keys($cityData)
+            ) === [];
+    }
+
+    public function saveIfNotExistAndGetId(string $cityString)
+    {
+        $cityData = $this->fillArrayFromString($cityString);
+
+        if (!$this->googleGeoRepository->isExistByPlaceId($cityData['placeId'])) {
+            $countryId = $this->saveCountryIfNotExistAndGetId($cityData[IGoogleGeoType::COUNTRY]);
+            $cityParentId = $countryId;
+
+            if (isset($cityData[IGoogleGeoType::REGION])) {
+                $cityParentId = $this->saveRegionIfNotExistAndGetId($cityData[IGoogleGeoType::REGION], $countryId);
+            }
+
+            $this->googleGeoRepository->create(
+                $cityData[IGoogleGeoType::CITY],
+                IGoogleGeoType::CITY,
+                $cityParentId,
+                $cityData['placeId'],
+                $cityData['lat'],
+                $cityData['lng'],
+                $cityData['fullName']
+            );
         }
 
-        $url = 'https://maps.googleapis.com/maps/api/place/details/json';
-        $url .= '?' . 'key' .      '=' . $googleApiKey;
-        $url .= '&' . 'place_id' . '=' . $placeId;
-        $url .= '&' . 'fields' .   '=' . self::GOOGLE_PLACE_API_SETTINGS['fields'];
-        $url .= '&' . 'language' . '=' . self::GOOGLE_PLACE_API_SETTINGS['language'];
+        return $this->googleGeoRepository->getIdByPlaceId($cityData['placeId']);
+    }
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        if ($response === false) {
-            throw new GoogleResponseError();
+    private function saveCountryIfNotExistAndGetId($countryName)
+    {
+        if (!$this->googleGeoRepository->isExistByNameType($countryName, IGoogleGeoType::COUNTRY)) {
+            $this->googleGeoRepository->create($countryName, IGoogleGeoType::COUNTRY);
         }
+        return $this->googleGeoRepository->getIdByNameType($countryName, IGoogleGeoType::COUNTRY);
+    }
 
-        return @json_decode($response);
+    private function saveRegionIfNotExistAndGetId($regionName, $countryId)
+    {
+        if (!$this->googleGeoRepository->isExistByNameType($regionName, IGoogleGeoType::REGION)) {
+            $this->googleGeoRepository->create($regionName, IGoogleGeoType::REGION, $countryId);
+        }
+        return $this->googleGeoRepository->getIdByNameType($regionName, IGoogleGeoType::REGION);
+    }
+
+    private function fillArrayFromString(string $cityString)
+    {
+        $cityData = [];
+        foreach (explode(';', $cityString) as $row) {
+            list($key, $value) = explode('=', $row);
+            $cityData[$key] = $value;
+        }
+        return $cityData;
     }
 }

@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string $googleApiKey
+ */
+?>
 <div class="register">
     <form method="POST" action="/register" enctype="multipart/form-data">
         <h1>Регистрация</h1>
@@ -86,7 +91,7 @@
     function initGeoSearch() {
         const input = document.getElementById('google-location-search');
         geoAutocomplete = new google.maps.places.Autocomplete(input, {
-            'fields': ['address_components', 'geometry', 'place_id'],
+            'fields': ['address_components', 'geometry', 'place_id', 'formatted_address'],
             'types':  ['(cities)'],
         });
         geoAutocomplete.addListener('place_changed', parseGeoData);
@@ -108,7 +113,8 @@
         cityValue += 'placeId=' + place.place_id + ';';
         cityValue += 'lat=' + place.geometry.location.lat() + ';';
         cityValue += 'lng=' + place.geometry.location.lng() + ';';
+        cityValue += 'fullName=' + place.formatted_address + ';';
         cityInput.val(cityValue);
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI8azLIXHFPb4dnd1unwytgeY21_Q0bBQ&libraries=places&language=ru&callback=initGeoSearch" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?=$googleApiKey?>&libraries=places&language=ru&callback=initGeoSearch" async defer></script>

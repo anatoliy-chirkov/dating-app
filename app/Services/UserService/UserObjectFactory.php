@@ -5,10 +5,11 @@ namespace Services\UserService;
 use Core\ServiceContainer;
 use Repositories\UserRepository\Model\User;
 use Services\AuthService;
+use Services\GoogleGeoService\GoogleGeoService;
 
-class DataMutator
+class UserObjectFactory
 {
-    public function mutateToUser(array $data): User
+    public function build(array $data): User
     {
         $user = new User;
         array_walk($data, static function ($value, $key) use (&$user) {
@@ -18,6 +19,10 @@ class DataMutator
                     $authService = ServiceContainer::getInstance()->get('auth_service');
                     $user->passwordHash = $authService->hashPassword($value);
                 }
+            } else if ($key === 'city') {
+                /** @var GoogleGeoService $googleGeoService */
+                $googleGeoService = ServiceContainer::getInstance()->get('google_geo_service');
+                $user->googleGeoId = $googleGeoService->saveIfNotExistAndGetId($value);
             } else {
                 $user->$key = empty($value) ? null : $value;
             }
