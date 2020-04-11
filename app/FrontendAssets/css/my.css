@@ -98,9 +98,8 @@ form .form-title {
 
 .button-group a.button-white, form button.button-white {
     background: white;
-    border: #efefef;
+    border: 1px solid #ddd;
     color: #454545;
-    font-weight: 400;
     padding: 10px;
     vertical-align: middle;
     text-align: center;
@@ -632,18 +631,6 @@ CHAT PAGE END
     margin-left: -5px;
 }
 
-.choose-main-photo-form .image-list {
-    display: flex;
-    flex-wrap: wrap;
-}
-.choose-main-photo-form .image {
-    background-size: cover;
-    height: 120px;
-    width: 120px;
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-
 .profile-page .images {
     display: flex;
     flex-wrap: wrap;
@@ -660,6 +647,21 @@ CHAT PAGE END
     margin-bottom: 12px;
     margin-right: 12px;
     cursor: pointer;
+}
+@media (max-width: 680px) {
+    .profile-page .images .image {
+        height: 150px;
+        width: 150px;
+    }
+    .profile-page .images {
+        justify-content: center;
+    }
+}
+@media (max-width: 368px) {
+    .profile-page .images .image {
+        height: 120px;
+        width: 120px;
+    }
 }
 
 #image-view {
@@ -764,4 +766,101 @@ CHAT PAGE END
 }
 .pswp--zoom-allowed .pswp__img {
     cursor: default !important
+}
+
+/* Profile settings */
+.profile-settings {
+    margin: auto;
+    max-width: 850px;
+    background-color: white;
+    height: calc(100vh - 124px);
+    border-radius: 3px;
+    border: 1px solid #efefef;
+    font-size: 13px;
+}
+.profile-settings h1 {
+    border-bottom: 1px solid #efefef;
+    margin: 0;
+    font-size: 20px;
+    padding: 12px 16px;
+}
+.profile-settings .settings-view {
+    display: flex;
+}
+.profile-settings .settings-view .setting-list {
+    flex: 4;
+    overflow-y: scroll;
+    height: calc(100vh - 175px);
+}
+.profile-settings .settings-view .setting-list .setting {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px 18px;
+    position: relative;
+}
+.profile-settings .settings-view .setting-list .setting:hover {
+    background-color: #f6f6f6;
+}
+.profile-settings .settings-view .setting-list .setting.active {
+    background-color: #eee;
+}
+.profile-settings .settings-view .setting-list .setting .title-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.profile-settings .settings-view .setting-list .setting .title-wrap .title {
+    color: #1f1f1f;
+}
+.profile-settings .settings-view .setting-list .setting.active .title-wrap .title {
+    color: #454545;
+}
+.profile-settings .settings-view .window {
+    flex: 9;
+    border-left: 1px solid #efefef;
+    padding-left: 24px;
+    padding-right: 12px;
+    overflow-y: scroll;
+    height: calc(100vh - 175px);
+}
+.profile-settings .choose-main-photo-form .image-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+.profile-settings .choose-main-photo-form .image-list label {
+    position: relative;
+}
+.profile-settings .choose-main-photo-form .image-list label input {
+    position: absolute;
+    top: -4px;
+    left: 4px;
+}
+.profile-settings .choose-main-photo-form .image {
+    background-size: cover;
+    height: 120px;
+    width: 120px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 3px;
+}
+.profile-settings .mobile-back {
+    display: none;
+}
+@media (max-width: 680px) {
+    .profile-settings .mobile-hide {
+        display: none;
+        transition: 0.6s;
+    }
+    .profile-settings .mobile-back {
+        display: inline-block;
+        vertical-align: sub;
+        margin-right: 7px;
+        width: 22px;
+        height: 22px;
+        border-radius: 20px;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+        background-image: url('/svg/menu.svg');
+        background-position: center center;
+    }
 }

@@ -1,0 +1,8 @@
+<svg fill="#454545" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<g>
+	<circle cx="256" cy="256" r="64"/>
+	<circle cx="256" cy="448" r="64"/>
+	<circle cx="256" cy="64" r="64"/>
+</g>
+</svg>

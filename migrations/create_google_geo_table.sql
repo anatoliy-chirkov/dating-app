@@ -1,6 +1,6 @@
 CREATE TABLE googleGeo (
     id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    type varchar(20) NOT NULL,
+    type varchar(30) NOT NULL,
     name varchar(255) NOT NULL,
     fullName varchar(255) NOT NULL,
     parentId int NULL,

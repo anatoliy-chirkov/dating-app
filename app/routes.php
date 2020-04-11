@@ -43,15 +43,21 @@ return [
         [IMethod::GET]
     ),
     new Route(
-        '/profile/add-photo',
+        '/profile/edit',
         ProfileController::class,
-        'addPhoto',
-        [IMethod::POST]
+        'edit',
+        [IMethod::GET, IMethod::POST]
     ),
     new Route(
         '/profile/change-password',
         ProfileController::class,
         'changePassword',
+        [IMethod::GET, IMethod::POST]
+    ),
+    new Route(
+        '/profile/add-photo',
+        ProfileController::class,
+        'addPhoto',
         [IMethod::POST]
     ),
     new Route(
@@ -64,12 +70,6 @@ return [
         '/profile/delete-photo',
         ProfileController::class,
         'deletePhoto',
-        [IMethod::POST]
-    ),
-    new Route(
-        '/profile/update',
-        ProfileController::class,
-        'update',
         [IMethod::POST]
     ),
     new Route(

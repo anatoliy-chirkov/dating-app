@@ -11,6 +11,7 @@ use Repositories\ImageRepository;
 use Repositories\TokenRepository;
 use Repositories\UserRepository\UserRepository;
 use Services\AuthService;
+use Services\GoogleGeoService\GoogleGeoService;
 use Services\ImageService;
 use Services\NotificationService\NotificationService;
 
@@ -18,60 +19,92 @@ class ProfileController extends BaseController implements IProtected
 {
     public function getProtectedMethods()
     {
-        return ['settings', 'update', 'addPhoto', 'chooseMainPhoto', 'deletePhoto', 'changePassword'];
+        return ['settings', 'edit', 'addPhoto', 'chooseMainPhoto', 'deletePhoto', 'changePassword'];
     }
 
     public function settings()
     {
-        /** @var AuthService $authService */
-        $authService = ServiceContainer::getInstance()->get('auth_service');
-        $me = $authService->getUser();
-
-        /** @var ImageRepository $imageRepository */
-        $imageRepository = ServiceContainer::getInstance()->get('image_repository');
-        $images = $imageRepository->getUserImages($me['id']);
-
-        return $this->render(['images' => $images, 'me' => $me]);
+        $me = $this->getMe();
+        $images = $this->getImages($me['id']);
+        return $this->render(['images' => $images, 'me' => $me, 'LAYOUT_NOTIFICATION_OFF' => true]);
     }
 
-    public function update(Request $request)
+    public function edit(Request $request)
     {
-        /** @var Validator $validator */
-        $validator = ServiceContainer::getInstance()->get('validator');
+        $GOOGLE_API_KEY = ServiceContainer::getInstance()->get('env')->get('GOOGLE_API_KEY');
+        $NOT_CHANGED_CITY_STRING = 'notChanged';
 
-        if (
-            !$validator->isValid($request->post(), ['name' => 'required', 'age' => 'required', 'city' => 'required'])
-            || !$validator->validateXss($request->post('weight'))
-            || !$validator->validateXss($request->post('height'))
-            || !$validator->validateXss($request->post('about'))
-        ) {
+        if ($request->isPost()) {
+            /** @var Validator $validator */
+            $validator = ServiceContainer::getInstance()->get('validator');
             /** @var NotificationService $notificationService */
             $notificationService = ServiceContainer::getInstance()->get('notification_service');
-            $notificationService->set('error', 'Данные содержат недопустимые символы');
-            $request->redirect('/profile');
+
+            $CITY_HAS_BEEN_CHANGED = $request->post('city') !== $NOT_CHANGED_CITY_STRING;
+
+            if (
+                !$validator->isValid($request->post(), ['name' => 'required', 'age' => 'required', 'city' => 'required'])
+                || !$validator->validateXss($request->post('weight'))
+                || !$validator->validateXss($request->post('height'))
+                || !$validator->validateXss($request->post('about'))
+            ) {
+                $notificationService->set('error', 'Обязательные поля не заполнены или данные содержат недопустимые символы');
+                return $this->render([
+                    'googleApiKey' => $GOOGLE_API_KEY,
+                    'cityString' => $NOT_CHANGED_CITY_STRING,
+                    'LAYOUT_NOTIFICATION_OFF' => true,
+                ]);
+            }
+
+            /** @var GoogleGeoService $googleGeoService */
+            $googleGeoService = ServiceContainer::getInstance()->get('google_geo_service');
+
+            if (
+                $CITY_HAS_BEEN_CHANGED
+                && !$googleGeoService->isValidCityString($request->post('city'))
+            ) {
+                $notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
+                return $this->render([
+                    'googleApiKey' => $GOOGLE_API_KEY,
+                    'cityString' => $NOT_CHANGED_CITY_STRING,
+                    'LAYOUT_NOTIFICATION_OFF' => true,
+                ]);
+            }
+
+            /** @var AuthService $authService */
+            $authService = ServiceContainer::getInstance()->get('auth_service');
+            $me = $authService->getUser();
+
+            if ($CITY_HAS_BEEN_CHANGED) {
+                /** @var GoogleGeoService $googleGeoService */
+                $googleGeoService = ServiceContainer::getInstance()->get('google_geo_service');
+                $googleGeoId = $googleGeoService->saveIfNotExistAndGetId($request->post('city'));
+            } else {
+                $googleGeoId = $me['googleGeoId'];
+            }
+
+            /** @var UserRepository $userRepository */
+            $userRepository = ServiceContainer::getInstance()->get('user_repository');
+            $userRepository->update(
+                $me['id'],
+                $request->post('name'),
+                $request->post('age'),
+                $googleGeoId,
+                $request->post('height', null),
+                $request->post('weight', null),
+                $request->post('about', null)
+            );
+
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('success', 'Данные обновлены');
         }
 
-        /** @var AuthService $authService */
-        $authService = ServiceContainer::getInstance()->get('auth_service');
-        $me = $authService->getUser();
-
-        /** @var UserRepository $userRepository */
-        $userRepository = ServiceContainer::getInstance()->get('user_repository');
-        $userRepository->update(
-            $me['id'],
-            $request->post('name'),
-            $request->post('age'),
-            $request->post('city'),
-            $request->post('height', null),
-            $request->post('weight', null),
-            $request->post('about', null)
-        );
-
-        /** @var NotificationService $notificationService */
-        $notificationService = ServiceContainer::getInstance()->get('notification_service');
-        $notificationService->set('success', 'Данные обновлены');
-
-        $request->redirect('/profile');
+        return $this->render([
+            'googleApiKey' => $GOOGLE_API_KEY,
+            'cityString' => $NOT_CHANGED_CITY_STRING,
+            'LAYOUT_NOTIFICATION_OFF' => true,
+        ]);
     }
 
     public function addPhoto(Request $request)
@@ -110,7 +143,7 @@ class ProfileController extends BaseController implements IProtected
             $notificationService->set('error', $e->getMessage());
         }
 
-        $request->redirect('/profile');
+        $request->redirect('/profile#content');
     }
 
     public function chooseMainPhoto(Request $request)
@@ -126,7 +159,7 @@ class ProfileController extends BaseController implements IProtected
             /** @var NotificationService $notificationService */
             $notificationService = ServiceContainer::getInstance()->get('notification_service');
             $notificationService->set('error', $validator->getFirstError());
-            $request->redirect('/profile');
+            $request->redirect('/profile#content');
         }
 
         /** @var ImageRepository $imageRepository */
@@ -137,7 +170,7 @@ class ProfileController extends BaseController implements IProtected
         $notificationService = ServiceContainer::getInstance()->get('notification_service');
         $notificationService->set('success', 'Главное фото профиля обновлено');
 
-        $request->redirect('/profile');
+        $request->redirect('/profile#content');
     }
 
     public function deletePhoto(Request $request)
@@ -165,64 +198,80 @@ class ProfileController extends BaseController implements IProtected
             $notificationService->set('error', $e->getMessage());
         }
 
-        $request->redirect('/profile');
+        $request->redirect('/profile#content');
     }
 
     public function changePassword(Request $request)
     {
-        /** @var AuthService $authService */
-        $authService = ServiceContainer::getInstance()->get('auth_service');
-        $me = $authService->getUser();
+        if ($request->isPost()) {
+            /** @var AuthService $authService */
+            $authService = ServiceContainer::getInstance()->get('auth_service');
+            $me = $authService->getUser();
 
-        /** @var Validator $validator */
-        $validator = ServiceContainer::getInstance()->get('validator');
+            /** @var Validator $validator */
+            $validator = ServiceContainer::getInstance()->get('validator');
 
-        $isValidInGeneral = $validator->isValid($request->post(), [
-            'oldPassword' => 'required',
-            'newPassword' => 'required',
-            'newPasswordRepeat' => 'required',
-        ]);
+            $isValidInGeneral = $validator->isValid($request->post(), [
+                'oldPassword' => 'required',
+                'newPassword' => 'required',
+                'newPasswordRepeat' => 'required',
+            ]);
 
-        try {
-            // VALIDATION
-            if (!$isValidInGeneral) {
-                throw new \Exception($validator->getFirstError());
+            try {
+                // VALIDATION
+                if (!$isValidInGeneral) {
+                    throw new \Exception($validator->getFirstError());
+                }
+
+                $isValidPassword = $authService->checkPasswordsByUserId($me['id'], $request->post('oldPassword'));
+
+                if (!$isValidPassword) {
+                    throw new \Exception('Старый пароль введен неверно');
+                }
+
+                if ($request->post('newPassword') !== $request->post('newPasswordRepeat')) {
+                    throw new \Exception('Новые пароли не совпадают');
+                }
+
+                // LOGIC
+                /** @var UserRepository $userRepository */
+                $userRepository = ServiceContainer::getInstance()->get('user_repository');
+                $userRepository->setNewPasswordHash(
+                    $me['id'], $authService->hashPassword($request->post('newPassword'))
+                );
+
+                if ($request->post('logoutEverywhere') === 'on') {
+                    /** @var TokenRepository $tokenRepository */
+                    $tokenRepository = ServiceContainer::getInstance()->get('token_repository');
+                    $tokenRepository->removeAllUserTokens($me['id']);
+
+                    $authService->setUpToken($me['id']);
+                }
+
+                /** @var NotificationService $notificationService */
+                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService->set('success', 'Пароль изменен');
+            } catch (\Exception $e) {
+                /** @var NotificationService $notificationService */
+                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService->set('error', $e->getMessage());
             }
-
-            $isValidPassword = $authService->checkPasswordsByUserId($me['id'], $request->post('oldPassword'));
-
-            if (!$isValidPassword) {
-                throw new \Exception('Старый пароль введен неверно');
-            }
-
-            if ($request->post('newPassword') !== $request->post('newPasswordRepeat')) {
-                throw new \Exception('Новые пароли не совпадают');
-            }
-
-            // LOGIC
-            /** @var UserRepository $userRepository */
-            $userRepository = ServiceContainer::getInstance()->get('user_repository');
-            $userRepository->setNewPasswordHash(
-                $me['id'], $authService->hashPassword($request->post('newPassword'))
-            );
-
-            if ($request->post('logoutEverywhere') === 'on') {
-                /** @var TokenRepository $tokenRepository */
-                $tokenRepository = ServiceContainer::getInstance()->get('token_repository');
-                $tokenRepository->removeAllUserTokens($me['id']);
-
-                $authService->setUpToken($me['id']);
-            }
-
-            /** @var NotificationService $notificationService */
-            $notificationService = ServiceContainer::getInstance()->get('notification_service');
-            $notificationService->set('success', 'Пароль изменен');
-        } catch (\Exception $e) {
-            /** @var NotificationService $notificationService */
-            $notificationService = ServiceContainer::getInstance()->get('notification_service');
-            $notificationService->set('error', $e->getMessage());
         }
 
-        $request->redirect('/profile');
+        return $this->render(['LAYOUT_NOTIFICATION_OFF' => true]);
+    }
+
+    private function getImages(int $userId)
+    {
+        /** @var ImageRepository $imageRepository */
+        $imageRepository = ServiceContainer::getInstance()->get('image_repository');
+        return $imageRepository->getUserImages($userId);
+    }
+
+    private function getMe()
+    {
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        return $authService->getUser();
     }
 }

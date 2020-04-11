@@ -71,7 +71,7 @@
 </nav>
 <main id="main-content">
     <div class="container">
-        <? if ($notification->isset()): ?>
+        <? if (!isset($LAYOUT_NOTIFICATION_OFF) && $notification->isset()): ?>
             <div class="notification <?=$notification->type?>"><?= $notification->message ?></div>
         <? endif; ?>
 
