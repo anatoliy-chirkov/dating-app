@@ -43,7 +43,7 @@ SQL;
         $params = ["%{$name}%"];
 
         if ($type) {
-            $sql .= ' ' . 'AND type = ?';
+            $sql .= ' ' . 'AND g.type = ?';
             $params[] = $type;
         }
 
