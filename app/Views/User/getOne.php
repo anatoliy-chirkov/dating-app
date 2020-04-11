@@ -6,6 +6,10 @@
  * @var array $images
  */
 ?>
+
+<link rel="stylesheet" href="/node_modules/photoswipe/dist/photoswipe.css">
+<link rel="stylesheet" href="/node_modules/photoswipe/dist/default-skin/default-skin.css">
+
 <div class="profile-page">
     <div class="main-info">
         <div class="avatar-box">
@@ -39,9 +43,9 @@
         </div>
     </div>
     <div class="images">
-        <?php foreach ($images as $image): ?>
-            <div class="image" style="background-image: url('<?=$image['clientPath']?>')"></div>
-        <?php endforeach; ?>
+        <?php $i = 0; foreach ($images as $image): ?>
+            <div class="image" data-id="<?=$i?>" data-height="<?=$image['height']?>" data-width="<?=$image['width']?>" style="background-image: url('<?=$image['clientPath']?>')"></div>
+        <?php $i++; endforeach; ?>
     </div>
     <div class="about">
         <?php if (!empty($user['about'])): ?>
@@ -51,23 +55,79 @@
         <?php endif; ?>
     </div>
     <div id="image-view" style="display: none">
-        <img class="content" src="" alt="Image full view" height="80%"></div>
+        <img class="content" src="" alt="Image full view" height="80%">
     </div>
+
+    <!-- PhotoSwipe Begin -->
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+        <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+        <div class="pswp__bg"></div>
+        <!-- Slides wrapper with overflow:hidden. -->
+        <div class="pswp__scroll-wrap">
+            <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <!--  Controls are self-explanatory. Order can be changed. -->
+                    <div class="pswp__counter"></div>
+                    <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<!--                    <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>-->
+
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+                </button>
+                <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+                </button>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PhotoSwipe End -->
+
 </div>
+<script src="/node_modules/photoswipe/dist/photoswipe.min.js"></script>
+<script src="/node_modules/photoswipe/dist/photoswipe-ui-default.min.js"></script>
 <script>
-    $('.profile-page').find('.images').find('.image').on('click', function () {
+    const items = [];
+
+    $('.images').find('.image').map(function() {
         const backgroundImageVal = $(this).css('background-image');
         const backgroundImageUrl = backgroundImageVal.replace('url(','').replace(')','').replace(/\"/gi, "");
-        const imageView = $('#image-view');
-        imageView.fadeIn();
-        imageView.find('.content').attr('src', backgroundImageUrl);
+        items.push({src: backgroundImageUrl, h: $(this).attr('data-height'), w: $(this).attr('data-width')});
+    });
 
-        $(document).on('click', function(eDocument) {
-            const target = $(eDocument.target);
-
-            if (target.attr('id') === 'image-view' && target.closest('#image-view .content').length !== 1) {
-                imageView.fadeOut();
-            }
-        })
+    $('.profile-page').find('.images').find('.image').on('click', function () {
+        const pswpElement = document.querySelector('.pswp');
+        const options = {
+            index: parseInt($(this).attr('data-id')),
+            bgOpacity: 0.7,
+            maxSpreadZoom: 1,
+            getDoubleTapZoom: function (isMouseClick, item) {
+                return item.initialZoomLevel;
+            },
+            // UI options
+            zoomEl: false,
+            //clickToCloseNonZoomable: false,
+        };
+        const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+        gallery.init();
     });
 </script>

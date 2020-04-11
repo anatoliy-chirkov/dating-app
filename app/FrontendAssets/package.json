@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "jquery": "^3.5.0",
+    "photoswipe": "dimsemenov/photoswipe",
     "select2": "^4.0.13"
   }
 }

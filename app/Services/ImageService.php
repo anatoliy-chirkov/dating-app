@@ -21,7 +21,8 @@ class ImageService
         [$userImgServerDir, $userImgClientDir] = $this->getUserImgDirs($userId);
 
         $file->saveTo($userImgServerDir, $userImgClientDir);
-        $this->imageRepository->create($userId, $file->getServerPath(), $file->getClientPath());
+        list($width, $height) = getimagesize($file->getServerPath());
+        $this->imageRepository->create($userId, $file->getServerPath(), $file->getClientPath(), $width, $height);
         return $this->imageRepository->getByClientPath($file->getClientPath());
     }
 
@@ -30,7 +31,8 @@ class ImageService
         [$userImgServerDir, $userImgClientDir] = $this->getUserImgDirs($userId);
 
         $file->saveTo($userImgServerDir, $userImgClientDir);
-        $this->imageRepository->create($userId, $file->getServerPath(), $file->getClientPath(), true);
+        list($width, $height) = getimagesize($file->getServerPath());
+        $this->imageRepository->create($userId, $file->getServerPath(), $file->getClientPath(), $width, $height, true);
         return $this->imageRepository->getByClientPath($file->getClientPath());
     }
 

@@ -741,3 +741,27 @@ CHAT PAGE END
 .select2-container--open .select2-dropdown--below {
     border-radius: 0 0 3px 3px;
 }
+
+/* PHOTOSWIPE */
+
+.pswp__button--arrow--left:before, .pswp__button--arrow--right:before, .pswp__button--close {
+    background-position: center !important;
+    background-size: 24px 24px !important;
+    background-color: unset !important;
+}
+.pswp__button--arrow--left:before {
+    background-image: url('/svg/back.svg') !important;
+}
+.pswp__button--arrow--right:before {
+    background-image: url('/svg/next.svg') !important;
+}
+.pswp__button--close {
+    background-image: url('/svg/close.svg') !important;
+    background-size: 14px 14px !important;
+}
+.pswp__ui--fit .pswp__top-bar, .pswp__ui--fit .pswp__caption, .pswp__top-bar, .pswp__caption {
+    background-color: unset !important;
+}
+.pswp--zoom-allowed .pswp__img {
+    cursor: default !important
+}

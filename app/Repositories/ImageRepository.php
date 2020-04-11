@@ -15,10 +15,10 @@ class ImageRepository
         $this->dbContext = ServiceContainer::getInstance()->get('db_context');
     }
 
-    public function create(int $userId, string $serverPath, string $clientPath, bool $isMain = false)
+    public function create(int $userId, string $serverPath, string $clientPath, int $width, int $height, bool $isMain = false)
     {
-        $sql = "INSERT INTO image (userId, serverPath, clientPath, isMain, createdAt) VALUES (?, ?, ?, ?, NOW())";
-        $this->dbContext->query($sql, [$userId, $serverPath, $clientPath, (int) $isMain]);
+        $sql = "INSERT INTO image (userId, serverPath, clientPath, width, height, isMain, createdAt) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        $this->dbContext->query($sql, [$userId, $serverPath, $clientPath, $width, $height, (int) $isMain]);
     }
 
     public function getByIdAndUserId(int $id, int $userId)

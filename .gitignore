@@ -5,3 +5,4 @@
 *.DS_Store
 app/FrontendAssets/node_modules
 app/FrontendAssets/img/user*
+app/FrontendAssets/yarn-error.log
