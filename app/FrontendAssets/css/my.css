@@ -25,9 +25,7 @@
 
 /* FORM ELEMENTS */
 .form-group input[type=text], .form-group input[type=password], .form-group input[type=number], .form-group input[type=email], .form-group select {
-    /*height: 30px;*/
-    border-radius: 3px;
-    /*border: solid 1px #c5c5c5;*/
+    border-radius: 2px;
     padding: 10px;
     height: 40px;
     border: solid 1px #efefef;
@@ -51,7 +49,7 @@ form .form-title {
     -webkit-appearance: none;
     display: inline-block;
     border: 2px solid #5183f5;
-    border-radius: 4px;
+    border-radius: 2px;
     background: #5183f5;
     color: #fff;
     font-weight: 600;
@@ -78,7 +76,7 @@ form .form-title {
 
 .button-group a.button-white, form button.button-white {
     background: white;
-    border: 1px solid #ddd;
+    border: 1px solid #ddd !important;
     color: #454545;
     padding: 10px;
     vertical-align: middle;
@@ -171,13 +169,14 @@ form .form-title {
 .main form .button-group button, .button-group a.button {
     width: 162px;
     border: none;
+    border-radius: 2px;
 }
 .main form {
     z-index: 1;
     width: 320px;
     margin-top: 10px;
     border: solid 1px #efefef;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 10px 0 0 0;
     background-color: white;
 }
@@ -259,7 +258,7 @@ form .form-title {
     height: 200px;
     background-size: cover;
     background-repeat: no-repeat;
-    border-radius: 4px;
+    border-radius: 2px;
     background-color: #f6f6f6;
     background-position: center;
     margin-bottom: 4px;
@@ -370,8 +369,9 @@ PROFILE PAGE BEGIN
     flex-wrap: wrap;
 }
 .profile-page .main-info .avatar-box {
-    flex: 1;
     margin-right: 20px;
+    display: flex;
+    align-items: center;
 }
 .profile-page .main-info .title {
     flex: 3;
@@ -382,7 +382,7 @@ PROFILE PAGE BEGIN
 .profile-page .main-info .avatar {
     height: 120px;
     width: 120px;
-    border-radius: 120px;
+    border-radius: 2px;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -484,7 +484,7 @@ CHAT PAGE BEGIN
     max-width: 850px;
     background-color: white;
     height: calc(100vh - 124px);
-    border-radius: 3px;
+    border-radius: 2px;
     border: 1px solid #efefef;
     font-size: 13px;
 }
@@ -507,7 +507,7 @@ CHAT PAGE BEGIN
     background-repeat: no-repeat;
     background-color: #f6f6f6;
     background-position: center;
-    border-radius: 40px;
+    border-radius: 2px;
     width: 40px;
     height: 40px;
     margin-right: 10px;
@@ -606,29 +606,6 @@ CHAT PAGE BEGIN
     line-height: 1.4rem;
     color: black;
 }
-.chats .block .profile .image {
-    width: 70px;
-    height: 70px;
-    border-radius: 4px;
-    margin: auto 20px auto 0;
-}
-.chats .block .profile .about {
-    text-align: left;
-    margin: auto 0;
-}
-.chats .block .profile .about .message {
-    font-size: 14px;
-    color: gray;
-    font-weight: 400;
-}
-.chat .block {
-    margin: 10px auto 20px auto;
-    width: 400px;
-    border: solid 1px #e4e4e4;
-    border-radius: 4px;
-    box-shadow: 0 0 5px #dadada;
-    text-align: center;
-}
 @media (max-width: 680px) {
     #messages-page .chat-list {
         display: none;
@@ -715,7 +692,7 @@ CHAT PAGE BEGIN
     width: 200px;
     background-repeat: no-repeat;
     background-position: center center;
-    border-radius: 3px;
+    border-radius: 2px;
     margin-bottom: 12px;
     margin-right: 12px;
     cursor: pointer;
@@ -848,7 +825,7 @@ CHAT PAGE BEGIN
     max-width: 850px;
     background-color: white;
     height: calc(100vh - 124px);
-    border-radius: 3px;
+    border-radius: 2px;
     border: 1px solid #efefef;
     font-size: 13px;
 }
@@ -915,7 +892,7 @@ CHAT PAGE BEGIN
     width: 120px;
     background-repeat: no-repeat;
     background-position: center center;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 .profile-settings .mobile-back {
     display: none;
