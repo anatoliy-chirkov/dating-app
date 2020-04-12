@@ -25,12 +25,12 @@
                         <label for="sexChoice2">👩 Девушку</label>
                     </label>
                 </div>
-                <div class="form-group age-group">
-                    <div>Возраст</div>
-                    <div class="range">
-                        <label>от<input type="number" name="ageFrom" value="<?=$ageFrom?>"></label>
-                        <label>до<input type="number" name="ageTo" value="<?=$ageTo?>"></label>
-                    </div>
+            </div>
+            <div class="form-group age-group">
+                <div>Возраст</div>
+                <div class="range">
+                    <label>от<input type="number" name="ageFrom" value="<?=$ageFrom?>"></label>
+                    <label>до<input type="number" name="ageTo" value="<?=$ageTo?>"></label>
                 </div>
             </div>
             <div class="form-group city-group">

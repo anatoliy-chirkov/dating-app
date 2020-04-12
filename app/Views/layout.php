@@ -70,6 +70,12 @@
     </div>
 </nav>
 <main id="main-content">
+    <?php if($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/login' || $_SERVER['REQUEST_URI'] === '/register'): ?>
+        <div class="main-background <?php if ($_SERVER['REQUEST_URI'] === '/login' || $_SERVER['REQUEST_URI'] === '/register'): ?>entry<?php endif; ?>">
+            <div class="inner"></div>
+        </div>
+    <?php endif; ?>
+
     <div class="container">
         <? if (!isset($LAYOUT_NOTIFICATION_OFF) && $notification->isset()): ?>
             <div class="notification <?=$notification->type?>"><?= $notification->message ?></div>

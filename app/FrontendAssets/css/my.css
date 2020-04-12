@@ -1,3 +1,29 @@
+/* BACKGROUND MAIN */
+.main-background {
+    position: absolute;
+    background-image: url('/img/story.jpg');
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    height: 460px;
+    margin-top: -30px;
+}
+.main-background .inner {
+    background-color: #00000078;
+    width: 100%;
+    height: 100%;
+}
+.main-background.entry {
+    height: calc(100vh - 40px);
+    position: fixed;
+}
+@media (max-width: 620px) {
+    .main-background.entry {
+        height: calc(100vh - 30px);
+    }
+}
+
+/* FORM ELEMENTS */
 .form-group input[type=text], .form-group input[type=password], .form-group input[type=number], .form-group input[type=email], .form-group select {
     /*height: 30px;*/
     border-radius: 3px;
@@ -7,54 +33,15 @@
     border: solid 1px #efefef;
     font-size: 14px;
 }
-
 .form-group {
     margin: 10px 0;
     display: flex;
     justify-content: left;
     margin-right: 20px;
 }
-
 .form-group input, .form-group select {
     margin-top: 10px;
 }
-
-.register form, .login form {
-    width: 400px;
-    border: solid 1px #efefef;
-    border-radius: 4px;
-    padding: 20px;
-    background-color: white;
-}
-.register h1, .login h1 {
-    margin: 0;
-}
-.register, .login {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-.login .button-group, .register .button-group {
-    margin-bottom: 0;
-    margin-top: 20px;
-    height: 44px;
-}
-.login .button-group button, .register .button-group button {
-    margin-bottom: 0;
-    width: 200px;
-    background: linear-gradient(90deg, rgba(249,155,74,1) 0%, rgba(235,91,78,1) 35%, rgba(216,44,125,1) 100%);
-    border: none;
-}
-.login .form-group input[type=email],
-.register .form-group input[type=email],
-.login .form-group input[type=password],
-.register .form-group input[type=number],
-.register .form-group input[type=password] {
-    height: 40px;
-    width: 200px;
-    border-color: #efefef;
-}
-
 form .form-title {
     font-weight: 600;
     margin-top: 20px;
@@ -79,13 +66,6 @@ form .form-title {
     text-decoration: none;
     line-height: 1;
 }
-
-.main form .button-group button, .button-group a.button {
-    width: 162px;
-    background: linear-gradient(90deg, rgba(249,155,74,1) 0%, rgba(235,91,78,1) 35%, rgba(216,44,125,1) 100%);
-    border: none;
-}
-
 .button-regular {
     background: white;
     border: none;
@@ -105,6 +85,42 @@ form .form-title {
     text-align: center;
 }
 
+/* LOGIN / REGISTER PAGES */
+.register form, .login form {
+    width: 400px;
+    border: solid 1px #efefef;
+    border-radius: 4px;
+    padding: 20px;
+    background-color: white;
+    z-index: 1;
+}
+.register h1, .login h1 {
+    margin: 0;
+}
+.register, .login {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.login .button-group, .register .button-group {
+    margin-bottom: 0;
+    margin-top: 20px;
+    height: 44px;
+}
+.login .button-group button, .register .button-group button {
+    margin-bottom: 0;
+    width: 200px;
+    border: none;
+}
+.login .form-group input[type=email],
+.register .form-group input[type=email],
+.login .form-group input[type=password],
+.register .form-group input[type=number],
+.register .form-group input[type=password] {
+    height: 40px;
+    width: 200px;
+    border-color: #efefef;
+}
 .login-button {
     background: white;
     border: #efefef;
@@ -113,11 +129,13 @@ form .form-title {
     border-radius: 3px;
 }
 .register-button {
-    background: linear-gradient(90deg, rgba(249,155,74,1) 0%, rgba(235,91,78,1) 35%, rgba(216,44,125,1) 100%);
+    background-color: #5183f5;
     border: none;
     color: white !important;
     padding: .6rem .9rem;
     border-radius: 3px;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
 }
 
 @media (max-width: 386px) {
@@ -125,10 +143,37 @@ form .form-title {
         font-size: 10px !important;
     }
 }
-/*
-MAIN BEGIN
- */
+
+/* MAIN BEGIN */
+.main .heading {
+    display: flex;
+    margin-bottom: 38px;
+    flex-wrap: wrap;
+}
+.main .heading .title {
+    z-index: 1;
+    flex: 1;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 40px;
+    margin-right: 28px;
+    line-height: 1.2;
+}
+.main .heading .title h1 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: -4px;
+    margin-top: 0;
+}
+.main form .button-group button, .button-group a.button {
+    width: 162px;
+    border: none;
+}
 .main form {
+    z-index: 1;
     width: 320px;
     margin-top: 10px;
     border: solid 1px #efefef;
@@ -136,67 +181,79 @@ MAIN BEGIN
     padding: 10px 0 0 0;
     background-color: white;
 }
-
 .main form h4, .main h3 {
     text-align: left;
     margin: 0 0 0 10px;
 }
-
 .main form h4 {
     margin-left: 20px;
     color: gray;
 }
-
 .main h3 {
     margin: 0;
 }
-
 .main form .search {
     display: flex;
     justify-content: space-between;
     flex-flow: wrap;
     padding-left: 20px;
 }
-
-.main .heading {
-    display: flex;
-}
-
 .main form .age-group {
     display: block;
 }
-
+.main.search-page form .age-group {
+    margin-left: 20px;
+}
 .main form .age-group .range {
     display: flex;
 }
-
 .main form .age-group .range label {
     margin-right: 10px;
 }
-
 .main form .age-group .range label input {
     width: 50px;
     margin-left: 10px;
 }
-
 .main form .button-group {
     height: 44px;
     display: flex;
     justify-content: flex-start;
     margin: 12px 0 10px 20px;
 }
+@media (max-width: 680px) {
+    .main-background {
+        height: 544px;
+    }
+    .main .heading .title {
+        padding-bottom: 4px;
+    }
+}
+@media (max-width: 620px) {
+    .main-background {
+        height: 530px;
+    }
+}
+@media (max-width: 600px) and (min-width: 561px) {
+    .main-background {
+        height: 450px;
+    }
+}
+@media (max-width: 443px) {
+    .main-background {
+        height: 560px;
+    }
+}
 
+/* SEARCH PAGE AND PROFILES ON MAIN PAGE */
 .results {
     display: flex;
     justify-content: space-between;
     flex-flow: wrap;
     margin-top: 10px;
 }
-
 .results .profile {
     margin-bottom: 20px;
 }
-
 .results .profile .image {
     width: 200px;
     height: 200px;
@@ -208,7 +265,7 @@ MAIN BEGIN
     margin-bottom: 4px;
 }
 .results .profile .about {
-    color: #eb5b4e;
+    color: #1f1f1f;
 }
 .results .profile .status, .profile-page .main-info .title .status {
     font-weight: 400;
@@ -262,25 +319,25 @@ MAIN BEGIN
     font-size: 13px;
 }
 @media (max-width: 470px) {
-    .main .heading {
-        display: block;
-    }
     .main form {
         width: auto;
     }
     .main h3 {
         text-align: center;
+        margin-bottom: 20px;
     }
     .results {
         justify-content: center;
     }
     .results .profile {
         margin-right: 16px;
-        margin-left: 16px;
     }
     .results .profile .image {
         height: 140px;
         width: 140px;
+    }
+    .main .heading {
+        margin-bottom: 32px;
     }
 }
 @media (max-width: 386px) {
@@ -289,6 +346,7 @@ MAIN BEGIN
     }
     .results .profile {
         display: flex;
+        margin-bottom: 10px;
     }
     .results .profile .image {
         margin-right: 20px;
@@ -299,9 +357,6 @@ MAIN BEGIN
         justify-content: center;
     }
 }
-/**
-MAIN END
- */
 
 /*
 PROFILE PAGE BEGIN
@@ -342,14 +397,12 @@ PROFILE PAGE BEGIN
 .profile-page .about {
     margin-top: 20px;
 }
-/*
-PROFILE PAGE END
- */
+
 /*
 SEARCH PAGE BEGIN
  */
 .search-page form {
-    width: 536px;
+    width: 100%;
     position: relative;
 }
 .search-page form .search-wrap, .main form .search-wrap {
@@ -393,9 +446,36 @@ SEARCH PAGE BEGIN
         width: 100%;
     }
 }
-/*
-SEARCH PAGE END
- */
+.pagination {
+    padding: 20px 0 20px 0;
+    display: flex;
+    justify-content: center;
+}
+.button:hover {
+    background: #0062cc;
+}
+.page-button {
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    border: 2px solid rgb(81, 131, 245);
+    align-items: center;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 1rem 0 0;
+    color: #5f5f5f;
+}
+.page-button:hover {
+    text-decoration: none;
+    color: inherit;
+}
+.page-button.active {
+    background: rgb(81, 131, 245);
+    color: white;
+}
+
 /*
 CHAT PAGE BEGIN
  */
@@ -447,10 +527,10 @@ CHAT PAGE BEGIN
     color: #fff;
 }
 .chats .chat-list .profile:hover {
-    background-color: rgb(255, 242, 241);
+    background-color: #f7f7f7;
 }
 .chats .chat-list .active-chat, .chats .chat-list .active-chat:hover {
-    background-color: #eb5b4e;
+    background-color: #5183f5;
 }
 .chats .chat-view {
     display: flex;
@@ -504,7 +584,7 @@ CHAT PAGE BEGIN
 .chats .chat-view .messages form button {
     background: none;
     border: none;
-    color: #e03a3d;
+    color: #9b9b9b;
     font-size: 14px;
     margin: 0;
 }
@@ -514,7 +594,7 @@ CHAT PAGE BEGIN
 .chats .chat-view .messages .message .about .title {
     text-align: left;
     font-weight: 600;
-    color: rgb(224, 58, 61);
+    color: #999;
 }
 .chats .chat-view .messages .message .about .title .time {
     font-weight: 400;
@@ -526,25 +606,21 @@ CHAT PAGE BEGIN
     line-height: 1.4rem;
     color: black;
 }
-
 .chats .block .profile .image {
     width: 70px;
     height: 70px;
     border-radius: 4px;
     margin: auto 20px auto 0;
 }
-
 .chats .block .profile .about {
     text-align: left;
     margin: auto 0;
 }
-
 .chats .block .profile .about .message {
     font-size: 14px;
     color: gray;
     font-weight: 400;
 }
-
 .chat .block {
     margin: 10px auto 20px auto;
     width: 400px;
@@ -564,35 +640,8 @@ CHAT PAGE BEGIN
         display: none;
     }
 }
-/*
-CHAT PAGE END
- */
-.pagination {
-    padding: 20px 0 20px 0;
-    display: flex;
-    justify-content: flex-start;
-}
-.button:hover {
-    background: #0062cc;
-}
-.page-button {
-    display: inline-block;
-    padding: .5rem .75rem;
-    border: 2px solid rgba(249,155,74,1);
-    border-radius: 3px;
-    color: #5f5f5f;
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0 1rem 0 0;
-}
-.page-button:hover {
-    text-decoration: none;
-    color: inherit;
-}
-.page-button.active {
-    background: rgba(249,155,74,1);
-    color: white;
-}
+
+/* NOTIFICATIONS */
 #message-notification {
     position: fixed;
     display: none;
@@ -636,7 +685,6 @@ CHAT PAGE END
     font-weight: 400;
     margin-left: 5px;
 }
-
 #message-tip {
     position: absolute;
     background-color: rgba(235,91,78,1);
@@ -709,6 +757,7 @@ CHAT PAGE END
     border-radius: 3px;
 }
 
+/* GOOGLE PLACES */
 .pac-container {
     z-index: 10;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
@@ -745,6 +794,7 @@ CHAT PAGE END
 }
 .select2-container--default .select2-results > .select2-results__options {
     font-size: 14px;
+    box-shadow: 8px 20px 20px rgb(0,0,0,0.2)
 }
 .select2-container--open .select2-dropdown--below {
     border-color: #efefef;
@@ -792,7 +842,7 @@ CHAT PAGE END
     cursor: default !important
 }
 
-/* Profile settings */
+/* PROFILE SETTINGS */
 .profile-settings {
     margin: auto;
     max-width: 850px;

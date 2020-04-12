@@ -8,7 +8,7 @@
 ?>
 <div class="chats" id="messages-page" data-userId="<?=$receiver['id']?>">
     <div class="heading" style="display: flex; justify-content: space-between; border-bottom: 1px solid #efefef">
-        <a href="/user/<?=$receiver['id']?>" style="color: #eb5b4d;"><?=$receiver['name']?></a>
+        <a href="/user/<?=$receiver['id']?>"><?=$receiver['name']?></a>
         <?=\Core\ServiceContainer::getInstance()->get('is_user_online_service')->getViewElement($receiver['sex'], $receiver['isConnected'], $receiver['lastConnected'])?>
     </div>
 

@@ -18,7 +18,7 @@ class Page implements ISql
         $offsetSql = null;
 
         if ($this->page > 1) {
-            $offsetSql = ' ' . 'OFFSET' . ' ' . ($this->page - 1) * 3;
+            $offsetSql = ' ' . 'OFFSET' . ' ' . ($this->page - 1) * self::LIMIT;
         }
 
         return 'LIMIT' . ' ' . self::LIMIT . $offsetSql;
