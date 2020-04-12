@@ -2,7 +2,7 @@
 .main-background {
     position: absolute;
     background-image: url('/img/story.jpg');
-    background-position: center center;
+    background-position: center top;
     background-size: cover;
     width: 100%;
     height: 460px;
@@ -408,6 +408,7 @@ SEARCH PAGE BEGIN
 .search-page form .search-wrap, .main form .search-wrap {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 .search-page form .search, .main form .search {
     justify-content: flex-start;
