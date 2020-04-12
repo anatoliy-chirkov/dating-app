@@ -129,7 +129,7 @@ form .form-title {
 MAIN BEGIN
  */
 .main form {
-    width: 600px;
+    width: 320px;
     margin-top: 10px;
     border: solid 1px #efefef;
     border-radius: 3px;
@@ -164,7 +164,6 @@ MAIN BEGIN
 
 .main form .age-group {
     display: block;
-    margin-left: 20px;
 }
 
 .main form .age-group .range {
@@ -184,10 +183,7 @@ MAIN BEGIN
     height: 44px;
     display: flex;
     justify-content: flex-start;
-    margin-left: 20px;
-    margin-right: 0;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin: 12px 0 10px 20px;
 }
 
 .results {
@@ -353,20 +349,48 @@ PROFILE PAGE END
 SEARCH PAGE BEGIN
  */
 .search-page form {
-    width: 416px;
+    width: 536px;
+    position: relative;
 }
-.search-page form .search {
+.search-page form .search-wrap, .main form .search-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+.search-page form .search, .main form .search {
     justify-content: flex-start;
+    flex-direction: column;
 }
 .search-page form .search .sex-group {
     min-width: 180px;
 }
+.search-page form .city-group, .main form .city-group {
+    margin-left: 20px;
+}
+.search-page form .city-group label, .main form .city-group label {
+    width: 269px;
+}
 .search-page .results {
     margin-top: 24px;
 }
+@media (max-width: 600px) {
+    .search-page form, .main form {
+        width: unset;
+    }
+}
 @media (max-width: 470px) {
-    .search-page form {
+    .search-page form, .main form {
         width: auto;
+    }
+}
+@media (max-width: 360px) {
+    .search-page form, .main form {
+        position: relative;
+    }
+    .search-page form .city-group label, .main form .city-group label {
+        width: 100%;
+    }
+    .search-page form .city-group, .main form .city-group {
+        width: 100%;
     }
 }
 /*
