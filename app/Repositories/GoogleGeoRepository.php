@@ -19,11 +19,11 @@ class GoogleGeoRepository
     {
         $offset = ($page - 1) * $limit;
 
-        $sql = 'SELECT id, name, fullName FROM googleGeo';
+        $sql = 'SELECT id, name, fullName FROM googleGeo WHERE id IN (SELECT DISTINCT googleGeoId FROM user)';
         $params = [];
 
         if ($type) {
-            $sql .= ' ' . 'WHERE type = ?';
+            $sql .= ' ' . 'AND type = ?';
             $params[] = $type;
         }
 
@@ -38,7 +38,7 @@ class GoogleGeoRepository
 SELECT g.id, g.name, g.fullName, g.type, parent.name AS parentName
 FROM googleGeo AS g
 LEFT JOIN googleGeo AS parent ON parent.id = g.parentId
-WHERE g.fullName like ?
+WHERE g.fullName like ? AND id IN (SELECT DISTINCT googleGeoId FROM user)
 SQL;
         $params = ["%{$name}%"];
 
