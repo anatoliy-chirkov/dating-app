@@ -211,7 +211,7 @@ form .form-title {
 }
 .main form .age-group .range label input {
     width: 50px;
-    margin-left: 10px;
+    font-size: 13px;
 }
 .main form .button-group {
     height: 44px;

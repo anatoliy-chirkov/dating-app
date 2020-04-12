@@ -29,8 +29,8 @@
                     <div class="form-group age-group">
                         <div>Возраст</div>
                         <div class="range">
-                            <label>от<input type="number" name="ageFrom"></label>
-                            <label>до<input type="number" name="ageTo"></label>
+                            <label><input type="number" name="ageFrom" placeholder="от"></label>
+                            <label>-<input type="number" name="ageTo" placeholder="до" style="margin-left: 10px"></label>
                         </div>
                     </div>
                 </div>
