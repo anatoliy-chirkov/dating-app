@@ -250,8 +250,13 @@ form .form-title {
     flex-flow: wrap;
     margin-top: 10px;
 }
+.results::after {
+    content: "";
+    flex: 0 200px;
+}
 .results .profile {
     margin-bottom: 20px;
+    width: 200px;
 }
 .results .profile .image {
     width: 200px;
@@ -317,6 +322,15 @@ form .form-title {
     line-height: 1rem;
     font-size: 13px;
 }
+@media (max-width: 655px) {
+    .results .profile {
+        width: 160px;
+    }
+    .results .profile .image {
+        height: 160px;
+        width: 160px;
+    }
+}
 @media (max-width: 470px) {
     .main form {
         width: auto;
@@ -325,14 +339,18 @@ form .form-title {
         text-align: center;
         margin-bottom: 20px;
     }
-    .results {
-        justify-content: center;
+    .results::after {
+        content: "";
+        flex: 0 156px;
     }
     .results .profile {
         margin-right: 16px;
     }
     .results .profile .image {
         height: 140px;
+        width: 140px;
+    }
+    .results .profile {
         width: 140px;
     }
     .main .heading {
@@ -346,6 +364,7 @@ form .form-title {
     .results .profile {
         display: flex;
         margin-bottom: 10px;
+        width: unset;
     }
     .results .profile .image {
         margin-right: 20px;
@@ -354,6 +373,7 @@ form .form-title {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        flex: 1;
     }
 }
 

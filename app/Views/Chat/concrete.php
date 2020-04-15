@@ -47,9 +47,10 @@
                 endif;
                 ?>
                 <?php $i = 0; foreach ($messages as $message): $i++ ?>
+                    <?php $isYourMessage = $message['userId'] === $me['id']; ?>
                     <div class="message">
                         <div class="about">
-                            <div class="title"><?php if ($message['userId'] === $me['id']): ?>Вы<?php else: ?><?=$message['name']?><?php endif;?><span class="time"><?=$message['createdAt']?></span></div>
+                            <div class="title" <?=!$isYourMessage ? 'style="color: #5183f5;"' : ''?>><?=$isYourMessage ? 'Вы' : $message['name']?><span class="time"><?=$message['createdAt']?></span></div>
                             <div class="content"><?=$message['text']?></div>
                         </div>
                     </div>

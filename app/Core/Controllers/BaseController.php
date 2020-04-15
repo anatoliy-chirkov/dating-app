@@ -39,6 +39,7 @@ abstract class BaseController
         $serviceContainer = ServiceContainer::getInstance();
 
         $innerViewPath = $this->getViewPath();
+        $socketUrl     = $serviceContainer->get('env')->get('SOCKET_URL');
         $title         = $serviceContainer->get('env')->get('APP_NAME');
         $description   = $serviceContainer->get('env')->get('APP_DESCRIPTION');
         /** @var Notification $notification */

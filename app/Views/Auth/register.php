@@ -14,7 +14,7 @@
                 <input type="radio" id="sexChoice1" name="sex" value="man">
                 <label for="sexChoice1">👨 Мужчина</label>
                 <br>
-                <input type="radio" id="sexChoice2" name="sex" value="women">
+                <input type="radio" id="sexChoice2" name="sex" value="woman">
                 <label for="sexChoice2">👩 Девушка</label>
             </label>
         </div>

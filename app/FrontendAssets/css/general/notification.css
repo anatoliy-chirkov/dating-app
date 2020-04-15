@@ -6,6 +6,7 @@
     font-weight: 600;
     color: #ffffff;
     margin-top: 10px;
+    position: relative;
 }
 .notification.success {
     background: #60bb45;

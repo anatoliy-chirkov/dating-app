@@ -52,7 +52,7 @@
     <h3>Девушки</h3>
     <div class="results">
         <?php
-        for ($i = 0; count($women) < 3 ? $i < count($women) : $i <= 3; $i++):
+        for ($i = 0; count($women) < 4 ? $i < count($women) : $i < 4; $i++):
             ?>
             <a href="/user/<?=$women[$i]['id']?>" class="profile">
                 <div class="image" style="background-image: url('<?=$women[$i]['clientPath']?>')"></div>
@@ -72,7 +72,7 @@
     <h3>Мужчины</h3>
     <div class="results">
         <?php
-        for ($i = 0; count($men) < 3 ? $i < count($men) : $i <= 3; $i++):
+        for ($i = 0; count($men) < 4 ? $i < count($men) : $i < 4; $i++):
             ?>
             <a href="/user/<?=$men[$i]['id']?>" class="profile">
                 <div class="image" style="background-image: url('<?=$men[$i]['clientPath']?>')"></div>
@@ -115,4 +115,17 @@
             }
         }
     });
+
+    if (window.innerWidth > 855) {
+        const first = $('.results').first();
+        const second = $('.results').last();
+
+        if (first.find('.profile').length === 2) {
+            first.append('<a class="profile"></a>');
+        }
+
+        if (second.find('.profile').length === 2) {
+            second.append('<a class="profile"></a>');
+        }
+    }
 </script>

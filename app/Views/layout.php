@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var $socketUrl string
  * @var $title string
  * @var $description string
  * @var $innerViewPath string
@@ -116,7 +117,7 @@
 <script>
     $(document).ready(function() {
         if ($('#user-token').length > 0) {
-            const socket = new WebSocket('ws://localhost:8080');
+            const socket = new WebSocket('<?=$socketUrl?>');
             const userToken = $('#user-token').attr('data-token');
             socket.onopen = (e) => {
                 socket.send(JSON.stringify({type: "AUTHORIZE", payload: {token: userToken}}));
