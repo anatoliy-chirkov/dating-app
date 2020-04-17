@@ -2,6 +2,7 @@
 .idea
 */vendor
 */mysql/data/*
+*/rabbitmq/data/*
 *.DS_Store
 app/FrontendAssets/node_modules
 app/FrontendAssets/img/user*

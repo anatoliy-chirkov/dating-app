@@ -8,6 +8,7 @@
     ],
     "require": {
         "cboden/ratchet": "^0.4.2",
-        "nesbot/carbon": "^2.32"
+        "nesbot/carbon": "^2.32",
+        "robmorgan/phinx": "^0.12.1"
     }
 }
