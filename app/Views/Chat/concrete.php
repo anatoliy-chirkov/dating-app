@@ -42,7 +42,7 @@
                 <?php
                 if (count($messages) === 0):
                 ?>
-                    <div>Пока нет сообщений, напишите что-нибудь</div>
+                    <div style="margin-top: 20px">Пока нет сообщений, напишите что-нибудь</div>
                 <?php
                 endif;
                 ?>
