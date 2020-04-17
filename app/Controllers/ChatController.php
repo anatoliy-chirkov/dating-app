@@ -46,6 +46,10 @@ class ChatController extends BaseController implements IProtected
         $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
         $chatId = $chatRepository->getChatIdByUsers([$me['id'], $receiver['id']]);
 
+        /** @var ChatRepository $chatRepository */
+        $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
+        $chats = $chatRepository->getChatsByUserId($me['id']);
+
         if ($chatId !== null) {
             /** @var MessageRepository $messageRepository */
             $messageRepository = ServiceContainer::getInstance()->get('message_repository');
@@ -54,11 +58,16 @@ class ChatController extends BaseController implements IProtected
             $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
         } else {
             $messages = [];
+            array_unshift($chats, [
+                'userId' => $receiver['id'],
+                'chatId' => null,
+                'name' => $receiver['name'],
+                'age' => $receiver['age'],
+                'lastConnected' => $receiver['lastConnected'],
+                'isConnected' => $receiver['isConnected'],
+                'clientPath' => $receiver['clientPath'],
+            ]);
         }
-
-        /** @var ChatRepository $chatRepository */
-        $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
-        $chats = $chatRepository->getChatsByUserId($me['id']);
 
         return $this->render(['chats' => $chats, 'receiver' => $receiver, 'messages' => $messages]);
     }
