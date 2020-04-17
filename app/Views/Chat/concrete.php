@@ -27,7 +27,9 @@
                             <?php if (strlen($chat['text']) > 22): ?>
                                 <?=mb_substr($chat['text'], 0, 22) . '…'?>
                             <?php else: ?>
+                                <?=$chat['authorId'] === $me['id'] ? 'Вы: ' : ''?>
                                 <?=$chat['text']?>
+                                <?=$chat['authorId'] === $me['id'] && !$chat['isRead'] ? '<span class="circle not-read"></span>' : ''?>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -48,7 +50,7 @@
                 ?>
                 <?php $i = 0; foreach ($messages as $message): $i++ ?>
                     <?php $isYourMessage = $message['userId'] === $me['id']; ?>
-                    <div class="message">
+                    <div class="message <?=$isYourMessage && !$message['isRead'] ? 'not-read' : ''?>">
                         <div class="about">
                             <div class="title" <?=!$isYourMessage ? 'style="color: #5183f5;"' : ''?>><?=$isYourMessage ? 'Вы' : $message['name']?><span class="time"><?=$message['createdAt']?></span></div>
                             <div class="content"><?=$message['text']?></div>

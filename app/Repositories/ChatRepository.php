@@ -81,10 +81,12 @@ SQL;
             $sql = "SELECT count(id) FROM message WHERE chatId = ? AND isRead = 0 AND authorId != ?";
             $notReadCount = $this->dbContext->query($sql, [$row['chatId'], $userId])[0][0];
 
-            $sql = "SELECT text, createdAt FROM message WHERE chatId = ? ORDER BY createdAt DESC LIMIT 1";
+            $sql = "SELECT text, createdAt, isRead, authorId FROM message WHERE chatId = ? ORDER BY createdAt DESC LIMIT 1";
             $messageRows = $this->dbContext->query($sql, [$row['chatId']]);
             $row['text'] = !empty($messageRows) ? $messageRows[0]['text'] : null;
             $row['createdAt'] = !empty($messageRows) ? $messageRows[0]['createdAt'] : null;
+            $row['authorId'] = !empty($messageRows) ? $messageRows[0]['authorId'] : null;
+            $row['isRead'] = !empty($messageRows) ? $messageRows[0]['isRead'] : null;
             $row['notReadCount'] = $notReadCount;
         }
 

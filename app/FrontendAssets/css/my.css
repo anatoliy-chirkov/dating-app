@@ -569,6 +569,14 @@ CHAT PAGE BEGIN
     overflow-y: scroll;
     height: calc(100vh - 180px);
 }
+.chats .chat-view .chat-list .circle.not-read {
+    height: 6px;
+    width: 6px;
+    background-color: #4064b594;
+    border-radius: 6px;
+    display: inline-block;
+    margin-left: 2px;
+}
 .chats .chat-view .chat-list .profile .label {
     margin-left: 12px;
     /*position: absolute;*/
@@ -592,10 +600,11 @@ CHAT PAGE BEGIN
     /*padding-left: 40px;*/
 }
 .chats .chat-view .messages .messages-list {
-    height: calc(100vh - 236px);
+    height: calc(100vh - 266px);
     overflow-y: scroll;
-    margin-left: 24px;
+    margin-left: 12px;
     margin-right: 12px;
+    padding-bottom: 30px;
 }
 .chats .chat-view .messages form {
     border-top: 1px solid #efefef;
@@ -617,8 +626,13 @@ CHAT PAGE BEGIN
     font-size: 14px;
     margin: 0;
 }
+.chats .chat-view .messages .message.not-read {
+    background-color: #273a5812;
+}
 .chats .chat-view .messages .message {
-    margin: 10px 0;
+    margin: 4px 0;
+    padding: 6px 0 6px 12px;
+    border-radius: 5px;
 }
 .chats .chat-view .messages .message .about .title {
     text-align: left;

@@ -38,7 +38,7 @@ class MessageRepository
     public function getMessagesByChatId(int $chatId): array
     {
         $sql = <<<SQL
-SELECT m.id, m.text, DATE_FORMAT(m.createdAt, '%d %b %H:%i') as createdAt, u.id as userId, u.name 
+SELECT m.id, m.text, DATE_FORMAT(m.createdAt, '%d %b %H:%i') as createdAt, m.isRead, u.id as userId, u.name 
 FROM message m 
 INNER JOIN user u on u.id = m.authorId 
 WHERE chatId = ?

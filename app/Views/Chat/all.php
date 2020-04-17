@@ -21,7 +21,9 @@
                             <?php if (strlen($chat['text']) > 22): ?>
                                 <?=mb_substr($chat['text'], 0, 22) . '…'?>
                             <?php else: ?>
+                                <?=$chat['authorId'] === $me['id'] ? 'Вы: ' : ''?>
                                 <?=$chat['text']?>
+                                <?=$chat['authorId'] === $me['id'] && !$chat['isRead'] ? '<span class="circle not-read"></span>' : ''?>
                             <?php endif; ?>
                         </div>
                     </div>
