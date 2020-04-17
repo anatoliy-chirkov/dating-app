@@ -37,6 +37,12 @@ return [
         [IMethod::GET]
     ),
     new Route(
+        '/save-message-attachment',
+        ChatController::class,
+        'saveAttachment',
+        [IMethod::POST]
+    ),
+    new Route(
         '/profile',
         ProfileController::class,
         'settings',

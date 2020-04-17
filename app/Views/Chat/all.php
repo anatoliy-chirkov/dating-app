@@ -22,7 +22,7 @@
                                 <?=mb_substr($chat['text'], 0, 22) . '…'?>
                             <?php else: ?>
                                 <?=$chat['authorId'] === $me['id'] ? 'Вы: ' : ''?>
-                                <?=$chat['text']?>
+                                <?=!empty($chat['text']) ? $chat['text'] : 'Изображение'?>
                                 <?=$chat['authorId'] === $me['id'] && !$chat['isRead'] ? '<span class="circle not-read"></span>' : ''?>
                             <?php endif; ?>
                         </div>

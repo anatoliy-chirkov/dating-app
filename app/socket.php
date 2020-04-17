@@ -32,6 +32,7 @@ $serviceContainer
     ))
     ->set('user_repository', new \Repositories\UserRepository\UserRepository())
     ->set('chat_repository', new \Repositories\ChatRepository())
+    ->set('attachment_repository', new \Repositories\AttachmentRepository())
     ->set('message_repository', new \Repositories\MessageRepository())
 ;
 

@@ -6,10 +6,10 @@ class MessageValidator implements IValidator
 {
     public static function isValidPayload(object $payload)
     {
-        return !empty($payload->text)
+        return (!empty($payload->text) || !empty($payload->attachmentId))
             && @strpos($payload->text, '<script') === false
-            && !empty($payload->receiverId)
             && is_int($payload->receiverId)
+            && ($payload->attachmentId === null || is_int($payload->attachmentId))
         ;
     }
 }

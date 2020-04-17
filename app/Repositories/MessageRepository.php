@@ -18,7 +18,7 @@ class MessageRepository
         $this->dbContext = ServiceContainer::getInstance()->get('db_context');
     }
 
-    public function addMessage(int $chatId, int $authorId, string $text)
+    public function addMessage(int $chatId, int $authorId, ?string $text)
     {
         $createdAt = date('Y-m-d H:i:s');
 
@@ -40,11 +40,19 @@ class MessageRepository
         $sql = <<<SQL
 SELECT m.id, m.text, DATE_FORMAT(m.createdAt, '%d %b %H:%i') as createdAt, m.isRead, u.id as userId, u.name 
 FROM message m 
-INNER JOIN user u on u.id = m.authorId 
+INNER JOIN user u ON u.id = m.authorId 
 WHERE chatId = ?
 SQL;
 
-        return $this->dbContext->query($sql, [$chatId]);
+        $rows = $this->dbContext->query($sql, [$chatId]);
+
+        foreach ($rows as &$row) {
+            $sql = 'SELECT id, clientPath, width, height FROM attachment WHERE messageId = ?';
+            $attachments = $this->dbContext->query($sql, [$row['id']]);
+            $row['attachment'] = $attachments[0];
+        }
+
+        return $rows;
     }
 
     public function setAllMessagesWasRead(int $chatId, int $userId)

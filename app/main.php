@@ -25,6 +25,7 @@ $serviceContainer = ServiceContainer::getInstance();
 
 $serviceContainer
     ->set('users_img_dir', ['server' => APP_PATH . '/FrontendAssets/img/user', 'client' => '/img/user'])
+    ->set('chats_img_dir', ['server' => APP_PATH . '/FrontendAssets/img/chat', 'client' => '/img/chat'])
     ->set('env', new \Core\DotEnv(ROOT_PATH . '/.env'))
     ->set('routes', require_once APP_PATH . '/routes.php')
     ->set('request', new \Core\Http\Request())
@@ -43,6 +44,7 @@ $serviceContainer
     // Repo
     ->set('user_repository', new \Repositories\UserRepository\UserRepository())
     ->set('image_repository', new \Repositories\ImageRepository())
+    ->set('attachment_repository', new \Repositories\AttachmentRepository())
     ->set('chat_repository', new \Repositories\ChatRepository())
     ->set('message_repository', new \Repositories\MessageRepository())
     ->set('google_geo_repository', new \Repositories\GoogleGeoRepository())
@@ -51,6 +53,7 @@ $serviceContainer
     ->set('auth_service', new \Services\AuthService())
     ->set('user_service', new \Services\UserService\UserService())
     ->set('image_service', new \Services\ImageService())
+    ->set('attachment_service', new \Services\AttachmentService())
     ->set('is_user_online_service', new \Services\IsUserOnlineService())
     ->set('google_geo_service', new \Services\GoogleGeoService\GoogleGeoService())
 ;

@@ -602,29 +602,67 @@ CHAT PAGE BEGIN
 .chats .chat-view .messages .messages-list {
     height: calc(100vh - 266px);
     overflow-y: scroll;
-    margin-left: 12px;
-    margin-right: 12px;
-    padding-bottom: 30px;
+    padding: 0 12px 30px 12px;
+}
+.chats .chat-view .messages .messages-list .attachment-wrap {
+    margin-top: 5px;
+}
+.chats .chat-view .messages .messages-list .attachment-wrap .attachment-item {
+    height: 100px;
+    width: 100px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center center;
+    cursor: pointer;
 }
 .chats .chat-view .messages form {
+    margin-bottom: 0;
+}
+.chats .chat-view .messages form .form-main {
     border-top: 1px solid #efefef;
-    padding: 12px 0 12px 24px;
+    padding: 12px 0 12px 0;
     margin: 0;
     display: flex;
     justify-content: space-between;
 }
-.chats .chat-view .messages form input {
+.chats .chat-view .messages form .form-main .attachment {
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+}
+.chats .chat-view .messages form .form-main .attachment svg:hover {
+    fill: #888;
+    transition: 0.6s;
+}
+.chats .chat-view .messages form .form-main input {
     outline: none;
     border: none;
     font-size: 14px;
     width: 100%;
 }
-.chats .chat-view .messages form button {
+.chats .chat-view .messages form .form-main button {
     background: none;
     border: none;
     color: #9b9b9b;
     font-size: 14px;
     margin: 0;
+}
+.chats .chat-view .messages form .attachment-content {
+    margin-left: 12px;
+    margin-bottom: 10px;
+    display: none;
+}
+.chats .chat-view .messages form .attachment-content svg {
+    margin-left: 6px;
+    height: 10px;
+    width: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.chats .chat-view .messages form .attachment-content svg g path {
+    fill: #333;
 }
 .chats .chat-view .messages .message.not-read {
     background-color: #273a5812;

@@ -6,4 +6,5 @@
 *.DS_Store
 app/FrontendAssets/node_modules
 app/FrontendAssets/img/user*
+app/FrontendAssets/img/chat*
 app/FrontendAssets/yarn-error.log

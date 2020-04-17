@@ -4,6 +4,7 @@ namespace Chat;
 
 use Core\ServiceContainer;
 use Ratchet\ConnectionInterface;
+use Repositories\AttachmentRepository;
 use Repositories\MessageRepository;
 use Repositories\UserRepository\UserRepository;
 
@@ -46,7 +47,7 @@ class Service
             $conn->close();
         }
 
-        $payloadForSend = $this->saveMessageAndGetPayloadForSend($userId, $payload->receiverId, $payload->text);
+        $payloadForSend = $this->saveMessageAndGetPayloadForSend($userId, $payload->receiverId, $payload->text, $payload->attachmentId);
 
         $receiverConnection = $this->store->getConnectionByUserId($payload->receiverId);
 
@@ -87,7 +88,7 @@ class Service
         $this->store->remove($conn);
     }
 
-    private function saveMessageAndGetPayloadForSend(int $authorId, int $receiverId, string $text)
+    private function saveMessageAndGetPayloadForSend(int $authorId, int $receiverId, ?string $text, ?int $attachmentId)
     {
         $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
         $chatId = $chatRepository->getChatIdByUsers([$authorId, $receiverId]);
@@ -99,6 +100,14 @@ class Service
         /** @var MessageRepository $messageRepository */
         $messageRepository = ServiceContainer::getInstance()->get('message_repository');
         $message = $messageRepository->addMessage($chatId, $authorId, $text);
+
+        $attachment = [];
+        if ($attachmentId !== null) {
+            /** @var AttachmentRepository $attachmentRepository */
+            $attachmentRepository = ServiceContainer::getInstance()->get('attachment_repository');
+            $attachmentRepository->setMessageId($attachmentId, $message['id']);
+            $attachment = $attachmentRepository->getById($attachmentId);
+        }
 
         return [
             'id'        => $message['id'],
@@ -112,6 +121,7 @@ class Service
                 'age'   => $this->store->getUserData($authorId)['age'],
                 'image' => $this->store->getUserData($authorId)['path'],
             ],
+            'attachment' => $attachment,
         ];
     }
 }
