@@ -33,3 +33,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: fOgtNImUFWT00gqw
     restart: always
+  rabbitmq:
+    container_name: rabbitmq
+    image: bitnami/rabbitmq:latest
+    volumes:
+      - ./rabbitmq/data:/bitnami
+    environment:
+      RABBITMQ_USERNAME: user
+      RABBITMQ_PASSWORD: QZ5FnfCwqQ66c4q9
+    restart: always
