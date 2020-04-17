@@ -1,7 +1,8 @@
 /* BACKGROUND MAIN */
 .main-background {
     position: absolute;
-    background-image: url('/img/story.jpg');
+    /*background-image: url('/img/ankiraMockup.jpg');*/
+    background: linear-gradient(90deg, rgba(131,77,189,1) 0%, rgba(84,43,134,1) 100%);
     background-position: center top;
     background-size: cover;
     width: 100%;
@@ -9,7 +10,7 @@
     margin-top: -30px;
 }
 .main-background .inner {
-    background-color: #00000078;
+    /*background-color: #00000078;*/
     width: 100%;
     height: 100%;
 }
@@ -49,9 +50,12 @@ form .form-title {
     -webkit-appearance: none;
     display: inline-block;
     border: 2px solid #5183f5;
-    border-radius: 2px;
+    border-radius: 10px;
     background: #5183f5;
     color: #fff;
+    /*border-radius: 10px;*/
+    /*background: linear-gradient(6deg, rgba(252,215,147,1) 0%, rgba(250,207,129,1) 100%);*/
+    /*color: #3a3939;*/
     font-weight: 600;
     font-family: BlinkMacSystemFont,-apple-system,Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
     font-size: 1.1rem;
@@ -127,13 +131,15 @@ form .form-title {
     border-radius: 3px;
 }
 .register-button {
-    background-color: #5183f5;
     border: none;
     color: white !important;
+    /*color: #3a3939 !important;*/
     padding: .6rem .9rem;
     border-radius: 3px;
     font-weight: 600 !important;
     font-size: 1.1rem !important;
+    background: #5183f5;
+    /*background: linear-gradient(6deg, rgba(252,215,147,1) 0%, rgba(250,207,129,1) 100%);*/
 }
 
 @media (max-width: 386px) {
@@ -169,14 +175,14 @@ form .form-title {
 .main form .button-group button, .button-group a.button {
     width: 162px;
     border: none;
-    border-radius: 2px;
+    border-radius: 10px;
 }
 .main form {
     z-index: 1;
     width: 320px;
     margin-top: 10px;
     border: solid 1px #efefef;
-    border-radius: 2px;
+    border-radius: 10px;
     padding: 10px 0 0 0;
     background-color: white;
 }
@@ -263,7 +269,7 @@ form .form-title {
     height: 200px;
     background-size: cover;
     background-repeat: no-repeat;
-    border-radius: 2px;
+    border-radius: 10px;
     background-color: #f6f6f6;
     background-position: center;
     margin-bottom: 4px;
@@ -387,6 +393,8 @@ PROFILE PAGE BEGIN
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
 }
 .profile-page .main-info .avatar-box {
     margin-right: 20px;
@@ -402,7 +410,7 @@ PROFILE PAGE BEGIN
 .profile-page .main-info .avatar {
     height: 120px;
     width: 120px;
-    border-radius: 2px;
+    border-radius: 120px;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -528,7 +536,7 @@ CHAT PAGE BEGIN
     background-repeat: no-repeat;
     background-color: #f6f6f6;
     background-position: center;
-    border-radius: 2px;
+    border-radius: 40px;
     width: 40px;
     height: 40px;
     margin-right: 10px;
@@ -705,7 +713,7 @@ CHAT PAGE BEGIN
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    margin-top: 34px;
+    margin-top: 20px;
 }
 .profile-page .images .image {
     background-size: cover;
@@ -713,7 +721,7 @@ CHAT PAGE BEGIN
     width: 200px;
     background-repeat: no-repeat;
     background-position: center center;
-    border-radius: 2px;
+    border-radius: 10px;
     margin-bottom: 12px;
     margin-right: 12px;
     cursor: pointer;

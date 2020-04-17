@@ -34,7 +34,11 @@
 <nav class="nav">
     <div class="nav-container">
         <div class="brand">
-            <a aria-current="page" class="" href="/">Ankira</a>
+            <a aria-current="page" class="" href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="40px">
+                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)" font-size="24px" x="0px" y="28px"><tspan font-size="24px" font-family="Chalkboard" fill="#000000">Ankira</tspan></text>
+                </svg>
+            </a>
         </div>
         <div class="links">
             <a href="/">
@@ -61,7 +65,7 @@
                 <?php endif; ?>
             </a>
             <a href="/user/<?=$me['id']?>">
-                <div style="background-image: url('<?=$me['clientPath']?>'); height: 24px; width: 24px; background-size: cover; background-position: center center; border-radius: 2px;"></div>
+                <div style="background-image: url('<?=$me['clientPath']?>'); height: 24px; width: 24px; background-size: cover; background-position: center center; border-radius: 24px;"></div>
             </a>
             <? else: ?>
                 <a href="/login" class="login-button">Вход</a>
