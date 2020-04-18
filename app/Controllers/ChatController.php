@@ -55,6 +55,8 @@ class ChatController extends BaseController implements IProtected
             /** @var MessageRepository $messageRepository */
             $messageRepository = ServiceContainer::getInstance()->get('message_repository');
             $messages = $messageRepository->getMessagesByChatId($chatId);
+
+            $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
         } else {
             $messages = [];
             array_unshift($chats, [
