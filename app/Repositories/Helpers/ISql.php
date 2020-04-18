@@ -1,6 +1,6 @@
 <?php
 
-namespace Repositories\UserRepository\Filter;
+namespace Repositories\Helpers;
 
 interface ISql
 {

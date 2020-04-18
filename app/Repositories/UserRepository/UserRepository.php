@@ -4,11 +4,13 @@ namespace Repositories\UserRepository;
 
 use Core\Db\DbContext;
 use Core\ServiceContainer;
-use Repositories\UserRepository\Filter\Page;
+use Repositories\Helpers\Page;
 use Repositories\UserRepository\Model\User;
 
 class UserRepository
 {
+    private const RESULTS_PER_PAGE_ON_SEARCH = 20;
+
     /** @var DbContext */
     private $dbContext;
 
@@ -132,7 +134,7 @@ LEFT JOIN image ON image.userId = user.id AND image.isMain = 1
 LEFT JOIN googleGeo AS g ON g.id = user.googleGeoId 
 SQL;
         $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
-        $sql .= ' ' . (new Page($page))->getSql();
+        $sql .= ' ' . (new Page($page, self::RESULTS_PER_PAGE_ON_SEARCH))->getSql();
 
         return $this->dbContext->query($sql);
     }

@@ -3,7 +3,7 @@
 use Core\Http\IMethod;
 use Core\Router\Route;
 use Controllers\{MainController, AuthController, ChatController,
-    UserController, ProfileController, GeoController};
+    UserController, ProfileController, GeoController, VisitController};
 
 return [
     new Route(
@@ -47,6 +47,12 @@ return [
         ChatController::class,
         'saveAttachment',
         [IMethod::POST]
+    ),
+    new Route(
+        '/visits',
+        VisitController::class,
+        'see',
+        [IMethod::GET]
     ),
     new Route(
         '/profile',

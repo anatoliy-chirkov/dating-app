@@ -49,6 +49,7 @@ abstract class BaseController
         if ($isAuthorized) {
             $me = $serviceContainer->get('auth_service')->getUser();
             $countNotReadMessages = $serviceContainer->get('message_repository')->getCountNotReadMessages($me['id']);
+            $countNotSeenVisits = $serviceContainer->get('visit_repository')->getNotSeenVisitsCount($me['id']);
 
             /** @var UserRepository $userRepository */
             $userRepository = $serviceContainer->get('user_repository');

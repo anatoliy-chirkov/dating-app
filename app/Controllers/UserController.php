@@ -8,6 +8,7 @@ use Core\ServiceContainer;
 use Repositories\GoogleGeoRepository;
 use Repositories\ImageRepository;
 use Repositories\UserRepository\UserRepository;
+use Repositories\VisitRepository;
 use Services\AuthService;
 
 class UserController extends BaseController
@@ -48,17 +49,22 @@ class UserController extends BaseController
 
     public function getOne(Request $request, $userId)
     {
-        /** @var UserRepository $userRepository */
-        $userRepository = ServiceContainer::getInstance()->get('user_repository');
-        $user = $userRepository->getById($userId);
-
+        /** @var AuthService $authService */
         $authService = ServiceContainer::getInstance()->get('auth_service');
 
         if ($authService->verifyCookieToken()) {
-            /** @var AuthService $authService */
-            $authService = ServiceContainer::getInstance()->get('auth_service');
             $me = $authService->getUser();
+
+            if ($me['id'] !== $userId) {
+                /** @var VisitRepository $visitRepository */
+                $visitRepository = ServiceContainer::getInstance()->get('visit_repository');
+                $visitRepository->saveVisit($userId, $me['id']);
+            }
         }
+
+        /** @var UserRepository $userRepository */
+        $userRepository = ServiceContainer::getInstance()->get('user_repository');
+        $user = $userRepository->getById($userId);
 
         /** @var ImageRepository $imageRepository */
         $imageRepository = ServiceContainer::getInstance()->get('image_repository');
