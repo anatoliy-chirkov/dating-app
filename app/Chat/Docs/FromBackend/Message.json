@@ -9,6 +9,7 @@
       "id": 0,
       "name": "",
       "image": "/path-to-image"
-    }
+    },
+    "isRebound": false
   }
 }

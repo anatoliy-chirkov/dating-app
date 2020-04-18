@@ -36,7 +36,7 @@
                             <?php endif; ?>
                         </div>
                     </div>
-                    <div class="label" <?php if ($chat['notReadCount'] > 0): ?> style="display: flex" <?php endif; ?>><?=$chat['notReadCount']?></div>
+                    <div class="label" <?php if ($chat['notReadCount'] > 0 && $chat['userId'] !== $receiver['id']): ?> style="display: flex" <?php endif; ?>><?=$chat['notReadCount']?></div>
                 </a>
             <?php
             endforeach;
@@ -53,7 +53,7 @@
                 ?>
                 <?php $i = 0; foreach ($messages as $message): $i++ ?>
                     <?php $isYourMessage = $message['userId'] === $me['id']; ?>
-                    <div class="message <?=$isYourMessage && !$message['isRead'] ? 'not-read' : ''?>">
+                    <div class="message <?=$isYourMessage && !$message['isRead'] ? 'not-read' : ''?>" data-id="<?=$message['id']?>" data-isyour="<?=$isYourMessage ? 1 : 0?>">
                         <div class="about">
                             <div class="title" <?=!$isYourMessage ? 'style="color: #5183f5;"' : ''?>><?=$isYourMessage ? 'Вы' : $message['name']?><span class="time"><?=$message['createdAt']?></span></div>
                             <div class="content"><?=$message['text']?></div>
@@ -154,33 +154,5 @@
 
             $('.chats .chat-view .messages .messages-list').css('height', 'calc(100vh - 266px)');
         });
-    });
-
-    // open attachment
-    const attachments = [];
-
-    $('.attachment-item').map(function() {
-        const backgroundImageVal = $(this).css('background-image');
-        const backgroundImageUrl = backgroundImageVal.replace('url(','').replace(')','').replace(/\"/gi, "");
-        const obj = {src: backgroundImageUrl, h: $(this).attr('data-height'), w: $(this).attr('data-width')};
-        attachments.push(obj);
-        $(this).attr('data-id', attachments.indexOf(obj));
-    });
-
-    $('.attachment-item').on('click', function () {
-        const pswpElement = document.querySelector('.pswp');
-        const options = {
-            index: parseInt($(this).attr('data-id')),
-            bgOpacity: 0.7,
-            maxSpreadZoom: 1,
-            getDoubleTapZoom: function (isMouseClick, item) {
-                return item.initialZoomLevel;
-            },
-            // UI options
-            zoomEl: false,
-            //clickToCloseNonZoomable: false,
-        };
-        const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, attachments, options);
-        gallery.init();
     });
 </script>

@@ -119,12 +119,20 @@
     </div>
 </footer>
 <script>
+    const attachments = [];
+
     $(document).ready(function() {
         if ($('#user-token').length > 0) {
             const socket = new WebSocket('<?=$socketUrl?>');
             const userToken = $('#user-token').attr('data-token');
             socket.onopen = (e) => {
                 socket.send(JSON.stringify({type: "AUTHORIZE", payload: {token: userToken}}));
+                if ($messagePage.length > 0) {
+                    $('.message[data-isyour="0"]').map(function () {
+                        const id = parseInt($(this).attr('data-id'));
+                        socket.send(JSON.stringify({type: "MESSAGE_WAS_READ", payload: {messageId: id}}));
+                    });
+                }
             };
 
             $('#message-notification').find('.close').on('click', function() {
@@ -134,6 +142,8 @@
             const chatWindow = new ChatWindow();
             chatWindow.submitChatFormHandler(socket);
 
+            const $messagePage = $('#messages-page');
+
             socket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
                 const payload = data.payload;
@@ -141,20 +151,66 @@
 
                 switch (data.type) {
                     case 'MESSAGE':
-                        notification.show(payload.id, payload.chatId, payload.text, payload.shortText, payload.user, payload.createdAt, payload.attachment);
-                        const messagesArea = $('#messages-page');
-                        if (messagesArea.length > 0 && parseInt(messagesArea.attr('data-userId')) === payload.user.id) {
-                            socket.send(JSON.stringify({type: "MESSAGE_WAS_READ", payload: {messageId: parseInt(payload.id)}}));
+                        if (payload.isRebound) {
+                            chatWindow.addMyChatMessageToDOM(payload.id, payload.text, payload.shortText, payload.createdAt, payload.attachment);
+                        } else {
+                            notification.show(payload.id, payload.chatId, payload.text, payload.shortText, payload.user, payload.createdAt, payload.attachment);
+                            if ($messagePage.length > 0 && parseInt($messagePage.attr('data-userid')) === parseInt(payload.user.id)) {
+                                socket.send(JSON.stringify({type: "MESSAGE_WAS_READ", payload: {messageId: parseInt(payload.id)}}));
+                            }
                         }
                         break;
                     case 'MESSAGE_WAS_READ':
+                        if ($messagePage.length > 0) {
+                            const $notReadCircle = $(`.profile.chat[data-id="${parseInt(payload.chatId)}"]`)
+                                .find('.circle.not-read');
+
+                            if ($notReadCircle.length > 0) {
+                                $notReadCircle.remove();
+                            }
+
+                            $(`.message.not-read[data-id="${payload.messageId}"]`).removeClass('not-read');
+                        }
                         break;
                     default:
                         break;
                 }
             };
+
+            if ($messagePage.length > 0) {
+                const $attachmentItem = $('.attachment-item');
+
+                $attachmentItem.map(function() {
+                    const backgroundImageVal = $(this).css('background-image');
+                    const backgroundImageUrl = backgroundImageVal.replace('url(','').replace(')','').replace(/\"/gi, "");
+                    const obj = {src: backgroundImageUrl, h: $(this).attr('data-height'), w: $(this).attr('data-width')};
+                    attachments.push(obj);
+                    $(this).attr('data-id', attachments.indexOf(obj));
+                });
+
+                $attachmentItem.on('click', function () {
+                    onAttachmentClick(parseInt($(this).attr('data-id')))
+                });
+            }
         }
     });
+
+    function onAttachmentClick(dataId) {
+        const pswpElement = document.querySelector('.pswp');
+        const options = {
+            index: parseInt(dataId),
+            bgOpacity: 0.7,
+            maxSpreadZoom: 1,
+            getDoubleTapZoom: function (isMouseClick, item) {
+                return item.initialZoomLevel;
+            },
+            // UI options
+            zoomEl: false,
+            //clickToCloseNonZoomable: false,
+        };
+        const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, attachments, options);
+        gallery.init();
+    }
 
     class ChatWindow {
         submitChatFormHandler(socket) {
@@ -188,11 +244,6 @@
                                 $attachmentContent.css('display', 'none');
                                 $('.chats .chat-view .messages .messages-list').css('height', 'calc(100vh - 266px)');
                                 $textInput.val('');
-                                self.addMyChatMessageToDOM(text, {
-                                    height: response.data.height,
-                                    width: response.data.width,
-                                    clientPath: response.data.clientPath,
-                                });
                             } else {
                                 alert(response.errorText);
                             }
@@ -202,7 +253,6 @@
                     if (text !== '') {
                         self.sendMessageToServer(socket, $textInput, receiverId, text);
                         $textInput.val('');
-                        self.addMyChatMessageToDOM(text);
                     }
                 }
             });
@@ -216,7 +266,7 @@
 
         addMessageToChatList(chatId, shortText, user) {
             const chat = $(`.chat[data-id="${chatId}"]`);
-            const isActive = $('.active-chat').attr('data-id') === chatId;
+            const isActive = parseInt($('.active-chat').attr('data-id')) === parseInt(chatId);
 
             if (chat.length > 0) {
                 const chatDOM = chat.clone();
@@ -224,10 +274,10 @@
                 $('.chat-list').prepend(chatDOM);
                 const username = user.name === 'Вы' ? 'Вы: ' : '';
                 const text = shortText === '' ? 'Изображение' : shortText;
-                const label = user.name === 'Вы' ? '<span class="circle not-read"></span>' : '';
+                const notReadCircle = user.name === 'Вы' ? '<span class="circle not-read"></span>' : '';
 
                 chatDOM.find('.message').text(username + text);
-                chatDOM.find('.message').append(label);
+                chatDOM.find('.message').append(notReadCircle);
 
                 if (!isActive) {
                     const label = chatDOM.find('.label');
@@ -248,25 +298,30 @@
             }
         };
 
-        addMyChatMessageToDOM(text, attachment = {}) {
-            const date = new Date();
-            const createdAt = `${date.getHours()}:${date.getMinutes()}`;
-            const id = parseInt($('.message').last().attr('data-id')) + 1;
+        addMyChatMessageToDOM(id, text, shortText, createdAt, attachment = {}) {
             const chatId = $('.active-chat').attr('data-id');
 
             this.addMessageToChat(id, createdAt, text, {name: 'Вы'}, attachment);
-            this.addMessageToChatList(chatId, text.slice(0, 22), {name: 'Вы', id: null, age: null});
+            this.addMessageToChatList(chatId, shortText, {name: 'Вы', id: null, age: null});
         };
 
         addMessageToChat(id, createdAt, text, user, attachment) {
+            let attachmentIndex = null;
+
+            if (Object.keys(attachment).length !== 0) {
+                const obj = {src: attachment.clientPath, h: attachment.height, w: attachment.width};
+                attachments.push(obj);
+                attachmentIndex = attachments.indexOf(obj);
+            }
+
             const messageDOM =
-`<div class="message not-read" data-id="${id}">
+`<div class="message ${user.name === 'Вы' ? 'not-read' : ''}" data-id="${id}">
     <div class="about">
-        <div class="title">${user.name}<span class="time">${createdAt}</span></div>
+        <div class="title" ${user.name === 'Вы' ? '' : 'style="color: #5183f5;"'}>${user.name}<span class="time">${createdAt}</span></div>
         <div class="content">${text}</div>
         ${Object.keys(attachment).length !== 0 ?
             `<div class="attachment-wrap">
-            <div class="attachment-item"
+            <div class="attachment-item" data-id="${attachmentIndex}"
             data-height="${attachment.height}"
             data-width="${attachment.width}"
             style="background-image: url('${attachment.clientPath}')"
@@ -280,6 +335,12 @@
 
             const messagesList = document.getElementsByClassName('messages-list')[0];
             messagesList.scrollTop = messagesList.scrollHeight;
+
+            if (Object.keys(attachment).length !== 0) {
+                $('.attachment-item').on('click', function () {
+                    onAttachmentClick(attachmentIndex)
+                });
+            }
         };
     }
 
@@ -301,7 +362,7 @@
             mNotification.css('display', 'block');
             mNotification.find('.user-image').css('background-image', `url(${user.image})`);
             mNotification.find('.user-name').text(user.name);
-            mNotification.find('.user-message').text(text);
+            mNotification.find('.user-message').text(text === '' ? 'Изображение' : text);
             mNotification.find('.body').attr('href', `/user/${user.id}/chat#last-message`);
 
             setTimeout(function() {
@@ -320,7 +381,7 @@
                 const chatWindow = new ChatWindow();
                 chatWindow.addMessageToChatList(chatId, shortText, user);
 
-                if (messagesArea.length > 0 && parseInt(messagesArea.attr('data-userId')) === user.id) {
+                if (messagesArea.length > 0 && parseInt(messagesArea.attr('data-userid')) === user.id) {
                     chatWindow.addMessageToChat(id, createdAt, text, user, attachment);
                 } else {
                     this.addNewMessageTagToNav();

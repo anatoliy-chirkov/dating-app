@@ -49,6 +49,10 @@ class Service
 
         $payloadForSend = $this->saveMessageAndGetPayloadForSend($userId, $payload->receiverId, $payload->text, $payload->attachmentId);
 
+        $reboundPayload = $payloadForSend;
+        $reboundPayload['isRebound'] = true;
+        $conn->send(@json_encode(['type' => IMessageType::MESSAGE, 'payload' => $reboundPayload]));
+
         $receiverConnection = $this->store->getConnectionByUserId($payload->receiverId);
 
         if ($receiverConnection !== null) {
@@ -122,6 +126,7 @@ class Service
                 'image' => $this->store->getUserData($authorId)['path'],
             ],
             'attachment' => $attachment,
+            'isRebound'  => false,
         ];
     }
 }
