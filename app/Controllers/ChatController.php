@@ -15,9 +15,11 @@ use Services\AuthService;
 
 class ChatController extends BaseController implements IProtected
 {
+    private const MESSAGES_LIMIT_PER_REQUEST = 20;
+
     public function getProtectedMethods()
     {
-        return ['all', 'concrete'];
+        return ['all', 'concrete', 'getMessages', 'saveAttachment'];
     }
 
     public function all(Request $request)
@@ -54,10 +56,12 @@ class ChatController extends BaseController implements IProtected
         if ($chatId !== null) {
             /** @var MessageRepository $messageRepository */
             $messageRepository = ServiceContainer::getInstance()->get('message_repository');
-            $messages = $messageRepository->getMessagesByChatId($chatId);
+            $messages = $messageRepository->getMessagesByChatId($chatId, self::MESSAGES_LIMIT_PER_REQUEST);
 
             $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
+            $messagesCount = $messageRepository->getAllMessagesCount($chatId);
         } else {
+            $messagesCount = 0;
             $messages = [];
             array_unshift($chats, [
                 'userId' => $receiver['id'],
@@ -70,7 +74,39 @@ class ChatController extends BaseController implements IProtected
             ]);
         }
 
-        return $this->render(['chats' => $chats, 'receiver' => $receiver, 'messages' => $messages]);
+        return $this->render([
+            'chats'         => $chats,
+            'receiver'      => $receiver,
+            'messages'      => $messages,
+            'messagesCount' => $messagesCount,
+        ]);
+    }
+
+    public function getMessages(Request $request, $chatId)
+    {
+        /** @var Validator $validator */
+        $validator = ServiceContainer::getInstance()->get('validator');
+
+        if (!$validator->isValid($request->get(), ['offset' => 'required'])) {
+            $this->renderJson([
+                'data' => [],
+                'error' => true,
+                'errorText' => 'Argument offset not valid',
+            ]);
+        }
+
+        /** @var MessageRepository $messageRepository */
+        $messageRepository = ServiceContainer::getInstance()->get('message_repository');
+        $messages = $messageRepository->getMessagesByChatId(
+            $chatId, self::MESSAGES_LIMIT_PER_REQUEST, $request->get('offset')
+        );
+
+        $this->renderJson([
+            'data' => [
+                'messages' => array_reverse($messages),
+            ],
+            'error' => false,
+        ]);
     }
 
     public function saveAttachment(Request $request)

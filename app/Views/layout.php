@@ -178,9 +178,7 @@
             };
 
             if ($messagePage.length > 0) {
-                const $attachmentItem = $('.attachment-item');
-
-                $attachmentItem.map(function() {
+                $('.attachment-item').map(function() {
                     const backgroundImageVal = $(this).css('background-image');
                     const backgroundImageUrl = backgroundImageVal.replace('url(','').replace(')','').replace(/\"/gi, "");
                     const obj = {src: backgroundImageUrl, h: $(this).attr('data-height'), w: $(this).attr('data-width')};
@@ -188,9 +186,11 @@
                     $(this).attr('data-id', attachments.indexOf(obj));
                 });
 
-                $attachmentItem.on('click', function () {
-                    onAttachmentClick(parseInt($(this).attr('data-id')))
+                $('.messages-list').on('click', '.attachment-item', function () {
+                    onAttachmentClick($(this).attr('data-id'))
                 });
+
+                chatWindow.bindOnScroll();
             }
         }
     });
@@ -335,13 +335,61 @@
 
             const messagesList = document.getElementsByClassName('messages-list')[0];
             messagesList.scrollTop = messagesList.scrollHeight;
-
-            if (Object.keys(attachment).length !== 0) {
-                $('.attachment-item').on('click', function () {
-                    onAttachmentClick(attachmentIndex)
-                });
-            }
         };
+
+        bindOnScroll() {
+            let loading = false;
+
+            $('.messages-list').scroll(function() {
+                const $messagesList = $(this);
+                const $messagesPage = $('#messages-page');
+
+                const chatId = parseInt($('.profile.chat.active-chat').attr('data-id'));
+                const messagesCount = $messagesPage.attr('data-messagescount');
+                const offset = $('.message').length;
+                const receiverId = parseInt($messagesPage.attr('data-userid'));
+
+                if ($(this).scrollTop() < 350 && messagesCount > offset && loading === false) {
+                    loading = true;
+                    $messagesList.css('overflow-y', 'hidden');
+                    $.get(`/chat/${chatId}/get-messages?offset=${offset}`, function (response) {
+                        const data = response.data;
+                        if (Array.isArray(data.messages) && data.messages.length > 0) {
+                            data.messages.map(function(item) {
+                                if (item.attachment !== null) {
+                                    const obj = {src: item.attachment.clientPath, h: item.attachment.height, w: item.attachment.width};
+                                    attachments.unshift(obj);
+                                    $('.attachment-item').map(function() {
+                                        const currentDataId = parseInt($(this).attr('data-id'));
+                                        $(this).attr('data-id', currentDataId + 1);
+                                    });
+                                }
+                                const isYourMessage = receiverId !== item.authorId;
+                                $messagesList.prepend(`
+                    <div class="message ${isYourMessage && !item.isRead ? 'not-read' : ''}" data-id="${item.id}" data-isyour="${isYourMessage}">
+                    <div class="about">
+                        <div class="title" ${isYourMessage ? 'style="color: #5183f5;"' : ''}>${isYourMessage ? 'Вы' : item.name}<span class="time">${item.createdAt}</span></div>
+                        <div class="content">${item.text}</div>
+                        ${item.attachment !== null ?
+                                    `<div class="attachment-wrap">
+                            <div class="attachment-item" data-id="0"
+                            data-height="${item.attachment.height}"
+                            data-width="${item.attachment.width}"
+                            style="background-image: url('${item.attachment.clientPath}')"
+                            ></div>
+                        </div>`
+                                    : ''}
+                    </div>
+                    </div>
+                        `);
+                            });
+                            loading = false;
+                        }
+                        $messagesList.css('overflow-y', 'scroll');
+                    });
+                }
+            });
+        }
     }
 
     class NavBar {

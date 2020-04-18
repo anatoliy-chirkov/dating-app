@@ -4,12 +4,13 @@
  * @var array $messages
  * @var array $receiver
  * @var array $me
+ * @var int $messagesCount
  */
 ?>
 <link rel="stylesheet" href="/node_modules/photoswipe/dist/photoswipe.css">
 <link rel="stylesheet" href="/node_modules/photoswipe/dist/default-skin/default-skin.css">
 
-<div class="chats" id="messages-page" data-userId="<?=$receiver['id']?>">
+<div class="chats" id="messages-page" data-userid="<?=$receiver['id']?>" data-messagescount="<?=$messagesCount?>">
     <div class="heading" style="display: flex; justify-content: space-between; border-bottom: 1px solid #efefef">
         <a href="/user/<?=$receiver['id']?>"><?=$receiver['name']?></a>
         <?=\Core\ServiceContainer::getInstance()->get('is_user_online_service')->getViewElement($receiver['sex'], $receiver['isConnected'], $receiver['lastConnected'])?>

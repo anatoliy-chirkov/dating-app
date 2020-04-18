@@ -37,6 +37,12 @@ return [
         [IMethod::GET]
     ),
     new Route(
+        '/chat/:chatId/get-messages',
+        ChatController::class,
+        'getMessages',
+        [IMethod::GET]
+    ),
+    new Route(
         '/save-message-attachment',
         ChatController::class,
         'saveAttachment',

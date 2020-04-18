@@ -35,13 +35,14 @@ class MessageRepository
         return $rows[0];
     }
 
-    public function getMessagesByChatId(int $chatId): array
+    public function getMessagesByChatId(int $chatId, int $limit, $offset = 0): array
     {
         $sql = <<<SQL
-SELECT m.id, m.text, DATE_FORMAT(m.createdAt, '%d %b %H:%i') as createdAt, m.isRead, u.id as userId, u.name 
+(SELECT m.id, m.text, DATE_FORMAT(m.createdAt, '%d %b %H:%i') as createdAt, m.isRead, u.id as userId, u.name 
 FROM message m 
 INNER JOIN user u ON u.id = m.authorId 
-WHERE chatId = ?
+WHERE chatId = ? 
+ORDER BY id DESC LIMIT {$limit} OFFSET {$offset}) ORDER BY id ASC
 SQL;
 
         $rows = $this->dbContext->query($sql, [$chatId]);
@@ -53,6 +54,12 @@ SQL;
         }
 
         return $rows;
+    }
+
+    public function getAllMessagesCount(int $chatId)
+    {
+        $sql = 'SELECT count(id) FROM message WHERE chatId = ?';
+        return $this->dbContext->query($sql, [$chatId])[0][0];
     }
 
     public function setAllMessagesWasRead(int $chatId, int $userId)
