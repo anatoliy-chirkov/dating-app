@@ -49,6 +49,7 @@ $serviceContainer
     ->set('message_repository', new \Repositories\MessageRepository())
     ->set('google_geo_repository', new \Repositories\GoogleGeoRepository())
     ->set('visit_repository', new \Repositories\VisitRepository())
+    ->set('goal_repository', new \Repositories\GoalRepository())
 
     // Services
     ->set('auth_service', new \Services\AuthService())

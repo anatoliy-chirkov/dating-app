@@ -51,9 +51,7 @@
     </form>
 
     <div class="results">
-        <?php
-            foreach ($users as $user):
-        ?>
+        <?php foreach ($users as $user): ?>
                 <a href="/user/<?=$user['id']?>" class="profile">
                     <div class="image" style="background-image: url('<?=$user['clientPath']?>')"></div>
                     <div class="about-wrap">
@@ -62,9 +60,7 @@
                         <div class="city"><?=$user['city']?></div>
                     </div>
                 </a>
-        <?php
-            endforeach;
-        ?>
+        <?php endforeach; ?>
     </div>
     <div class="pagination">
         <? for($i = 1; $i <= $pages; $i++): ?>
