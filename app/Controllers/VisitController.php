@@ -4,14 +4,14 @@ namespace Controllers;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
-use Core\Controllers\BaseController;
+use Controllers\Shared\SiteController;
 use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Repositories\VisitRepository;
 use Services\AuthService;
 
-class VisitController extends BaseController implements IProtected
+class VisitController extends SiteController implements IProtected
 {
     public function getProtectedMethods()
     {

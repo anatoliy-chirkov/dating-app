@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Core\Controllers\BaseController;
+use Controllers\Shared\SiteController;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Repositories\GoogleGeoRepository;
@@ -11,7 +11,7 @@ use Repositories\UserRepository\UserRepository;
 use Repositories\VisitRepository;
 use Services\AuthService;
 
-class UserController extends BaseController
+class UserController extends SiteController
 {
     public function search(Request $request)
     {

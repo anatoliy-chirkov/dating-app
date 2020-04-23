@@ -8,3 +8,6 @@ app/FrontendAssets/node_modules
 app/FrontendAssets/img/user*
 app/FrontendAssets/img/chat*
 app/FrontendAssets/yarn-error.log
+app/Admin/FrontendAssets/node_modules
+app/Admin/FrontendAssets/dist
+app/Admin/FrontendAssets/src/assets/lib

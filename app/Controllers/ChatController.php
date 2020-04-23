@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Core\Controllers\BaseController;
+use Controllers\Shared\SiteController;
 use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
@@ -13,7 +13,7 @@ use Repositories\UserRepository\UserRepository;
 use Services\AttachmentService;
 use Services\AuthService;
 
-class ChatController extends BaseController implements IProtected
+class ChatController extends SiteController implements IProtected
 {
     private const MESSAGES_LIMIT_PER_REQUEST = 20;
 

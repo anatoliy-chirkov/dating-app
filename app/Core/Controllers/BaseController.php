@@ -10,6 +10,8 @@ use Services\NotificationService\Notification;
 
 abstract class BaseController
 {
+    protected const VIEWS_FOLDER = 'Views';
+
     public function __call($name, $arguments)
     {
         if ($this instanceof IProtected && in_array($this->getRealMethodName($name), $this->getProtectedMethods())) {
@@ -26,6 +28,9 @@ abstract class BaseController
         return $this->$realActionName(...$arguments);
     }
 
+    abstract protected function isAuthorized(): bool;
+    abstract protected function getViewsPath(): string;
+
     protected function renderJson(array $response)
     {
         header('Content-Type: application/json');
@@ -36,49 +41,34 @@ abstract class BaseController
 
     protected function render($vars = []): string
     {
-        $serviceContainer = ServiceContainer::getInstance();
-
-        $innerViewPath = $this->getViewPath();
-        $socketUrl     = $serviceContainer->get('env')->get('SOCKET_URL');
-        $title         = $serviceContainer->get('env')->get('APP_NAME');
-        $description   = $serviceContainer->get('env')->get('APP_DESCRIPTION');
-        /** @var Notification $notification */
-        $notification  = $serviceContainer->get('notification_service')->flush();
-        $isAuthorized  = $serviceContainer->get('auth_service')->verifyCookieToken();
-
-        if ($isAuthorized) {
-            $me = $serviceContainer->get('auth_service')->getUser();
-            $countNotReadMessages = $serviceContainer->get('message_repository')->getCountNotReadMessages($me['id']);
-            $countNotSeenVisits = $serviceContainer->get('visit_repository')->getNotSeenVisitsCount($me['id']);
-
-            /** @var UserRepository $userRepository */
-            $userRepository = $serviceContainer->get('user_repository');
-            $userRepository->setTemporaryOnline($me['id']);
-        } else {
-            $me = [];
-            $countNotReadMessages = 0;
-        }
+        $isAuthorized  = $this->isAuthorized();
+        $innerViewPath = $this->getViewsPath() . '/' . $this->getViewFolderName() . '/' . $this->getViewName();
+        $notification = ServiceContainer::getInstance()->get('notification_service')->flush();
 
         foreach ($vars as $varName => $varValue) {
             $$varName = $varValue;
         }
 
         unset($vars);
-        unset($serviceContainer);
 
-        return require_once APP_PATH . '/Views/layout.php';
+        return require_once $this->getViewsPath() . '/' . $this->getLayoutName();
     }
 
-    /**
-     * @return string
-     */
-    private function getViewPath(): string
+    protected function getLayoutName(): string
+    {
+        return 'layout.php';
+    }
+
+    private function getViewName()
     {
         $backtrace = debug_backtrace();
-        $folderName = str_replace('Controller', '', array_pop(explode('\\', static::class)));
-        $viewName = $backtrace[2]['function'] . '.php';
+        $functionName = $backtrace[2]['function'] !== 'render' ? $backtrace[2]['function'] : $backtrace[3]['function'];
+        return $functionName  . '.php';
+    }
 
-        return APP_PATH . '/' . 'Views' . '/' . $folderName . '/' . $viewName;
+    private function getViewFolderName()
+    {
+        return str_replace('Controller', '', array_pop(explode('\\', static::class)));
     }
 
     private function getRealMethodName(string $fixtureName)

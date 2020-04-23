@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Core\Controllers\BaseController;
+use Controllers\Shared\SiteController;
 use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
@@ -13,7 +13,7 @@ use Services\GoogleGeoService\GoogleGeoService;
 use Services\NotificationService\NotificationService;
 use Services\UserService\UserService;
 
-class AuthController extends BaseController implements IProtected
+class AuthController extends SiteController implements IProtected
 {
     public function getProtectedMethods()
     {

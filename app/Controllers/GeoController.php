@@ -2,13 +2,13 @@
 
 namespace Controllers;
 
-use Core\Controllers\BaseController;
+use Controllers\Shared\SiteController;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Repositories\GoogleGeoRepository;
 use Services\GoogleGeoService\IGoogleGeoType;
 
-class GeoController extends BaseController
+class GeoController extends SiteController
 {
     public function search(Request $request)
     {

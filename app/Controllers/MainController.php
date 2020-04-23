@@ -2,12 +2,12 @@
 
 namespace Controllers;
 
-use Core\Controllers\BaseController;
+use Controllers\Shared\SiteController;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Repositories\UserRepository\UserRepository;
 
-class MainController extends BaseController
+class MainController extends SiteController
 {
     public function main(Request $request)
     {
