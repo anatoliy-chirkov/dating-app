@@ -47,7 +47,6 @@ class CreateCounterModule extends AbstractMigration
         $counterActionTable = $this->table('counterAction');
         $counterActionTable
             ->addColumn('type', 'enum', ['values' => ['reduce', 'increase']])
-            ->addColumn('name', 'string', ['limit' => 255])
             ->addColumn('counterId', 'integer')
             ->addColumn('actionId', 'integer')
             ->addColumn('multiplier', 'double')

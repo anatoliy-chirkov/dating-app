@@ -1,6 +1,7 @@
 <?php
 /**
  * @var string $innerViewPath
+ * @var \Services\NotificationService\Notification $notification
  */
 ?>
 <!DOCTYPE html>
@@ -17,9 +18,32 @@
     <link rel="stylesheet" type="text/css" href="/assets/lib/jquery.vectormap/jquery-jvectormap-1.2.2.css"/>
     <link rel="stylesheet" type="text/css" href="/assets/lib/jqvmap/jqvmap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/assets/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/lib/select2/css/select2.min.css"/>
     <link rel="stylesheet" href="/assets/css/app.css" type="text/css"/>
 </head>
 <body>
+<script src="/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+<script src="/assets/lib/perfect-scrollbar/js/perfect-scrollbar.min.js" type="text/javascript"></script>
+<script src="/assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+<script src="/assets/js/app.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/jquery.flot.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/jquery.flot.pie.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/jquery.flot.time.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/jquery.flot.resize.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/plugins/jquery.flot.orderBars.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/plugins/curvedLines.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-flot/plugins/jquery.flot.tooltip.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery.sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
+<script src="/assets/lib/countup/countUp.min.js" type="text/javascript"></script>
+<script src="/assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/assets/lib/jqvmap/jquery.vmap.min.js" type="text/javascript"></script>
+<script src="/assets/lib/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
+<script src="/assets/js/app-dashboard.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        App.init();
+    });
+</script>
 <div class="be-wrapper be-fixed-sidebar">
     <nav class="navbar navbar-expand fixed-top be-top-header">
         <div class="container-fluid">
@@ -49,34 +73,38 @@
                 <div class="left-sidebar-scroll">
                     <div class="left-sidebar-content">
                         <ul class="sidebar-elements">
-<!--                            <li class="divider">Menu</li>-->
-                            <li class="active"><a href="/"><i class="icon mdi mdi-case"></i><span>Dashboard</span></a>
+                            <li <?=$_SERVER['REQUEST_URI'] === '/' ? 'class="active"' : ''?>><a href="/"><i class="icon mdi mdi-case"></i><span>Dashboard</span></a>
                             </li>
                             <li class="parent"><a href="#"><i class="icon mdi mdi-card"></i><span>Payments</span></a>
                                 <ul class="sub-menu">
-                                    <li><a href="/payments/bills"><span class="badge badge-primary float-right">New</span>Bills</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'bill') !== false ? 'class="active"' : ''?>>
+                                        <a href="/payments/bills"><span class="badge badge-primary float-right">New</span>Bills</a>
                                     </li>
-                                    <li><a href="/payments/purchases">Purchases</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'purchase') !== false ? 'class="active"' : ''?>>
+                                        <a href="/payments/purchases">Purchases</a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="parent"><a href="#"><i class="icon mdi mdi-labels"></i><span>Products</span></a>
                                 <ul class="sub-menu">
-                                    <li><a href="/products/advantages">Advantages</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'advantage') !== false ? 'class="active"' : ''?>>
+                                        <a href="/products/advantages">Advantages</a>
                                     </li>
-                                    <li><a href="/products/pushers">Pushers</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'pusher') !== false ? 'class="active"' : ''?>>
+                                        <a href="/products/pushers">Pushers</a>
                                     </li>
-                                    <li><a href="/products/counters">Counters</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'counter') !== false ? 'class="active"' : ''?>>
+                                        <a href="/products/counters">Counters</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li>
+                            <li <?=$_SERVER['REQUEST_URI'] === '/users' ? 'class="active"' : ''?>>
                                 <a href="/users"><i class="icon mdi mdi-accounts"></i><span>Users</span></a>
                             </li>
-                            <li>
+                            <li <?=$_SERVER['REQUEST_URI'] === '/bots' ? 'class="active"' : ''?>>
                                 <a href="/bots"><i class="icon mdi mdi-devices"></i><span>Bots</span></a>
                             </li>
-                            <li>
+                            <li <?=$_SERVER['REQUEST_URI'] === '/logs' ? 'class="active"' : ''?>>
                                 <a href="/logs"><i class="icon mdi mdi-file-text"></i><span>Logs</span></a>
                             </li>
                         </ul>
@@ -88,7 +116,11 @@
     <div class="be-content">
         <div class="main-content container-fluid">
         <? if (!isset($LAYOUT_NOTIFICATION_OFF) && $notification->isset()): ?>
-            <div class="notification <?=$notification->type?>"><?= $notification->message ?></div>
+            <div class="alert alert-<?=$notification->type === 'error' ? 'danger' : 'success'?> alert-dismissible" role="alert">
+                <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span class="mdi mdi-close" aria-hidden="true"></span></button>
+                <div class="icon"> <span class="mdi mdi-<?=$notification->type === 'error' ? 'close-circle-o' : 'check'?>"></span></div>
+                <div class="message"><strong><?=ucfirst($notification->type)?></strong> <?=$notification->message?></div>
+            </div>
         <? endif; ?>
 
         <? require_once $innerViewPath; ?>
@@ -110,30 +142,5 @@
         </div>
     </nav>
 </div>
-<script src="/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
-<script src="/assets/lib/perfect-scrollbar/js/perfect-scrollbar.min.js" type="text/javascript"></script>
-<script src="/assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-<script src="/assets/js/app.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/jquery.flot.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/jquery.flot.pie.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/jquery.flot.time.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/jquery.flot.resize.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/plugins/jquery.flot.orderBars.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/plugins/curvedLines.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-flot/plugins/jquery.flot.tooltip.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery.sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
-<script src="/assets/lib/countup/countUp.min.js" type="text/javascript"></script>
-<script src="/assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-<script src="/assets/lib/jqvmap/jquery.vmap.min.js" type="text/javascript"></script>
-<script src="/assets/lib/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
-<script src="/assets/js/app-dashboard.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        //-initialize the javascript
-        App.init();
-        App.dashboard();
-
-    });
-</script>
 </body>
 </html>

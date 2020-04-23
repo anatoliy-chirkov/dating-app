@@ -125,7 +125,7 @@ SQL;
         return empty($rows) ? [] : $rows[0];
     }
 
-    public function search(array $sex = null, int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, int $page = 1)
+    public function search(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, int $page = 1)
     {
         $sql = <<<SQL
 SELECT user.*, g.fullName AS city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
@@ -139,7 +139,7 @@ SQL;
         return $this->dbContext->query($sql);
     }
 
-    public function count(array $sex = null, int $ageFrom = null, int $ageTo = null, array $googleGeoId = null): int
+    public function count(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null): int
     {
         $sql = <<<SQL
 SELECT count(user.id) 
@@ -155,7 +155,7 @@ SQL;
         return $this->dbContext->query($sql)[0][0];
     }
 
-    private function addSQLWhereStatementToSearch(string $sql, array $sex = null, int $ageFrom = null, int $ageTo = null, array $googleGeoId = null)
+    private function addSQLWhereStatementToSearch(string $sql, array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null)
     {
         if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $googleGeoId) {
             $sql .= ' ' . 'WHERE';

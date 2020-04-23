@@ -72,7 +72,7 @@ class Validator
 
     public function validateXss($value)
     {
-        return strpos($value, '<script') === false;
+        return (is_scalar($value) && strpos($value, '<script') === false) || is_array($value);
     }
 
     public function validateRequired($value)
