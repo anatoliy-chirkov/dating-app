@@ -7,13 +7,20 @@ use Admin\Repositories\AdvantageRepository;
 use Admin\Repositories\CounterRepository;
 use Admin\Repositories\PusherRepository;
 use Admin\Services\AdvantageService;
+use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Core\Validation\Validator;
 use Services\NotificationService\NotificationService;
 
-class ProductController extends AdminController
+class ProductController extends AdminController implements IProtected
 {
+    public function getProtectedMethods()
+    {
+        return ['advantages', 'pushers', 'counters', 'createAdvantage', 'createPusher',
+            'createCounter', 'editAdvantage', 'editPusher'];
+    }
+
     // SELECT
 
     public function advantages()

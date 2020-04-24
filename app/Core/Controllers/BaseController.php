@@ -4,9 +4,6 @@ namespace Core\Controllers;
 
 use Core\Controllers\Exceptions\ForbiddenException;
 use Core\ServiceContainer;
-use Repositories\UserRepository\UserRepository;
-use Services\AuthService;
-use Services\NotificationService\Notification;
 
 abstract class BaseController
 {
@@ -15,10 +12,8 @@ abstract class BaseController
     public function __call($name, $arguments)
     {
         if ($this instanceof IProtected && in_array($this->getRealMethodName($name), $this->getProtectedMethods())) {
-            /** @var AuthService $authService */
-            $authService = ServiceContainer::getInstance()->get('auth_service');
 
-            if (!$authService->verifyCookieToken()) {
+            if (!$this->isAuthorized()) {
                 throw new ForbiddenException();
             }
         }
