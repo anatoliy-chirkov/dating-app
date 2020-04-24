@@ -3,9 +3,7 @@
 namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
-use Admin\Repositories\AdvantageRepository;
-use Admin\Repositories\CounterRepository;
-use Admin\Repositories\PusherRepository;
+use Admin\Repositories\ProductRepository;
 use Admin\Services\AdvantageService;
 use Core\Controllers\IProtected;
 use Core\Http\Request;
@@ -17,218 +15,158 @@ class ProductController extends AdminController implements IProtected
 {
     public function getProtectedMethods()
     {
-        return ['advantages', 'pushers', 'counters', 'createAdvantage', 'createPusher',
-            'createCounter', 'editAdvantage', 'editPusher'];
+        return ['all', 'create', 'edit'];
     }
 
-    // SELECT
+    /** @var ProductRepository $productRepository */
+    private $productRepository;
 
-    public function advantages()
+    public function __construct()
     {
-        /** @var AdvantageRepository $advantageRepository */
-        $advantageRepository = ServiceContainer::getInstance()->get('advantage_repository');
+        $this->productRepository = ServiceContainer::getInstance()->get('product_repository');
+    }
 
+    public function all()
+    {
         return $this->render([
-            'advantages' => $advantageRepository->advantages(),
+            'products' => $this->productRepository->products(),
         ]);
     }
 
-    public function pushers()
+    public function create(Request $request)
     {
-        /** @var PusherRepository $pusherRepository */
-        $pusherRepository = ServiceContainer::getInstance()->get('pusher_repository');
-
-        return $this->render([
-            'pushers' => $pusherRepository->pushers(),
-        ]);
-    }
-
-    public function counters()
-    {
-        /** @var CounterRepository $counterRepository */
-        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
-
-        return $this->render([
-            'counters' => $counterRepository->counters(),
-        ]);
-    }
-
-    // CREATE
-
-    public function createAdvantage(Request $request)
-    {
-        if ($request->isPost() && $this->saveAdvantage($request, 'create')) {
-            $request->redirect('/products/advantages');
-        }
-
-        /** @var AdvantageRepository $advantageRepository */
-        $advantageRepository = ServiceContainer::getInstance()->get('advantage_repository');
-
-        return $this->render([
-            'permissions' => $advantageRepository->permissions(),
-            'accesses' => $advantageRepository->accesses(),
-            'groups' => $advantageRepository->advantageGroups(),
-        ]);
-    }
-
-    public function createPusher(Request $request)
-    {
-        if ($request->isPost() && $this->savePusher($request, 'create')) {
-            $request->redirect('/products/pushers');
-        }
-
-        /** @var PusherRepository $pusherRepository */
-        $pusherRepository = ServiceContainer::getInstance()->get('pusher_repository');
-
-        return $this->render([
-            'pusherCommands' => $pusherRepository->commands()
-        ]);
-    }
-
-    public function createCounter(Request $request)
-    {
-        if ($request->isPost()) {
-            $request->redirect('/products/counters');
-        }
-
-        return $this->render();
-    }
-
-    // UPDATE
-
-    public function editAdvantage(Request $request, int $id)
-    {
-        /** @var AdvantageRepository $advantageRepository */
-        $advantageRepository = ServiceContainer::getInstance()->get('advantage_repository');
-
-        if ($request->isPost() && $this->saveAdvantage($request, 'update')) {
-            $request->redirect('/products/advantages');
-        }
-
-        $advantagePermissions = $advantageRepository->advantagePermissions($id);
-        $advantagePermissionsId = [];
-        foreach ($advantagePermissions as $advantagePermission) {
-            $advantagePermissionsId[] = $advantagePermission['permissionId'];
+        if ($request->isPost() && $this->save($request, 'create')) {
+            $request->redirect('/products');
         }
 
         return $this->render([
-            'permissions' => $advantageRepository->permissions(),
-            'accesses' => $advantageRepository->accesses(),
-            'groups' => $advantageRepository->advantageGroups(),
-            'advantage' => $advantageRepository->advantage($id),
-            'advantagePermissionsId' => $advantagePermissionsId
+            'actions' => $this->productRepository->actions(),
+            'commands' => $this->productRepository->commands(),
+            'groups' => $this->productRepository->productGroups(),
         ]);
     }
 
-    public function editPusher(Request $request, int $id)
+    public function edit(Request $request, int $id)
     {
-        if ($request->isPost() && $this->savePusher($request, 'update')) {
-            $request->redirect('/products/pushers');
+        if ($request->isPost() && $this->save($request, 'update')) {
+            $request->redirect('/products');
         }
 
-        /** @var PusherRepository $pusherRepository */
-        $pusherRepository = ServiceContainer::getInstance()->get('pusher_repository');
+        $productActions = $this->productRepository->productActions($id);
+        $productActionsId = [];
+
+        foreach ($productActions as $productAction) {
+            $productActionsId[] = $productAction['actionId'];
+        }
+
+        $productCommands = $this->productRepository->productCommands($id);
+        $productCommandsId = [];
+
+        foreach ($productCommands as $productCommand) {
+            $productCommandsId[] = $productCommand['commandId'];
+        }
 
         return $this->render([
-            'pusherCommands' => $pusherRepository->commands(),
-            'pusher' => $pusherRepository->pusher($id),
+            'actions' => $this->productRepository->actions(),
+            'commands' => $this->productRepository->commands(),
+            'groups' => $this->productRepository->productGroups(),
+            'product' => $this->productRepository->product($id),
+            'productActionsId' => $productActionsId,
+            'productCommandsId' => $productCommandsId,
         ]);
     }
 
-    // PRIVATE
-
-    private function savePusher(Request $request, string $type): bool
+    private function save(Request $request, string $type): bool
     {
-        /** @var PusherRepository $pusherRepository */
-        $pusherRepository = ServiceContainer::getInstance()->get('pusher_repository');
-
         // VALIDATE
         /** @var Validator $validator */
         $validator = ServiceContainer::getInstance()->get('validator');
         $validate = [
             'name' => 'required',
-            'pusherCommandId' => 'required',
-        ];
-        if ($type === 'update') {
-            $validate = array_merge($validate, ['id' => 'required']);
-        }
-        $isValid = $validator->isValid($request->post(), $validate);
-        // VALIDATE END
-
-        if (!$isValid) {
-            // VALIDATION ERROR (!)
-            /** @var NotificationService $notificationService */
-            $notificationService = ServiceContainer::getInstance()->get('notification_service');
-            $notificationService->set('error', $validator->getFirstError());
-            return false;
-        } else {
-            // SAVING
-            $args = [
-                $request->post('name'),
-                $request->post('pusherCommandId'),
-                $request->post('price', 0),
-                !empty($request->post('isActive'))
-            ];
-            if ($type === 'update') {
-                array_unshift($args, $request->post('id'));
-                $pusherRepository->updatePusher(...$args);
-            } else {
-                $pusherRepository->addPusher(...$args);
-            }
-            // END SAVING
-
-            return true;
-        }
-    }
-
-    private function saveAdvantage(Request $request, string $type): bool
-    {
-        /** @var AdvantageRepository $advantageRepository */
-        $advantageRepository = ServiceContainer::getInstance()->get('advantage_repository');
-
-        // VALIDATE
-        /** @var Validator $validator */
-        $validator = ServiceContainer::getInstance()->get('validator');
-        $validate = [
-            'name' => 'required',
-            'permissionId' => 'required',
-            'accessId' => 'required',
+            'groupId' => 'required',
             'duration' => 'required',
         ];
         if ($type === 'update') {
             $validate = array_merge($validate, ['id' => 'required']);
         }
-        $isValidFull = $validator->isValid($request->post(), $validate);
-        $isValidGroup = $request->post('groupName') || $request->post('groupId');
+        $isValidOther = $validator->isValid($request->post(), $validate);
+        $isValidActionCommand = $request->post('actionId') || $request->post('commandId');
         // VALIDATE END
 
-        if (!$isValidFull || !$isValidGroup) {
+        if (!$isValidOther || !$isValidActionCommand) {
             // VALIDATION ERROR (!)
             /** @var NotificationService $notificationService */
             $notificationService = ServiceContainer::getInstance()->get('notification_service');
-            $notificationService->set('error', $validator->getFirstError());
+            $notificationService->set('error', 'Some fields was filled not correct');
             return false;
         } else {
             // SAVING
-            $groupId = $request->post('groupId');
-            if ($groupId === null) {
-                $groupId = $advantageRepository->addAdvantageGroup($request->post('groupName'));
-            }
-            /** @var AdvantageService $advantageService */
-            $advantageService = ServiceContainer::getInstance()->get('advantage_service');
-            $args = [
-                $groupId,
-                $request->post('name'),
-                $request->post('permissionId'),
-                $request->post('accessId'),
-                $request->post('price', 0),
-                $request->post('duration'),
-                !empty($request->post('isActive'))
-            ];
+
             if ($type === 'update') {
-                array_unshift($args, $request->post('id'));
+                $this->productRepository->updateProduct(
+                    $request->post('id'),
+                    $request->post('name'),
+                    '',
+                    $request->post('groupId'),
+                    $request->post('duration'),
+                    $request->post('price', 0),
+                    !empty($request->post('isFree')),
+                    !empty($request->post('isActive'))
+                );
+
+                if ($request->post('actionId') !== null) {
+                    $this->productRepository->removeProductActions($request->post('id'));
+
+                    foreach ($request->post('actionId') as $actionId) {
+                        $this->productRepository->addProductAction($request->post('id'), $actionId);
+                    }
+                }
+
+                if ($request->post('commandId') !== null) {
+                    $this->productRepository->removeProductCommands($request->post('id'));
+
+                    foreach ($request->post('commandId') as $commandId) {
+                        $this->productRepository->addProductCommand($request->post('id'), $commandId);
+                    }
+                }
+            } else {
+                $id = $this->productRepository->addProduct(
+                    $request->post('name'),
+                    '',
+                    $request->post('groupId'),
+                    $request->post('duration'),
+                    $request->post('price', 0),
+                    !empty($request->post('isFree')),
+                    !empty($request->post('isActive'))
+                );
+
+                if ($request->post('actionId') !== null) {
+                    foreach ($request->post('actionId') as $actionId) {
+                        $this->productRepository->addProductAction($id, $actionId);
+                    }
+                }
+
+                if ($request->post('commandId') !== null) {
+                    foreach ($request->post('commandId') as $commandId) {
+                        $this->productRepository->addProductCommand($id, $commandId);
+                    }
+                }
             }
-            $advantageService->$type(...$args);
+//            /** @var AdvantageService $advantageService */
+//            $advantageService = ServiceContainer::getInstance()->get('advantage_service');
+//            $args = [
+//                $groupId,
+//                $request->post('name'),
+//                $request->post('permissionId'),
+//                $request->post('accessId'),
+//                $request->post('price', 0),
+//                $request->post('duration'),
+//                !empty($request->post('isActive'))
+//            ];
+//            if ($type === 'update') {
+//                array_unshift($args, $request->post('id'));
+//            }
+//            $advantageService->$type(...$args);
             // END SAVING
 
             return true;

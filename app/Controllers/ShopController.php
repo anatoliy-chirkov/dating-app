@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Admin\Repositories\AdvantageRepository;
+use Admin\Repositories\ProductRepository;
 use Controllers\Shared\SiteController;
 use Core\Controllers\IProtected;
 use Core\ServiceContainer;
@@ -16,10 +16,10 @@ class ShopController extends SiteController implements IProtected
 
     public function main()
     {
-        /** @var AdvantageRepository $advantageRepository */
-        $advantageRepository = ServiceContainer::getInstance()->get('advantage_repository');
+        /** @var ProductRepository $productRepository */
+        $productRepository = ServiceContainer::getInstance()->get('product_repository');
 
-        $advantages = [
+        $groupsWithProducts = [
             [
                 'name' => '💬 Премиум',
                 'about' => "Для общения с новыми девушками необходимо оплачивать премиум-аккаунт.
@@ -98,7 +98,7 @@ class ShopController extends SiteController implements IProtected
         ];
 
         return $this->render([
-            'advantages' => $advantages, //$advantageRepository->getAdvantagesForBuy(),
+            'groupsWithProducts' => $groupsWithProducts, //$productRepository->notFreeProducts(),
         ]);
     }
 

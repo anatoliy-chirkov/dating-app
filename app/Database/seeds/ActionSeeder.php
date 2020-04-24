@@ -17,22 +17,36 @@ class ActionSeeder extends AbstractSeed
     {
         $data = [
             [
-                'name' => 'putOneRuble',
-            ],
-            [
-                'name' => 'putOneDollar',
-            ],
-            [
-                'name' => 'putOneEuro',
-            ],
-            [
                 'name' => 'sendMessageToGirl',
+                'canReduce' => true,
+            ],
+            [
+                'name' => 'seeVisits',
+                'canReduce' => true,
+            ],
+            [
+                'name' => 'hideVisit',
+                'canReduce' => true,
+            ],
+            [
+                'name' => 'hideOnline',
+                'canReduce' => true,
+            ],
+            [
+                'name' => 'bulkMessage',
+                'canReduce' => true,
+            ],
+            [
+                'name' => 'putMoney',
+                'canReduce' => false,
             ],
             [
                 'name' => 'newDay',
+                'canReduce' => false,
             ],
             [
                 'name' => 'registration',
+                'canReduce' => false,
             ],
         ];
 

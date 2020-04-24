@@ -50,8 +50,7 @@ $serviceContainer
     ->set('google_geo_repository', new \Repositories\GoogleGeoRepository())
     ->set('visit_repository', new \Repositories\VisitRepository())
     ->set('goal_repository', new \Repositories\GoalRepository())
-    ->set('advantage_repository', new \Admin\Repositories\AdvantageRepository())
-    ->set('pusher_repository', new \Admin\Repositories\PusherRepository())
+    ->set('product_repository', new \Admin\Repositories\ProductRepository())
     ->set('counter_repository', new \Admin\Repositories\CounterRepository())
 
     // Services

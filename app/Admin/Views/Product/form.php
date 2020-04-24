@@ -1,57 +1,55 @@
 <?php
 /**
  * ALWAYS
- * @var array $permissions
- * @var array $accesses
+ * @var array $actions
  * @var array $groups
- * @var string $title
- * @var string $action
+ * @var array $commands
+ * @var string $formTitle
+ * @var string $formAction
  * SPECIAL
- * @var array $advantage
- * @var array $advantagePermissionsId
+ * @var array $product
+ * @var array $productActionsId
+ * @var array $productCommandsId
  */
 
-if (!isset($advantage)) {
-    $advantage = [];
+if (!isset($product)) {
+    $product = [];
 }
-if (!isset($advantagePermissionsId)) {
-    $advantagePermissionsId = [];
+if (!isset($productActionsId)) {
+    $productActionsId = [];
+}
+if (!isset($productCommandsId)) {
+    $productCommandsId = [];
 }
 ?>
 <div class="row">
     <div class="col-md-12">
         <div class="card card-border-color card-border-color-primary">
-            <div class="card-header card-header-divider"><?=$title?></div>
+            <div class="card-header card-header-divider"><?=$formTitle?></div>
             <div class="card-body">
-                <form method="POST" action="<?=$action?>">
-                    <input name="id" hidden value="<?=$advantage['id']?>">
+                <form method="POST" action="<?=$formAction?>">
+                    <input name="id" hidden value="<?=$product['id']?>">
                     <div class="form-group">
                         <label for="inputGroup">Group</label>
-                        <p><small>Choose or add new</small></p>
-                        <div class="row">
-                            <div class="col-6 col-sm-4 col-lg-3">
-                                <select class="form-control" name="groupId" id="inputGroup">
-                                    <option> </option>
-                                    <?php foreach ($groups as $group): ?>
-                                        <option
-                                            value="<?=$group['id']?>"
-                                            <?=$advantage['groupId'] === $group['id'] ? 'selected' : ''?>
-                                        >
-                                            <?=$group['name']?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-6 col-sm-4 col-lg-3">
-                                <input class="form-control" id="inputGroup" type="text" name="groupName">
-                            </div>
+                        <div class="col-12 col-sm-8 col-lg-6 row">
+                            <select class="form-control" name="groupId" id="inputGroup">
+                                <option> </option>
+                                <?php foreach ($groups as $group): ?>
+                                    <option
+                                        value="<?=$group['id']?>"
+                                        <?=$product['groupId'] === $group['id'] ? 'selected' : ''?>
+                                    >
+                                        <?=$group['name']?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="inputName">Name</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
-                            <input class="form-control" id="inputName" type="text" name="name" value="<?=$advantage['name']?>">
+                            <input class="form-control" id="inputName" type="text" name="name" value="<?=$product['name']?>">
                         </div>
                     </div>
 
@@ -59,7 +57,7 @@ if (!isset($advantagePermissionsId)) {
                         <label for="inputPrice">Price</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
                             <div class="input-group mb-3">
-                                <input class="form-control" type="text" name="price" id="inputPrice" value="<?=$advantage['price']?>">
+                                <input class="form-control" type="text" name="price" id="inputPrice" value="<?=$product['price']?>">
                                 <div class="input-group-append"><span class="input-group-text">roubles</span></div>
                             </div>
                         </div>
@@ -69,23 +67,23 @@ if (!isset($advantagePermissionsId)) {
                         <label for="inputDuration">Duration</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
                             <div class="input-group mb-3">
-                                <input class="form-control" type="text" name="duration" id="inputDuration" value="<?=$advantage['duration']?>">
+                                <input class="form-control" type="text" name="duration" id="inputDuration" value="<?=$product['duration']?>">
                                 <div class="input-group-append"><span class="input-group-text">hours</span></div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="inputPermission">Permissions</label>
+                        <label for="inputAction">Actions</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
-                            <select class="select2" multiple="" name="permissionId[]" id="inputPermission">
+                            <select class="select2" multiple="" name="actionId[]" id="inputAction">
                                 <option> </option>
-                                <?php foreach ($permissions as $permission): ?>
+                                <?php foreach ($actions as $action): ?>
                                     <option
-                                        value="<?=$permission['id']?>"
-                                        <?=in_array($permission['id'], $advantagePermissionsId) ? 'selected' : ''?>
+                                        value="<?=$action['id']?>"
+                                        <?=in_array($action['id'], $productActionsId) ? 'selected' : ''?>
                                     >
-                                        <?=$permission['name']?>
+                                        <?=$action['name']?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -93,15 +91,16 @@ if (!isset($advantagePermissionsId)) {
                     </div>
 
                     <div class="form-group">
-                        <label for="inputAccess">Access</label>
+                        <label for="inputCommand">Commands</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
-                            <select class="form-control" name="accessId" id="inputAccess">
-                                <?php foreach ($accesses as $access): ?>
+                            <select class="select2" multiple="" name="commandId[]" id="inputCommand">
+                                <option> </option>
+                                <?php foreach ($commands as $command): ?>
                                     <option
-                                        value="<?=$access['id']?>"
-                                        <?=$advantage['accessId'] === $access['id'] ? 'selected' : ''?>
+                                        value="<?=$command['id']?>"
+                                        <?=in_array($command['id'], $productCommandsId) ? 'selected' : ''?>
                                     >
-                                        <?=$access['name']?>
+                                        <?=$command['name']?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -114,11 +113,26 @@ if (!isset($advantagePermissionsId)) {
                                 <input
                                     class="custom-control-input"
                                     type="checkbox"
-                                    id="check3"
+                                    id="checkFreeProduct"
                                     name="isActive"
-                                    <?=$advantage['isActive'] ? 'checked' : ''?>
+                                    <?=$product['isFree'] ? 'checked' : ''?>
                                 >
-                                <label class="custom-control-label" for="check3">Turn on after save</label>
+                                <label class="custom-control-label" for="checkFreeProduct">Free product</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-12 col-sm-8 col-lg-6">
+                            <div class="custom-control custom-checkbox">
+                                <input
+                                    class="custom-control-input"
+                                    type="checkbox"
+                                    id="checkIsActive"
+                                    name="isActive"
+                                    <?=$product['isActive'] ? 'checked' : ''?>
+                                >
+                                <label class="custom-control-label" for="checkIsActive">Turn on after save</label>
                             </div>
                         </div>
                     </div>
@@ -141,5 +155,6 @@ if (!isset($advantagePermissionsId)) {
 <script type="text/javascript">
     $(document).ready(function(){
         App.formElements();
+
     });
 </script>

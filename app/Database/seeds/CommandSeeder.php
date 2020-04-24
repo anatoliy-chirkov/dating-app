@@ -3,7 +3,7 @@
 
 use Phinx\Seed\AbstractSeed;
 
-class AccessSeeder extends AbstractSeed
+class CommandSeeder extends AbstractSeed
 {
     /**
      * Run Method.
@@ -17,14 +17,11 @@ class AccessSeeder extends AbstractSeed
     {
         $data = [
             [
-                'name' => 'afterBuy',
-            ],
-            [
-                'name' => 'afterRegistration',
+                'name' => 'raiseProfile',
             ],
         ];
 
-        $posts = $this->table('access');
+        $posts = $this->table('command');
         $posts->insert($data)->save();
     }
 }

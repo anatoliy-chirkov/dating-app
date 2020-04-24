@@ -1,7 +1,7 @@
 <?php
 /**
  * @var array $me
- * @var array $advantages
+ * @var array $groupsWithProducts
  */
 ?>
 
@@ -30,25 +30,21 @@
 <!--    </div>-->
 
     <div class="products">
-        <form method="POST" action="/shop/buy">
-                <?php foreach ($advantages as $advantage): ?>
-                    <div class="group">
-                        <div class="name"><?=$advantage['name']?></div>
-                        <div class="about"><?=$advantage['about']?></div>
-                        <div class="products-list">
-                            <?php foreach ($advantage['products'] as $product): ?>
-                                <div class="product">
-                                    <input type="radio" name="product[]" value="<?=$advantage['id']?>" hidden>
-                                    <div class="name"><?=$product['name']?></div>
-                                    <div class="price">Цена: <?=$product['price']?> рублей</div>
-                                    <a class="button" href="/shop/buy/<?=$product['type']?>/<?=$product['id']?>">Активировать</a>
-                                </div>
-                            <?php endforeach; ?>
+        <?php foreach ($groupsWithProducts as $groupWithProducts): ?>
+            <div class="group">
+                <div class="name"><?=$groupWithProducts['name']?></div>
+                <div class="about"><?=$groupWithProducts['about']?></div>
+                <div class="products-list">
+                    <?php foreach ($groupWithProducts['products'] as $product): ?>
+                        <div class="product">
+                            <div class="name"><?=$product['name']?></div>
+                            <div class="price">Цена: <?=$product['price']?> руб</div>
+                            <a class="button" href="/shop/buy/<?=$product['id']?>">Активировать</a>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
-        </form>
+        <?php endforeach; ?>
     </div>
 
 <!--    <div class="history">-->

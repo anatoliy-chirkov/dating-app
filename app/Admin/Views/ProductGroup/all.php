@@ -1,14 +1,14 @@
 <?php
 /**
- * @var array $counters
+ * @var array $groups
  */
 ?>
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
-            <div class="card-header">Counter
+            <div class="card-header">Product Groups
                 <div class="tools dropdown">
-                    <a class="icon mdi mdi-plus-square" href="/products/create-counter"></a>
+                    <a class="icon mdi mdi-plus-square" href="/product-groups/create"></a>
                 </div>
             </div>
             <div class="card-body">
@@ -17,23 +17,26 @@
                         <thead>
                         <tr>
                             <th style="width:20%;">Name</th>
-                            <th style="width:20%;">Status</th>
+                            <th style="width:10%;">Status</th>
                             <th style="width:10%;"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($counters as $counter): ?>
+                        <?php foreach ($groups as $group): ?>
                             <tr>
                                 <td class="cell-detail">
-                                    <?=$counter['name']?>
+                                    <?=$group['name']?>
                                 </td>
                                 <td class="cell-detail">
-                                    <?=$counter['isActive']?>
+                                    <?=$group['isActive']?>
                                 </td>
                                 <td class="text-right">
                                     <div class="btn-group btn-hspace">
-                                        <div class="btn-group btn-hspace">
-                                            <a class="btn btn-secondary" href="/products/counter/<?=$counter['id']?>">Edit <span class="icon-dropdown mdi mdi-edit"></span></a>
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">Open <span class="icon-dropdown mdi mdi-chevron-down"></span></button>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a class="dropdown-item" href="/product-groups/<?=$group['id']?>">Edit</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="/products/<?=$group['id']?>">See products</a>
                                         </div>
                                     </div>
                                 </td>

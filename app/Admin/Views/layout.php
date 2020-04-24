@@ -87,14 +87,14 @@
                             </li>
                             <li class="parent"><a href="#"><i class="icon mdi mdi-labels"></i><span>Products</span></a>
                                 <ul class="sub-menu">
-                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'advantage') !== false ? 'class="active"' : ''?>>
-                                        <a href="/products/advantages">Advantages</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'product-group') !== false ? 'class="active"' : ''?>>
+                                        <a href="/product-groups">Product Groups</a>
                                     </li>
-                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'pusher') !== false ? 'class="active"' : ''?>>
-                                        <a href="/products/pushers">Pushers</a>
+                                    <li <?=strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'class="active"' : ''?>>
+                                        <a href="/products">Products</a>
                                     </li>
                                     <li <?=strpos($_SERVER['REQUEST_URI'], 'counter') !== false ? 'class="active"' : ''?>>
-                                        <a href="/products/counters">Counters</a>
+                                        <a href="/counters">Counters</a>
                                     </li>
                                 </ul>
                             </li>

@@ -1,55 +1,38 @@
 <?php
 /**
  * ALWAYS
- * @var array $pusherCommands
- * @var string $title
- * @var string $action
+ * @var string $formTitle
+ * @var string $formAction
  * SPECIAL
- * @var array $counter
+ * @var array $group
  */
 
-if (!isset($counter)) {
-    $counter = [];
+if (!isset($group)) {
+    $group = [];
 }
 ?>
+<link rel="stylesheet" type="text/css" href="/assets/lib/summernote/summernote-bs4.css"/>
+
 <div class="row">
     <div class="col-md-12">
         <div class="card card-border-color card-border-color-primary">
-            <div class="card-header card-header-divider"><?=$title?></div>
+            <div class="card-header card-header-divider"><?=$formTitle?></div>
             <div class="card-body">
-                <form method="POST" action="<?=$action?>">
-                    <input name="id" hidden value="<?=$counter['id']?>">
+                <form method="POST" action="<?=$formAction?>">
+                    <input name="id" hidden value="<?=$group['id']?>">
 
                     <div class="form-group">
                         <label for="inputName">Name</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
-                            <input class="form-control" id="inputName" type="text" name="name" value="<?=$counter['name']?>">
+                            <input class="form-control" id="inputName" type="text" name="name" value="<?=$group['name']?>">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="inputAccess">Command</label>
-                        <div class="col-12 col-sm-8 col-lg-6 row">
-                            <select class="form-control" name="accessId" id="inputAccess">
-                                <?php foreach ($pusherCommands as $pusherCommand): ?>
-                                    <option
-                                        value="<?=$pusherCommand['id']?>"
-                                        <?=$counter['accessId'] === $pusherCommand['id'] ? 'selected' : ''?>
-                                    >
-                                        <?=$counter['name']?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputPrice">Price</label>
-                        <div class="col-12 col-sm-8 col-lg-6 row">
-                            <div class="input-group mb-3">
-                                <input class="form-control" type="text" name="price" id="inputPrice" value="<?=$counter['price']?>">
-                                <div class="input-group-append"><span class="input-group-text">roubles</span></div>
-                            </div>
+                        <label for="inputName">About</label>
+                        <textarea id="about" name="about" style="display: none"><?=$group['about']?></textarea>
+                        <div class="col-12 row">
+                            <div id="summernote"><?=$group['about']?></div>
                         </div>
                     </div>
 
@@ -61,7 +44,7 @@ if (!isset($counter)) {
                                     type="checkbox"
                                     id="check3"
                                     name="isActive"
-                                    <?=$counter['isActive'] ? 'checked' : ''?>
+                                    <?=$group['isActive'] ? 'checked' : ''?>
                                 >
                                 <label class="custom-control-label" for="check3">Turn on after save</label>
                             </div>
@@ -83,8 +66,21 @@ if (!isset($counter)) {
 <script src="/assets/lib/bootstrap-slider/bootstrap-slider.min.js" type="text/javascript"></script>
 <script src="/assets/lib/bs-custom-file-input/bs-custom-file-input.js" type="text/javascript"></script>
 <script src="/assets/js/app-form-elements.js" type="text/javascript"></script>
+<script src="/assets/lib/summernote/summernote-bs4.min.js" type="text/javascript"></script>
+<script src="/assets/lib/summernote/summernote-ext-beagle.js" type="text/javascript"></script>
+<script src="/assets/js/app-form-wysiwyg.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         App.formElements();
+        const $about = $('#about');
+
+        $('#summernote').summernote({
+            height: 300,
+            callbacks: {
+                onChange: function(contents, $editable) {
+                    $about.html(contents);
+                }
+            }
+        });
     });
 </script>

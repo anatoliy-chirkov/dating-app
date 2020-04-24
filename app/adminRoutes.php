@@ -3,7 +3,7 @@
 use Core\Http\IMethod;
 use Core\Router\Route;
 use Admin\Controllers\{MainController, AuthController, PaymentController, ProductController, UserController,
-    BotController, LogController};
+    BotController, LogController, CounterController, ProductGroupController};
 
 return [
     new Route(
@@ -39,57 +39,58 @@ return [
     ),
 
     new Route(
-        '/products/advantages',
-        ProductController::class,
-        'advantages',
+        '/product-groups',
+        ProductGroupController::class,
+        'all',
         [IMethod::GET]
     ),
     new Route(
-        '/products/pushers',
+        '/product-groups/create',
+        ProductGroupController::class,
+        'create',
+        [IMethod::GET, IMethod::POST]
+    ),
+    new Route(
+        '/product-groups/:id',
+        ProductGroupController::class,
+        'edit',
+        [IMethod::GET, IMethod::POST]
+    ),
+    new Route(
+        '/products',
         ProductController::class,
-        'pushers',
+        'all',
         [IMethod::GET]
     ),
     new Route(
-        '/products/counters',
+        '/products/create',
         ProductController::class,
-        'counters',
+        'create',
+        [IMethod::GET, IMethod::POST]
+    ),
+    new Route(
+        '/products/:id',
+        ProductController::class,
+        'edit',
+        [IMethod::GET, IMethod::POST]
+    ),
+
+    new Route(
+        '/counters',
+        CounterController::class,
+        'all',
         [IMethod::GET]
     ),
     new Route(
-        '/products/create-advantage',
-        ProductController::class,
-        'createAdvantage',
+        '/counter/create',
+        CounterController::class,
+        'create',
         [IMethod::GET, IMethod::POST]
     ),
     new Route(
-        '/products/create-pusher',
-        ProductController::class,
-        'createPusher',
-        [IMethod::GET, IMethod::POST]
-    ),
-    new Route(
-        '/products/create-counter',
-        ProductController::class,
-        'createCounter',
-        [IMethod::GET, IMethod::POST]
-    ),
-    new Route(
-        '/products/advantage/:id',
-        ProductController::class,
-        'editAdvantage',
-        [IMethod::GET, IMethod::POST]
-    ),
-    new Route(
-        '/products/pusher/:id',
-        ProductController::class,
-        'editPusher',
-        [IMethod::GET, IMethod::POST]
-    ),
-    new Route(
-        '/products/counter/:id',
-        ProductController::class,
-        'editCounter',
+        '/counter/:id',
+        CounterController::class,
+        'edit',
         [IMethod::GET, IMethod::POST]
     ),
 
