@@ -20,12 +20,12 @@ abstract class SiteController extends BaseController
 
         if ($isAuthorized) {
             $vars['me'] = $serviceContainer->get('auth_service')->getUser();
-            $vars['countNotReadMessages'] = $serviceContainer->get('message_repository')->getCountNotReadMessages($me['id']);
-            $vars['countNotSeenVisits'] = $serviceContainer->get('visit_repository')->getNotSeenVisitsCount($me['id']);
+            $vars['countNotReadMessages'] = $serviceContainer->get('message_repository')->getCountNotReadMessages($vars['me']['id']);
+            $vars['countNotSeenVisits'] = $serviceContainer->get('visit_repository')->getNotSeenVisitsCount($vars['me']['id']);
 
             /** @var UserRepository $userRepository */
             $userRepository = $serviceContainer->get('user_repository');
-            $userRepository->setTemporaryOnline($me['id']);
+            $userRepository->setTemporaryOnline($vars['me']['id']);
         } else {
             $vars['me'] = [];
             $vars['countNotReadMessages'] = 0;
