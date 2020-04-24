@@ -50,6 +50,7 @@ $serviceContainer
     ->set('google_geo_repository', new \Repositories\GoogleGeoRepository())
     ->set('visit_repository', new \Repositories\VisitRepository())
     ->set('goal_repository', new \Repositories\GoalRepository())
+    ->set('advantage_repository', new \Admin\Repositories\AdvantageRepository())
 
     // Services
     ->set('auth_service', new \Services\AuthService())
@@ -58,6 +59,7 @@ $serviceContainer
     ->set('attachment_service', new \Services\AttachmentService())
     ->set('is_user_online_service', new \Services\IsUserOnlineService())
     ->set('google_geo_service', new \Services\GoogleGeoService\GoogleGeoService())
+    ->set('shop_service', new \Services\ShopService())
 ;
 
 try {

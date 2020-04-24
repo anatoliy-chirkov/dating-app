@@ -2,7 +2,7 @@
 
 use Core\Http\IMethod;
 use Core\Router\Route;
-use Controllers\{MainController, AuthController, ChatController,
+use Controllers\{MainController, AuthController, ChatController, ShopController,
     UserController, ProfileController, GeoController, VisitController};
 
 return [
@@ -52,6 +52,12 @@ return [
         '/visits',
         VisitController::class,
         'see',
+        [IMethod::GET]
+    ),
+    new Route(
+        '/shop',
+        ShopController::class,
+        'main',
         [IMethod::GET]
     ),
     new Route(

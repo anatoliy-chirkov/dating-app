@@ -51,6 +51,23 @@ class AdvantageRepository extends Repository
         $this->context->query($sql, [$advantageId, $permissionId]);
     }
 
+    public function getAdvantagesForBuy()
+    {
+        $forBuyAccessId = 1;
+        return $this->getAdvantagesByAccessId($forBuyAccessId);
+    }
+
+    private function getAdvantagesByAccessId(int $accessId)
+    {
+        $sql = <<<SQL
+SELECT a.id, a.name, a.price, a.duration, ag.name as groupName 
+FROM advantage a 
+INNER JOIN advantageGroup ag ON ag.id = a.groupId 
+WHERE accessId = ?
+SQL;
+        return $this->context->query($sql, [$accessId]);
+    }
+
     public function userAdvantages(int $userId)
     {
         $sql = 'SELECT * FROM userAdvantage WHERE userId = ?';

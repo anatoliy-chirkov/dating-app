@@ -1048,3 +1048,79 @@ CHAT PAGE BEGIN
         width: 100%;
     }
 }
+
+/* SHOP PAGE */
+.shop-page {
+    margin-top: 20px;
+}
+.shop-page .finances {
+    color: white;
+    background-color: rgb(191, 87, 164);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 1px #00000021;
+    margin-bottom: 20px;
+}
+.shop-page .finances h2 {
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+.shop-page .finances .balance {
+    font-size: 18px;
+}
+.shop-page .finances .put-money {
+    border-top: 1px solid #b54698;
+    margin-top: 10px;
+}
+.shop-page .finances .put-money h3 {
+    margin: 10px 0 0 0;
+    color: #fff;
+}
+.shop-page .finances .put-money button {
+    border-radius: 5px;
+    height: 40px;
+    margin-bottom: 0;
+    background-color: rgba(250,207,129,1);
+    color: black;
+    border: none;
+}
+.shop-page .finances form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+.shop-page .products .products-list {
+    display: flex;
+    flex-wrap: wrap
+}
+.shop-page .products .products-list .product {
+    width: 200px;
+    background-color: white;
+    margin: 10px 20px 5px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 1px #00000021;
+}
+.shop-page .products .group {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+.shop-page .products .group .name {
+    font-size: 22px;
+    font-weight: 600;
+    color: black;
+}
+.shop-page .products .group .about {
+    padding: 10px 10px 10px 0;
+}
+.shop-page .products .group .products-list .product .name {
+    font-size: 16px;
+}
+.shop-page .products .group .products-list .product .price {
+    margin: 10px 0;
+}
+.shop-page .products .group .products-list .product a.button {
+    margin-bottom: 0;
+    margin-top: 10px;
+}

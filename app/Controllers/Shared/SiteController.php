@@ -8,7 +8,7 @@ use Repositories\UserRepository\UserRepository;
 
 abstract class SiteController extends BaseController
 {
-    protected function render($vars = []): string
+    final protected function render($vars = []): string
     {
         $serviceContainer = ServiceContainer::getInstance();
 
@@ -34,12 +34,12 @@ abstract class SiteController extends BaseController
         return parent::render($vars);
     }
 
-    protected function isAuthorized(): bool
+    final protected function isAuthorized(): bool
     {
         return ServiceContainer::getInstance()->get('auth_service')->verifyCookieToken();
     }
 
-    protected function getViewsPath(): string
+    final protected function getViewsPath(): string
     {
         return APP_PATH . '/' . self::VIEWS_FOLDER;
     }
