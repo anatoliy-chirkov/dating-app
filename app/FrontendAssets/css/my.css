@@ -1089,6 +1089,23 @@ CHAT PAGE BEGIN
     align-items: center;
     margin-bottom: 0;
 }
+.shop-page .active-products {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #efefef;
+}
+.shop-page .active-products .table-row {
+    display: flex;
+    justify-content: space-between;
+}
+.shop-page .active-products .table-row div {
+    flex: 1;
+    justify-content: flex-start;
+    display: flex;
+}
+.shop-page .active-products .table-row.table-head div {
+    font-weight: 600;
+}
 .shop-page .products .products-list {
     display: flex;
     flex-wrap: wrap

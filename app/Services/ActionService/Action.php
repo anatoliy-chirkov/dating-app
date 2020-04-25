@@ -20,7 +20,7 @@ class Action
 SELECT count(a.id) FROM action a 
 INNER JOIN productAction pa ON pa.actionId = a.id 
 INNER JOIN userProduct up ON up.productId = pa.productId 
-WHERE a.name = ? AND up.userId = ? AND up.expiredAt < NOW() 
+WHERE a.name = ? AND up.userId = ? AND up.expiredAt > NOW() 
 SQL;
         $count = $context->query($sql, [$actionName, $userId])[0][0];
 

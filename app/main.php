@@ -53,6 +53,7 @@ $serviceContainer
     ->set('product_repository', new \Repositories\ProductRepository())
     ->set('bill_repository', new \Repositories\BillRepository())
     ->set('purchase_repository', new \Repositories\PurchaseRepository())
+    ->set('log_repository', new \Repositories\LogRepository())
 
     // Services
     ->set('auth_service', new \Services\AuthService())
@@ -67,7 +68,12 @@ $serviceContainer
 try {
     (new Bootstrapper())->bootstrap();
 } catch (\Exception $e) {
-    header("HTTP/1.0 {$e->getCode()}");
+    //header("HTTP/1.0 {$e->getCode()}");
+    /** @var \Repositories\LogRepository $logRepository */
+    $logRepository = ServiceContainer::getInstance()->get('log_repository');
+    $logRepository->log($_SERVER['REQUEST_URI'], $e->getCode(), $e->getMessage());
+
+    header("Location: http://{$_SERVER['HTTP_HOST']}");
 
     echo <<<HTML
 <html>

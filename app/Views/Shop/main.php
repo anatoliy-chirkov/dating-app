@@ -2,6 +2,7 @@
 /**
  * @var array $me
  * @var array $groupsWithProducts
+ * @var array $boughtProducts
  */
 ?>
 
@@ -27,10 +28,27 @@
         </div>
     </div>
 
-<!--    <div class="active-products">-->
-<!--        <h3>Активные продукты</h3>-->
-<!--        <div></div>-->
-<!--    </div>-->
+    <?php if (!empty($boughtProducts)): ?>
+    <div class="active-products">
+        <h3>Активные продукты</h3>
+        <div>
+            <div class="table-row table-head">
+                <div>Название</div>
+                <div>Цена</div>
+                <div>Куплено</div>
+                <div>Активно до</div>
+            </div>
+            <?php foreach ($boughtProducts as $boughtProduct): ?>
+                <div class="table-row">
+                    <div><?=$boughtProduct['groupName']?>, <?=$boughtProduct['name']?></div>
+                    <div><?=$boughtProduct['price']?> руб</div>
+                    <div><?=$boughtProduct['createdAt']?></div>
+                    <div><?=$boughtProduct['expiredAt']?></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="products">
         <?php foreach ($groupsWithProducts as $groupWithProducts): ?>

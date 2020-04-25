@@ -25,7 +25,7 @@ class MessageRepository
         $sql = 'INSERT INTO message (chatId, authorId, text, createdAt) VALUES (?, ?, ?, ?)';
         $this->dbContext->query($sql, [$chatId, $authorId, $text, $createdAt]);
 
-        $sql = 'SELECT id, DATE_FORMAT(createdAt, \'%d %b %H:%i\') as createdAt FROM message WHERE chatId = ? AND authorId = ? AND createdAt = ?';
+        $sql = 'SELECT id, createdAt FROM message WHERE chatId = ? AND authorId = ? AND createdAt = ?';
         $rows = $this->dbContext->query($sql, [$chatId, $authorId, $createdAt]);
 
         if (empty($rows)) {
@@ -38,7 +38,7 @@ class MessageRepository
     public function getMessagesByChatId(int $chatId, int $limit, $offset = 0): array
     {
         $sql = <<<SQL
-(SELECT m.id, m.text, DATE_FORMAT(m.createdAt, '%d %b %H:%i') as createdAt, m.isRead, u.id as userId, u.name 
+(SELECT m.id, m.text, m.createdAt, m.isRead, u.id as userId, u.name 
 FROM message m 
 INNER JOIN user u ON u.id = m.authorId 
 WHERE chatId = ? 

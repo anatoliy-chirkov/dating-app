@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Carbon\Carbon;
 use Controllers\Shared\SiteController;
 use Core\Controllers\IProtected;
 use Core\Http\Request;
@@ -58,6 +59,11 @@ class ChatController extends SiteController implements IProtected
             $messageRepository = ServiceContainer::getInstance()->get('message_repository');
             $messages = $messageRepository->getMessagesByChatId($chatId, self::MESSAGES_LIMIT_PER_REQUEST);
 
+            foreach ($messages as &$message) {
+                $message['createdAt'] = Carbon::parse($message['createdAt'])->locale('ru')
+                    ->isoFormat('D MMMM, HH:mm');
+            }
+
             $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
             $messagesCount = $messageRepository->getAllMessagesCount($chatId);
         } else {
@@ -100,6 +106,11 @@ class ChatController extends SiteController implements IProtected
         $messages = $messageRepository->getMessagesByChatId(
             $chatId, self::MESSAGES_LIMIT_PER_REQUEST, $request->get('offset')
         );
+
+        foreach ($messages as &$message) {
+            $message['createdAt'] = Carbon::parse($message['createdAt'])->locale('ru')
+                ->isoFormat('D MMMM, HH:mm');
+        }
 
         $this->renderJson([
             'data' => [

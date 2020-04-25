@@ -2,6 +2,7 @@
 
 namespace Chat;
 
+use Carbon\Carbon;
 use Core\ServiceContainer;
 use Ratchet\ConnectionInterface;
 use Repositories\AttachmentRepository;
@@ -130,7 +131,8 @@ class Service
             'chatId'    => $chatId,
             'text'      => $text,
             'shortText' => strlen($text) > 22 ? mb_substr($text, 0, 22) . '…' : $text,
-            'createdAt' => $message['createdAt'],
+            'createdAt' => Carbon::parse($message['createdAt'])->locale('ru')
+                ->isoFormat('D MMMM, HH:mm'),
             'user'   => [
                 'id'    => $authorId,
                 'name'  => $this->store->getUserData($authorId)['name'],

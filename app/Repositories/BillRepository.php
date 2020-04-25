@@ -15,9 +15,15 @@ class BillRepository extends Repository
         return $this->context->query($sql, [$amount, $userId])[0]['id'];
     }
 
+    public function getOne(int $id)
+    {
+        $sql = 'SELECT * FROM bill WHERE id = ? LIMIT 1';
+        return $this->context->query($sql, [$id])[0];
+    }
+
     public function setPaid(int $billId, string $paidAt)
     {
-        $sql = 'UPDATE bill SET paidAt = ? WHERE billId = ?';
+        $sql = 'UPDATE bill SET paidAt = ? WHERE id = ?';
         $this->context->query($sql, [$paidAt, $billId]);
     }
 

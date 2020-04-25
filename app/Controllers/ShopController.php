@@ -24,6 +24,10 @@ class ShopController extends SiteController implements IProtected
 
     public function main()
     {
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        $user = $authService->getUser();
+
         /** @var ProductRepository $productRepository */
         $productRepository = ServiceContainer::getInstance()->get('product_repository');
 
@@ -105,8 +109,18 @@ class ShopController extends SiteController implements IProtected
             ],
         ];
 
+        $boughtProducts = $productRepository->getUserProducts($user['id']);
+
+        foreach ($boughtProducts as &$boughtProduct) {
+            $boughtProduct['createdAt'] = Carbon::parse($boughtProduct['createdAt'])
+                ->locale('ru')->isoFormat('D MMMM YYYY, HH:mm');
+            $boughtProduct['expiredAt'] = Carbon::parse($boughtProduct['expiredAt'])
+                ->locale('ru')->isoFormat('D MMMM YYYY, HH:mm');
+        }
+
         return $this->render([
             'groupsWithProducts' => $groupsWithProducts, //$productRepository->notFreeProducts(),
+            'boughtProducts' => $boughtProducts,
         ]);
     }
 
@@ -138,8 +152,14 @@ class ShopController extends SiteController implements IProtected
         $userRepository = ServiceContainer::getInstance()->get('user_repository');
         $userRepository->reduceMoney($user['id'], $product['price']);
 
+        $activeProduct = $productRepository->getActiveUserProductByGroup($user['id'], $product['groupId']);
+        $carbonStartExpiredAt = $activeProduct === null
+            ? Carbon::now()
+            : Carbon::parse($activeProduct['expiredAt'])
+        ;
+
         $createdAt = Carbon::now()->toDateTimeString();
-        $expiredAt = Carbon::now()->addHours($product['duration'])->toDateTimeString();
+        $expiredAt = $carbonStartExpiredAt->addHours($product['duration'])->toDateTimeString();
 
         $productRepository->addProductToUser($productId, $user['id'], $createdAt, $expiredAt);
 
@@ -161,17 +181,6 @@ class ShopController extends SiteController implements IProtected
         $dotEnv = ServiceContainer::getInstance()->get('env');
         $billPayments = new \Qiwi\Api\BillPayments($dotEnv->get('QIWI_SECRET_KEY'));
 
-//        $fields = [
-//            'amount' => (float) $amount,
-//            'currency' => 'RUB',
-//            //'email' => $user['email'],
-//            'expirationDateTime' => '2020-05-05T12:00:07+03:00',
-//        ];
-//
-//        /** @var \Qiwi\Api\BillPayments $billPayments */
-//        $response = $billPayments->createBill((string) $billId, $fields);
-//        $request->redirect($response['payUrl'], 'external');
-
         $params = [
             'publicKey' => $dotEnv->get('QIWI_PUBLIC_KEY'),
             'amount' => $amount,
@@ -191,7 +200,11 @@ class ShopController extends SiteController implements IProtected
         $hmacHash = $headers['X-Api-Signature-SHA256'];
 
         if (!is_object($data) || empty($hmacHash)) {
-            throw new ForbiddenException();
+            $this->renderJson([
+                'status' => 'FAIL',
+                'error' => true,
+                'errorText' => 'Forbidden',
+            ]);
         }
 
         $invoiceParameters = "{$data->amount->currency}|{$data->amount->value}|{$data->billId}|{$data->siteId}|{$data->status->value}";
@@ -201,11 +214,24 @@ class ShopController extends SiteController implements IProtected
         $hash = hash_hmac('sha256', $invoiceParameters, $dotEnv->get('QIWI_SECRET_KEY'));
 
         if ($hash !== $hmacHash) {
-            throw new ForbiddenException();
+            $this->renderJson([
+                'status' => 'FAIL',
+                'error' => true,
+                'errorText' => 'Forbidden',
+            ]);
         }
 
         /** @var BillRepository $billRepository */
         $billRepository = ServiceContainer::getInstance()->get('bill_repository');
+
+        if ($billRepository->getOne((int) $data->billId)['paidAt'] !== null) {
+            $this->renderJson([
+                'status' => 'FAIL',
+                'error' => true,
+                'errorText' => 'Bill already processed',
+            ]);
+        }
+
         $billRepository->setPaid((int) $data->billId, str_replace('T', ' ', $data->status->datetime));
         $userId = $billRepository->getUserId((int) $data->billId);
 
@@ -215,6 +241,8 @@ class ShopController extends SiteController implements IProtected
 
         $this->renderJson([
             'status' => 'OK',
+            'error' => false,
+            'errorText' => '',
         ]);
     }
 }
