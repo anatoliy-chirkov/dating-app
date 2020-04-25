@@ -54,10 +54,11 @@
     <?php if (!empty($women)): ?>
     <h3>Девушки</h3>
     <div class="results">
-        <?php
-        for ($i = 0; count($women) < 4 ? $i < count($women) : $i < 4; $i++):
-            ?>
+        <?php for ($i = 0; count($women) < 4 ? $i < count($women) : $i < 4; $i++): ?>
             <a href="/user/<?=$women[$i]['id']?>" class="profile">
+                <?php if ($women[$i]['isTop']): ?>
+                    <div class="profile-top">TOP</div>
+                <?php endif; ?>
                 <div class="image" style="background-image: url('<?=$women[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$women[$i]['name']?></span>, <?=$women[$i]['age']?></div>
@@ -65,19 +66,18 @@
                     <div class="city"><?=$women[$i]['city']?></div>
                 </div>
             </a>
-        <?php
-        endfor;
-        ?>
+        <?php endfor; ?>
     </div>
     <?php endif; ?>
 
     <?php if (!empty($men)): ?>
     <h3>Мужчины</h3>
     <div class="results">
-        <?php
-        for ($i = 0; count($men) < 4 ? $i < count($men) : $i < 4; $i++):
-            ?>
+        <?php for ($i = 0; count($men) < 4 ? $i < count($men) : $i < 4; $i++): ?>
             <a href="/user/<?=$men[$i]['id']?>" class="profile">
+                <?php if ($men[$i]['isTop']): ?>
+                    <div class="profile-top">TOP</div>
+                <?php endif; ?>
                 <div class="image" style="background-image: url('<?=$men[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$men[$i]['name']?></span>, <?=$men[$i]['age']?></div>

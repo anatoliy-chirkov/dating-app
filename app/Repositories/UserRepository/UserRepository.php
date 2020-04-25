@@ -45,8 +45,8 @@ SQL;
     public function createUser(User $user)
     {
         $sql = <<<SQL
-INSERT INTO user (sex, age, name, email, passwordHash, googleGeoId, height, weight, createdAt, lastConnected)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+INSERT INTO user (sex, age, name, email, passwordHash, googleGeoId, height, weight, createdAt, lastConnected, raisedAt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())
 SQL;
         $this->dbContext->query($sql, [
             $user->sex,
@@ -59,6 +59,24 @@ SQL;
             $user->weight,
         ]);
         return;
+    }
+
+    public function setTop(int $userId)
+    {
+        $sql = 'UPDATE user SET isTop = true WHERE id = ?';
+        $this->dbContext->query($sql, [$userId]);
+    }
+
+    public function unsetTop(int $userId)
+    {
+        $sql = 'UPDATE user SET isTop = false WHERE id = ?';
+        $this->dbContext->query($sql, [$userId]);
+    }
+
+    public function raiseProfileInSearch(int $userId)
+    {
+        $sql = 'UPDATE user SET raisedAt = NOW() WHERE id = ?';
+        $this->dbContext->query($sql, [$userId]);
     }
 
     public function increaseMoney(int $userId, float $amount)
@@ -146,6 +164,7 @@ LEFT JOIN image ON image.userId = user.id AND image.isMain = 1
 LEFT JOIN googleGeo AS g ON g.id = user.googleGeoId 
 SQL;
         $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
+        $sql .= ' ' . 'ORDER BY isTop AND raisedAt DESC';
         $sql .= ' ' . (new Page($page, self::RESULTS_PER_PAGE_ON_SEARCH))->getSql();
 
         return $this->dbContext->query($sql);

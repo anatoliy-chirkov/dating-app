@@ -53,6 +53,9 @@
     <div class="results">
         <?php foreach ($users as $user): ?>
                 <a href="/user/<?=$user['id']?>" class="profile">
+                    <?php if ($user['isTop']): ?>
+                        <div class="profile-top">TOP</div>
+                    <?php endif; ?>
                     <div class="image" style="background-image: url('<?=$user['clientPath']?>')"></div>
                     <div class="about-wrap">
                         <div class="about"><span class="name"><?=$user['name']?></span>, <?=$user['age']?></div>

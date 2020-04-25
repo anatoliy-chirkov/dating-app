@@ -5,7 +5,6 @@ namespace Controllers;
 use Carbon\Carbon;
 use Repositories\ProductRepository;
 use Controllers\Shared\SiteController;
-use Core\Controllers\Exceptions\ForbiddenException;
 use Core\Controllers\IProtected;
 use Core\DotEnv;
 use Core\Http\Request;
@@ -172,6 +171,13 @@ class ShopController extends SiteController implements IProtected
         $authService = ServiceContainer::getInstance()->get('auth_service');
         $user = $authService->getUser();
         $amount = $request->post('amount');
+
+        if (empty($amount) || $amount < 1) {
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('error', 'Сумма должна быть больше 1 руб');
+            $request->redirect('/shop');
+        }
 
         /** @var BillRepository $billRepository */
         $billRepository = ServiceContainer::getInstance()->get('bill_repository');
