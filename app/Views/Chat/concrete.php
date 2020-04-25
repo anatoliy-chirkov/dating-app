@@ -74,6 +74,7 @@
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>
+            <?php if ($receiver['sex'] === 'man' || ($receiver['sex'] === 'woman' && \Services\ActionService\Action::check(\Services\ActionService\IAction::SEND_MESSAGE_TO_GIRL, $me['id']))): ?>
             <form id="chat-form" method="POST" data-receiverId="<?=$receiver['id']?>">
                 <div class="form-main">
                     <div class="attachment">
@@ -84,6 +85,11 @@
                 </div>
                 <div class="attachment-content"></div>
             </form>
+            <?php else: ?>
+                <div style="margin-left: 20px; margin-top: 14px">
+                    Для общения с девушками приобретите премиум-аккаунт
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <!-- PhotoSwipe Begin -->

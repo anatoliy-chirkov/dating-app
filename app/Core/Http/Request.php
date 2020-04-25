@@ -21,9 +21,15 @@ class Request
         $this->rawData  = file_get_contents("php://input");
     }
 
-    public function redirect(string $to)
+    public function redirect(string $to, $type = 'internal')
     {
-        header("Location: http://{$_SERVER['HTTP_HOST']}{$to}");
+        if ($type === 'internal') {
+            $url = "http://{$_SERVER['HTTP_HOST']}{$to}";
+        } else {
+            $url = $to;
+        }
+
+        header("Location: {$url}");
         die;
     }
 

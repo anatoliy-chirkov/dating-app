@@ -9,6 +9,8 @@ use Repositories\GoogleGeoRepository;
 use Repositories\ImageRepository;
 use Repositories\UserRepository\UserRepository;
 use Repositories\VisitRepository;
+use Services\ActionService\Action;
+use Services\ActionService\IAction;
 use Services\AuthService;
 
 class UserController extends SiteController
@@ -56,9 +58,15 @@ class UserController extends SiteController
             $me = $authService->getUser();
 
             if ($me['id'] !== $userId) {
-                /** @var VisitRepository $visitRepository */
-                $visitRepository = ServiceContainer::getInstance()->get('visit_repository');
-                $visitRepository->saveVisit($userId, $me['id']);
+
+                if (
+                    !Action::hasRestrictedProduct(IAction::HIDE_VISIT)
+                    || !Action::check(IAction::HIDE_VISIT, $me['id'])
+                ) {
+                    /** @var VisitRepository $visitRepository */
+                    $visitRepository = ServiceContainer::getInstance()->get('visit_repository');
+                    $visitRepository->saveVisit($userId, $me['id']);
+                }
             }
         }
 

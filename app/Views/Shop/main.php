@@ -21,6 +21,9 @@
                     <button type="submit">Пополнить</button>
                 </div>
             </form>
+            <div>
+                <?php require APP_PATH . '/FrontendAssets/svg/icons.svg'; ?>
+            </div>
         </div>
     </div>
 

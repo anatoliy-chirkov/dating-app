@@ -2,10 +2,18 @@
 
 namespace Controllers;
 
-use Admin\Repositories\ProductRepository;
+use Carbon\Carbon;
+use Repositories\ProductRepository;
 use Controllers\Shared\SiteController;
+use Core\Controllers\Exceptions\ForbiddenException;
 use Core\Controllers\IProtected;
+use Core\DotEnv;
+use Core\Http\Request;
 use Core\ServiceContainer;
+use Repositories\BillRepository;
+use Repositories\UserRepository\UserRepository;
+use Services\AuthService;
+use Services\NotificationService\NotificationService;
 
 class ShopController extends SiteController implements IProtected
 {
@@ -102,13 +110,111 @@ class ShopController extends SiteController implements IProtected
         ]);
     }
 
-    public function buy()
+    public function buy(Request $request, int $productId)
     {
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        $user = $authService->getUser();
 
+        /** @var ProductRepository $productRepository */
+        $productRepository = ServiceContainer::getInstance()->get('product_repository');
+        $product = $productRepository->product($productId);
+
+        if ($product === null) {
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('error', 'Пожалусйта попробуйте позже.');
+            $request->redirect('/shop');
+        }
+
+        if ($user['money'] < $product['price']) {
+            /** @var NotificationService $notificationService */
+            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService->set('error', 'Недостаточно денег на счете. Пожалусйта пополните счет и повторите.');
+            $request->redirect('/shop');
+        }
+
+        /** @var UserRepository $userRepository */
+        $userRepository = ServiceContainer::getInstance()->get('user_repository');
+        $userRepository->reduceMoney($user['id'], $product['price']);
+
+        $createdAt = Carbon::now()->toDateTimeString();
+        $expiredAt = Carbon::now()->addHours($product['duration'])->toDateTimeString();
+
+        $productRepository->addProductToUser($productId, $user['id'], $createdAt, $expiredAt);
+
+        $request->redirect('/shop');
     }
 
-    public function putMoney()
+    public function putMoney(Request $request)
     {
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        $user = $authService->getUser();
+        $amount = $request->post('amount');
 
+        /** @var BillRepository $billRepository */
+        $billRepository = ServiceContainer::getInstance()->get('bill_repository');
+        $billId = $billRepository->create($amount, $user['id']);
+
+        /** @var DotEnv $dotEnv */
+        $dotEnv = ServiceContainer::getInstance()->get('env');
+        $billPayments = new \Qiwi\Api\BillPayments($dotEnv->get('QIWI_SECRET_KEY'));
+
+//        $fields = [
+//            'amount' => (float) $amount,
+//            'currency' => 'RUB',
+//            //'email' => $user['email'],
+//            'expirationDateTime' => '2020-05-05T12:00:07+03:00',
+//        ];
+//
+//        /** @var \Qiwi\Api\BillPayments $billPayments */
+//        $response = $billPayments->createBill((string) $billId, $fields);
+//        $request->redirect($response['payUrl'], 'external');
+
+        $params = [
+            'publicKey' => $dotEnv->get('QIWI_PUBLIC_KEY'),
+            'amount' => $amount,
+            'billId' => $billId,
+            'successUrl' => 'http://ankira.local/shop',
+        ];
+
+        /** @var \Qiwi\Api\BillPayments $billPayments */
+        $request->redirect($billPayments->createPaymentForm($params), 'external');
+    }
+
+    public function successPutMoneyCallback(Request $request)
+    {
+        $data = $request->decodedJson('bill');
+
+        $headers = getallheaders();
+        $hmacHash = $headers['X-Api-Signature-SHA256'];
+
+        if (!is_object($data) || empty($hmacHash)) {
+            throw new ForbiddenException();
+        }
+
+        $invoiceParameters = "{$data->amount->currency}|{$data->amount->value}|{$data->billId}|{$data->siteId}|{$data->status->value}";
+
+        /** @var DotEnv $dotEnv */
+        $dotEnv = ServiceContainer::getInstance()->get('env');
+        $hash = hash_hmac('sha256', $invoiceParameters, $dotEnv->get('QIWI_SECRET_KEY'));
+
+        if ($hash !== $hmacHash) {
+            throw new ForbiddenException();
+        }
+
+        /** @var BillRepository $billRepository */
+        $billRepository = ServiceContainer::getInstance()->get('bill_repository');
+        $billRepository->setPaid((int) $data->billId, str_replace('T', ' ', $data->status->datetime));
+        $userId = $billRepository->getUserId((int) $data->billId);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = ServiceContainer::getInstance()->get('user_repository');
+        $userRepository->increaseMoney($userId, (float) $data->amount->value);
+
+        $this->renderJson([
+            'status' => 'OK',
+        ]);
     }
 }

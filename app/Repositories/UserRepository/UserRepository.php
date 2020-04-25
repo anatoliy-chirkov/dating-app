@@ -61,6 +61,18 @@ SQL;
         return;
     }
 
+    public function increaseMoney(int $userId, float $amount)
+    {
+        $sql = "UPDATE user SET money = money + ? WHERE id = ?";
+        $this->dbContext->query($sql, [$amount, $userId]);
+    }
+
+    public function reduceMoney(int $userId, float $amount)
+    {
+        $sql = "UPDATE user SET money = money - ? WHERE id = ?";
+        $this->dbContext->query($sql, [$amount, $userId]);
+    }
+
     public function setOnline(int $userId)
     {
         $sql = "UPDATE user SET isConnected = 1, lastConnected = NOW() WHERE id = ?";

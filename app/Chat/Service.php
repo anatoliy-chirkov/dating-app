@@ -7,6 +7,8 @@ use Ratchet\ConnectionInterface;
 use Repositories\AttachmentRepository;
 use Repositories\MessageRepository;
 use Repositories\UserRepository\UserRepository;
+use Services\ActionService\Action;
+use Services\ActionService\IAction;
 
 class Service
 {
@@ -26,7 +28,12 @@ class Service
         if ($user === null) {
             $conn->close();
         } else {
-            $userRepository->setOnline($user['id']);
+            if (
+                !Action::hasRestrictedProduct(IAction::HIDE_ONLINE)
+                || !Action::check(IAction::HIDE_ONLINE, $user['id'])
+            ) {
+                $userRepository->setOnline($user['id']);
+            }
 
             $this->store->setUserConnection($user['id'], $conn);
             $this->store->setUserData($user['id'], [
@@ -85,9 +92,14 @@ class Service
     {
         $userId = $this->store->getUserIdByConnection($conn);
 
-        /** @var UserRepository $userRepository */
-        $userRepository = ServiceContainer::getInstance()->get('user_repository');
-        $userRepository->setOffline($userId);
+        if (
+            !Action::hasRestrictedProduct(IAction::HIDE_ONLINE)
+            || !Action::check(IAction::HIDE_ONLINE, $userId)
+        ) {
+            /** @var UserRepository $userRepository */
+            $userRepository = ServiceContainer::getInstance()->get('user_repository');
+            $userRepository->setOffline($userId);
+        }
 
         $this->store->remove($conn);
     }

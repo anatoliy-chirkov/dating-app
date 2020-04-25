@@ -5,6 +5,8 @@ namespace Controllers\Shared;
 use Core\Controllers\BaseController;
 use Core\ServiceContainer;
 use Repositories\UserRepository\UserRepository;
+use Services\ActionService\Action;
+use Services\ActionService\IAction;
 
 abstract class SiteController extends BaseController
 {
@@ -23,9 +25,14 @@ abstract class SiteController extends BaseController
             $vars['countNotReadMessages'] = $serviceContainer->get('message_repository')->getCountNotReadMessages($vars['me']['id']);
             $vars['countNotSeenVisits'] = $serviceContainer->get('visit_repository')->getNotSeenVisitsCount($vars['me']['id']);
 
-            /** @var UserRepository $userRepository */
-            $userRepository = $serviceContainer->get('user_repository');
-            $userRepository->setTemporaryOnline($vars['me']['id']);
+            if (
+                !Action::hasRestrictedProduct(IAction::HIDE_ONLINE)
+                || !Action::check(IAction::HIDE_ONLINE, $vars['me']['id'])
+            ) {
+                /** @var UserRepository $userRepository */
+                $userRepository = $serviceContainer->get('user_repository');
+                $userRepository->setTemporaryOnline($vars['me']['id']);
+            }
         } else {
             $vars['me'] = [];
             $vars['countNotReadMessages'] = 0;

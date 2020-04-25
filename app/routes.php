@@ -61,6 +61,24 @@ return [
         [IMethod::GET]
     ),
     new Route(
+        '/shop/buy/:productId',
+        ShopController::class,
+        'buy',
+        [IMethod::GET]
+    ),
+    new Route(
+        '/shop/put-money',
+        ShopController::class,
+        'putMoney',
+        [IMethod::POST]
+    ),
+    new Route(
+        '/payments/qiwi-callback',
+        ShopController::class,
+        'successPutMoneyCallback',
+        [IMethod::POST]
+    ),
+    new Route(
         '/profile',
         ProfileController::class,
         'settings',
