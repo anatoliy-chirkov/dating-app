@@ -63,6 +63,7 @@ $serviceContainer
     ->set('is_user_online_service', new \Services\IsUserOnlineService())
     ->set('google_geo_service', new \Services\GoogleGeoService\GoogleGeoService())
     ->set('shop_service', new \Services\ShopService())
+    ->set('command', new \Services\CommandService\Command())
 ;
 
 try {

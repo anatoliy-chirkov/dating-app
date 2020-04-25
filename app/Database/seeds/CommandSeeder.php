@@ -1,6 +1,5 @@
 <?php
 
-
 use Phinx\Seed\AbstractSeed;
 
 class CommandSeeder extends AbstractSeed
@@ -18,6 +17,9 @@ class CommandSeeder extends AbstractSeed
         $data = [
             [
                 'name' => 'raiseProfile',
+            ],
+            [
+                'name' => 'setInTop',
             ],
         ];
 

@@ -41,4 +41,10 @@ SQL;
         $rows =  $this->context->query($sql, [$groupId, $userId]);
         return empty($rows) ? null : $rows[0];
     }
+
+    public function getProductCommands(int $productId)
+    {
+        $sql = 'SELECT c.name FROM productCommand pc INNER JOIN command c ON c.id = pc.commandId WHERE productId = ?';
+        return $this->context->query($sql, [$productId]);
+    }
 }

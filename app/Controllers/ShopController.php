@@ -12,6 +12,7 @@ use Core\ServiceContainer;
 use Repositories\BillRepository;
 use Repositories\UserRepository\UserRepository;
 use Services\AuthService;
+use Services\CommandService\Command;
 use Services\NotificationService\NotificationService;
 
 class ShopController extends SiteController implements IProtected
@@ -161,6 +162,15 @@ class ShopController extends SiteController implements IProtected
         $expiredAt = $carbonStartExpiredAt->addHours($product['duration'])->toDateTimeString();
 
         $productRepository->addProductToUser($productId, $user['id'], $createdAt, $expiredAt);
+
+        foreach ($productRepository->getProductCommands($productId) as $command) {
+            /** @var Command $commandObject */
+            $commandObject = ServiceContainer::getInstance()->get('command');
+
+            if (method_exists($commandObject, $command['name'])) {
+                $commandObject->$command['name']($user['id']);
+            }
+        }
 
         $request->redirect('/shop');
     }
