@@ -164,7 +164,7 @@ LEFT JOIN image ON image.userId = user.id AND image.isMain = 1
 LEFT JOIN googleGeo AS g ON g.id = user.googleGeoId 
 SQL;
         $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
-        $sql .= ' ' . 'ORDER BY isTop AND raisedAt DESC';
+        $sql .= ' ' . 'ORDER BY isTop DESC, raisedAt DESC';
         $sql .= ' ' . (new Page($page, self::RESULTS_PER_PAGE_ON_SEARCH))->getSql();
 
         return $this->dbContext->query($sql);

@@ -118,8 +118,14 @@ class ShopController extends SiteController implements IProtected
                 ->locale('ru')->isoFormat('D MMMM YYYY, HH:mm');
         }
 
+        $groups = $productRepository->getProductGroups();
+
+        foreach ($groups as &$group) {
+            $group['products'] = $productRepository->getProductsByGroup($group['id']);
+        }
+
         return $this->render([
-            'groupsWithProducts' => $groupsWithProducts, //$productRepository->notFreeProducts(),
+            'groupsWithProducts' => $groups,
             'boughtProducts' => $boughtProducts,
         ]);
     }
@@ -166,9 +172,10 @@ class ShopController extends SiteController implements IProtected
         foreach ($productRepository->getProductCommands($productId) as $command) {
             /** @var Command $commandObject */
             $commandObject = ServiceContainer::getInstance()->get('command');
+            $commandName = $command['name'];
 
-            if (method_exists($commandObject, $command['name'])) {
-                $commandObject->$command['name']($user['id']);
+            if (method_exists($commandObject, $commandName)) {
+                $commandObject->$commandName($user['id']);
             }
         }
 

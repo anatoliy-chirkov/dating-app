@@ -114,7 +114,7 @@ if (!isset($productCommandsId)) {
                                     class="custom-control-input"
                                     type="checkbox"
                                     id="checkFreeProduct"
-                                    name="isActive"
+                                    name="isFree"
                                     <?=$product['isFree'] ? 'checked' : ''?>
                                 >
                                 <label class="custom-control-label" for="checkFreeProduct">Free product</label>

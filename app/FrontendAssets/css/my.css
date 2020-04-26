@@ -1065,6 +1065,10 @@ CHAT PAGE BEGIN
 .shop-page {
     margin-top: 20px;
 }
+.shop-page p, .shop-page ul {
+    margin: 0 0 1rem;
+    font-size: 1.15rem;
+}
 .shop-page .finances {
     color: white;
     background-color: rgb(191, 87, 164);

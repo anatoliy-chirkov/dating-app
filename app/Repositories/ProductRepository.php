@@ -19,6 +19,18 @@ class ProductRepository extends Repository
         return !empty($rows) ? $rows[0] : null;
     }
 
+    public function getProductGroups()
+    {
+        $sql = 'SELECT id, name, about FROM productGroup WHERE isActive = true';
+        return $this->context->query($sql);
+    }
+
+    public function getProductsByGroup(int $groupId)
+    {
+        $sql = 'SELECT id, name, price, duration FROM product WHERE groupId = ? AND isActive = true AND isFree = false';
+        return $this->context->query($sql, [$groupId]);
+    }
+
     public function getUserProducts(int $userId)
     {
         $sql = <<<SQL

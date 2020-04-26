@@ -84,7 +84,6 @@ class ProductController extends AdminController implements IProtected
         $validate = [
             'name' => 'required',
             'groupId' => 'required',
-            'duration' => 'required',
         ];
         if ($type === 'update') {
             $validate = array_merge($validate, ['id' => 'required']);
@@ -108,7 +107,7 @@ class ProductController extends AdminController implements IProtected
                     $request->post('name'),
                     '',
                     $request->post('groupId'),
-                    $request->post('duration'),
+                    $request->post('duration', 0),
                     $request->post('price', 0),
                     !empty($request->post('isFree')),
                     !empty($request->post('isActive'))
