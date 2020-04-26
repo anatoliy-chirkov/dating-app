@@ -101,6 +101,8 @@ class CreateShopModule extends AbstractMigration
             ->addColumn('actionId', 'integer')
             ->addColumn('productId', 'integer', ['null' => true])
             ->addColumn('multiplier', 'double')
+            ->addColumn('counterLimit', 'integer', ['null' => true])
+            ->addColumn('actionLimit', 'integer', ['null' => true])
             ->create()
         ;
 

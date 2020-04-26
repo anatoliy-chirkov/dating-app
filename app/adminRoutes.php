@@ -82,15 +82,34 @@ return [
         [IMethod::GET]
     ),
     new Route(
-        '/counter/create',
+        '/counters/create',
         CounterController::class,
         'create',
         [IMethod::GET, IMethod::POST]
     ),
     new Route(
-        '/counter/:id',
+        '/counters/:id',
         CounterController::class,
         'edit',
+        [IMethod::GET, IMethod::POST]
+    ),
+
+    new Route(
+        '/counters/:id/actions',
+        CounterController::class,
+        'counterActions',
+        [IMethod::GET, IMethod::POST]
+    ),
+    new Route(
+        '/counters/:id/actions/create',
+        CounterController::class,
+        'createCounterAction',
+        [IMethod::GET, IMethod::POST]
+    ),
+    new Route(
+        '/counters/:id/actions/:id',
+        CounterController::class,
+        'editCounterAction',
         [IMethod::GET, IMethod::POST]
     ),
 
