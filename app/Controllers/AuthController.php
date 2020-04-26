@@ -2,12 +2,15 @@
 
 namespace Controllers;
 
+use Admin\Repositories\CounterRepository;
 use Controllers\Shared\SiteController;
 use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Core\Validation\Validator;
 use Repositories\UserRepository\UserRepository;
+use Services\ActionService\Action;
+use Services\ActionService\IAction;
 use Services\AuthService;
 use Services\GoogleGeoService\GoogleGeoService;
 use Services\NotificationService\NotificationService;
@@ -134,6 +137,17 @@ class AuthController extends SiteController implements IProtected
 
             try {
                 $user = $userService->createUser($request->post(), $mainPhoto);
+
+                /** @var CounterRepository $counterRepository */
+                $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+                $counters = $counterRepository->getActiveCounters();
+
+                foreach ($counters as $counter) {
+                    $counterRepository->addUserCounter($user['id'], $counter['id']);
+                }
+
+                Action::run(IAction::REGISTRATION, $user['id']);
+
             } catch (\Exception $e) {
                 /** @var NotificationService $notificationService */
                 $notificationService = ServiceContainer::getInstance()->get('notification_service');
@@ -147,8 +161,6 @@ class AuthController extends SiteController implements IProtected
 
             $request->redirect('/');
         }
-
-
 
         return $this->render($viewPayload);
     }

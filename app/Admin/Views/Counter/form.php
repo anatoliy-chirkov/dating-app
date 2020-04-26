@@ -12,10 +12,9 @@
 if (!isset($counter)) {
     $counter = [];
 }
-if (!isset($counterActionsId)) {
-    $counterActionsId = [];
-}
 ?>
+<link rel="stylesheet" type="text/css" href="/assets/lib/summernote/summernote-bs4.css"/>
+
 <div class="row">
     <div class="col-md-12">
         <div class="card card-border-color card-border-color-primary">
@@ -28,6 +27,14 @@ if (!isset($counterActionsId)) {
                         <label for="inputName">Name</label>
                         <div class="col-12 col-sm-8 col-lg-6 row">
                             <input class="form-control" id="inputName" type="text" name="name" value="<?=$counter['name']?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputName">About</label>
+                        <textarea id="about" name="about" style="display: none"><?=$counter['about']?></textarea>
+                        <div class="col-12 row">
+                            <div id="summernote"><?=$counter['about']?></div>
                         </div>
                     </div>
 
@@ -61,8 +68,21 @@ if (!isset($counterActionsId)) {
 <script src="/assets/lib/bootstrap-slider/bootstrap-slider.min.js" type="text/javascript"></script>
 <script src="/assets/lib/bs-custom-file-input/bs-custom-file-input.js" type="text/javascript"></script>
 <script src="/assets/js/app-form-elements.js" type="text/javascript"></script>
+<script src="/assets/lib/summernote/summernote-bs4.min.js" type="text/javascript"></script>
+<script src="/assets/lib/summernote/summernote-ext-beagle.js" type="text/javascript"></script>
+<script src="/assets/js/app-form-wysiwyg.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         App.formElements();
+        const $about = $('#about');
+
+        $('#summernote').summernote({
+            height: 300,
+            callbacks: {
+                onChange: function(contents, $editable) {
+                    $about.html(contents);
+                }
+            }
+        });
     });
 </script>

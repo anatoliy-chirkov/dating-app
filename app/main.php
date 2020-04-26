@@ -54,6 +54,7 @@ $serviceContainer
     ->set('bill_repository', new \Repositories\BillRepository())
     ->set('purchase_repository', new \Repositories\PurchaseRepository())
     ->set('log_repository', new \Repositories\LogRepository())
+    ->set('counter_repository', new \Admin\Repositories\CounterRepository())
 
     // Services
     ->set('auth_service', new \Services\AuthService())

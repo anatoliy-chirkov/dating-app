@@ -3,6 +3,7 @@
  * @var array $me
  * @var array $groupsWithProducts
  * @var array $boughtProducts
+ * @var array $counters
  */
 ?>
 
@@ -27,6 +28,23 @@
             </div>
         </div>
     </div>
+
+    <?php if (!empty($counters)): ?>
+        <div class="counters">
+            <div>
+                <?php foreach ($counters as $counter): ?>
+                    <div class="counter">
+                        <div class="title">
+                            <div class="name"><?=$counter['name']?></div>
+                            <div class="count"><?=$counter['count']?></div>
+                            <div class="about-toggle">Что это такое?</div>
+                        </div>
+                        <div class="about"><?=$counter['about']?></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <?php if (!empty($boughtProducts)): ?>
     <div class="active-products">
@@ -76,3 +94,8 @@
 <!--        </div>-->
 <!--    </div>-->
 </div>
+<script>
+    $('.counter .about-toggle').on('click', function () {
+        $('.counter .about').slideToggle();
+    });
+</script>

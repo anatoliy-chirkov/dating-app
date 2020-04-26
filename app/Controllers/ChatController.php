@@ -54,6 +54,8 @@ class ChatController extends SiteController implements IProtected
         $chatRepository = ServiceContainer::getInstance()->get('chat_repository');
         $chats = $chatRepository->getChatsByUserId($me['id']);
 
+        $isNewChat = false;
+
         if ($chatId !== null) {
             /** @var MessageRepository $messageRepository */
             $messageRepository = ServiceContainer::getInstance()->get('message_repository');
@@ -67,6 +69,7 @@ class ChatController extends SiteController implements IProtected
             $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
             $messagesCount = $messageRepository->getAllMessagesCount($chatId);
         } else {
+            $isNewChat = true;
             $messagesCount = 0;
             $messages = [];
             array_unshift($chats, [
@@ -85,6 +88,7 @@ class ChatController extends SiteController implements IProtected
             'receiver'      => $receiver,
             'messages'      => $messages,
             'messagesCount' => $messagesCount,
+            'isNewChat'     => $isNewChat,
         ]);
     }
 

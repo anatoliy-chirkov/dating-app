@@ -18,6 +18,12 @@ class CounterRepository extends Repository
         return $this->context->query($sql);
     }
 
+    public function getActiveCounters()
+    {
+        $sql = 'SELECT id, name FROM counter WHERE isActive = true';
+        return $this->context->query($sql);
+    }
+
     public function counter(int $id)
     {
         $sql = 'SELECT * FROM counter WHERE id = ?';
@@ -25,16 +31,16 @@ class CounterRepository extends Repository
         return !empty($rows) ? $rows[0] : null;
     }
 
-    public function createCounter(string $name, bool $isActive)
+    public function createCounter(string $name, bool $isActive, ?string $about)
     {
-        $sql = 'INSERT INTO counter (name, isActive) VALUES (?, ?)';
-        $this->context->query($sql, [$name, $isActive]);
+        $sql = 'INSERT INTO counter (name, about, isActive) VALUES (?, ?, ?)';
+        $this->context->query($sql, [$name, $about, $isActive]);
     }
 
-    public function updateCounter(int $id, string $name, bool $isActive)
+    public function updateCounter(int $id, string $name, bool $isActive, ?string $about)
     {
-        $sql = 'UPDATE counter SET name = ?, isActive = ? WHERE id = ?';
-        $this->context->query($sql, [$name, $isActive, $id]);
+        $sql = 'UPDATE counter SET name = ?, about = ?, isActive = ? WHERE id = ?';
+        $this->context->query($sql, [$name, $about, $isActive, $id]);
     }
 
     public function counterActions(int $counterId)
@@ -46,7 +52,31 @@ class CounterRepository extends Repository
     public function counterAction(int $id)
     {
         $sql = 'SELECT * FROM counterAction WHERE id = ? LIMIT 1';
-        return $this->context->query($sql, [$id]);
+        return $this->context->query($sql, [$id])[0];
+    }
+
+    public function getCounterNameByActionName(string $actionName): string
+    {
+        $sql = <<<SQL
+SELECT c.name FROM action a 
+INNER JOIN counterAction ca ON ca.actionId = a.id 
+INNER JOIN counter c ON c.id = ca.counterId 
+WHERE a.name = ? AND c.isActive = true 
+SQL;
+        $rows = $this->context->query($sql, [$actionName]);
+        return !empty($rows) ? $rows[0]['name'] : '';
+    }
+
+    public function getCountDataByActionUser(string $actionName, int $userId)
+    {
+        $sql = <<<SQL
+SELECT uc.id as userCounterId, uc.count as userCounterCount, ca.type as counterActionType, ca.multiplier as counterActionMultiplier, ca.counterLimit as counterActionCounterLimit FROM action a 
+INNER JOIN counterAction ca ON ca.actionId = a.id 
+INNER JOIN userCounter uc ON uc.counterId = ca.counterId 
+INNER JOIN counter c ON c.id = uc.counterId 
+WHERE a.name = ? AND uc.userId = ? AND c.isActive = true 
+SQL;
+        return $this->context->query($sql, [$actionName, $userId]);
     }
 
     public function removeCounterActions(int $counterId)
@@ -63,19 +93,35 @@ class CounterRepository extends Repository
 
     public function updateCounterAction(int $id, int $actionId, string $type, float $multiplier, ?int $counterLimit, ?int $actionLimit, ?int $productId)
     {
-        $sql = 'UPDATE counterAction SET actionId = ?, type = ?, multiplier = ?, counteLimit = ?, actionLimit = ?, productId = ? WHERE id = ?';
+        $sql = 'UPDATE counterAction SET actionId = ?, type = ?, multiplier = ?, counterLimit = ?, actionLimit = ?, productId = ? WHERE id = ?';
         $this->context->query($sql, [$actionId, $type, $multiplier, $counterLimit, $actionLimit, $productId, $id]);
     }
 
-    public function userCounter(int $userId)
+    public function getUserCounters(int $userId)
     {
-        $sql = 'SELECT * FROM userCounter WHERE userId = ?';
+        $sql = <<<SQL
+SELECT uc.id, uc.count, c.name, c.about FROM userCounter uc 
+INNER JOIN counter c ON c.id = uc.counterId 
+WHERE uc.userId = ? AND c.isActive = true 
+SQL;
         return $this->context->query($sql, [$userId]);
     }
 
-    public function addUserCounter(int $userId, int $counterId, int $count)
+    public function addUserCounter(int $userId, int $counterId)
     {
-        $sql = 'INSERT INTO userCounter (userId, counterId, count) VALUES (?, ?, ?)';
-        $this->context->query($sql, [$userId, $counterId, $count]);
+        $sql = 'INSERT INTO userCounter (userId, counterId, count) VALUES (?, ?, 0)';
+        $this->context->query($sql, [$userId, $counterId]);
+    }
+
+    public function increaseUserCounter(int $id, int $count)
+    {
+        $sql = 'UPDATE userCounter SET count = count + ? WHERE id = ?';
+        $this->context->query($sql, [$count, $id]);
+    }
+
+    public function reduceUserCounter(int $id, int $count)
+    {
+        $sql = 'UPDATE userCounter SET count = count - ? WHERE id = ?';
+        $this->context->query($sql, [$count, $id]);
     }
 }

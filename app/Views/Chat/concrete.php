@@ -1,10 +1,15 @@
 <?php
+
+use Services\ActionService\Action;
+use Services\ActionService\IAction;
+
 /**
  * @var array $chats
  * @var array $messages
  * @var array $receiver
  * @var array $me
  * @var int $messagesCount
+ * @var bool $isNewChat
  */
 ?>
 <link rel="stylesheet" href="/node_modules/photoswipe/dist/photoswipe.css">
@@ -74,7 +79,15 @@
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>
-            <?php if ($receiver['sex'] === 'man' || ($receiver['sex'] === 'woman' && \Services\ActionService\Action::check(\Services\ActionService\IAction::SEND_MESSAGE_TO_GIRL, $me['id']))): ?>
+            <?php if ($receiver['sex'] === 'woman' && !Action::check(IAction::SEND_MESSAGE_TO_GIRL, $me['id'])): ?>
+                <div style="margin-left: 20px; margin-top: 14px">
+                    Для общения с девушками приобретите <a href="/shop"><?=Action::productGroupName(IAction::SEND_MESSAGE_TO_GIRL)?></a>
+                </div>
+            <?php elseif ($isNewChat && !Action::checkCounter(IAction::SEND_MESSAGE, $me['id'])): ?>
+                <div style="margin-left: 20px; margin-top: 14px">
+                    Для общения с новыми людьми пополните счетчик <a href="/shop"><?=Action::counterName(IAction::SEND_MESSAGE)?></a>
+                </div>
+            <?php else: ?>
             <form id="chat-form" method="POST" data-receiverId="<?=$receiver['id']?>">
                 <div class="form-main">
                     <div class="attachment">
@@ -85,10 +98,6 @@
                 </div>
                 <div class="attachment-content"></div>
             </form>
-            <?php else: ?>
-                <div style="margin-left: 20px; margin-top: 14px">
-                    Для общения с девушками приобретите премиум-аккаунт
-                </div>
             <?php endif; ?>
         </div>
     </div>

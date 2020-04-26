@@ -5,6 +5,7 @@ namespace Services\ActionService;
 interface IAction
 {
     public const
+        SEND_MESSAGE = 'sendMessage',
         SEND_MESSAGE_TO_GIRL = 'sendMessageToGirl',
         SEE_VISITS = 'seeVisits',
         HIDE_VISIT = 'hideVisit',

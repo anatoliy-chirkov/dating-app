@@ -17,6 +17,10 @@ class ActionSeeder extends AbstractSeed
     {
         $data = [
             [
+                'name' => 'sendMessage',
+                'canReduce' => true,
+            ],
+            [
                 'name' => 'sendMessageToGirl',
                 'canReduce' => true,
             ],

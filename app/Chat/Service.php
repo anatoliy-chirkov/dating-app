@@ -57,6 +57,10 @@ class Service
 
         $payloadForSend = $this->saveMessageAndGetPayloadForSend($userId, $payload->receiverId, $payload->text, $payload->attachmentId);
 
+        if (empty($payloadForSend)) {
+            return;
+        }
+
         $reboundPayload = $payloadForSend;
         $reboundPayload['isRebound'] = true;
         $conn->send(@json_encode(['type' => IMessageType::MESSAGE, 'payload' => $reboundPayload]));
@@ -111,6 +115,11 @@ class Service
         $chatId = $chatRepository->getChatIdByUsers([$authorId, $receiverId]);
 
         if ($chatId === null) {
+
+            if (!Action::run(IAction::SEND_MESSAGE, $authorId)) {
+                return [];
+            }
+
             $chatId = $chatRepository->createChat([$authorId, $receiverId]);
         }
 

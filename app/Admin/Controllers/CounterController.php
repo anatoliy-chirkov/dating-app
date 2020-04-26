@@ -42,7 +42,9 @@ class CounterController extends AdminController implements IProtected
 
             /** @var CounterRepository $counterRepository */
             $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
-            $counterRepository->createCounter($request->post('name'), !empty($request->post('isActive')));
+            $counterRepository->createCounter(
+                $request->post('name'), !empty($request->post('isActive')), $request->post('about')
+            );
 
             $request->redirect('/counters');
         }
@@ -52,6 +54,9 @@ class CounterController extends AdminController implements IProtected
 
     public function edit(Request $request, int $id)
     {
+        /** @var CounterRepository $counterRepository */
+        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+
         if ($request->isPost()) {
             /** @var Validator $validator */
             $validator = ServiceContainer::getInstance()->get('validator');
@@ -63,15 +68,16 @@ class CounterController extends AdminController implements IProtected
                 return $this->render();
             }
 
-            /** @var CounterRepository $counterRepository */
-            $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
             $counterRepository->updateCounter($request->post('id'), $request->post('name'),
-                !empty($request->post('isActive')));
+                !empty($request->post('isActive')), $request->post('about')
+            );
 
             $request->redirect('/counters/' . $id);
         }
 
-        return $this->render();
+        return $this->render([
+            'counter' => $counterRepository->counter($id),
+        ]);
     }
 
     public function counterActions(Request $request, int $counterId)

@@ -90,6 +90,7 @@ class CreateShopModule extends AbstractMigration
         $counterTable = $this->table('counter');
         $counterTable
             ->addColumn('name', 'string', ['limit' => 255])
+            ->addColumn('about', 'text', ['null' => true])
             ->addColumn('isActive', 'boolean', ['default' => false])
             ->create()
         ;

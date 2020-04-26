@@ -34,6 +34,7 @@ $serviceContainer
     ->set('chat_repository', new \Repositories\ChatRepository())
     ->set('attachment_repository', new \Repositories\AttachmentRepository())
     ->set('message_repository', new \Repositories\MessageRepository())
+    ->set('counter_repository', new \Admin\Repositories\CounterRepository())
 ;
 
 $store       = new Store();

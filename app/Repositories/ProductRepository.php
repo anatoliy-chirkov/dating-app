@@ -19,6 +19,20 @@ class ProductRepository extends Repository
         return !empty($rows) ? $rows[0] : null;
     }
 
+    public function getProductGroupNameByAction(string $actionName): string
+    {
+        $sql = <<<SQL
+SELECT pg.name FROM action a 
+INNER JOIN productAction pa ON pa.actionId = a.id 
+INNER JOIN product p ON p.id = pa.productId 
+INNER JOIN productGroup pg ON pg.id = p.groupId 
+WHERE a.name = ? AND p.isActive = true 
+LIMIT 1 
+SQL;
+        $rows = $this->context->query($sql, [$actionName]);
+        return !empty($rows) ? $rows[0]['name'] : '';
+    }
+
     public function getProductGroups()
     {
         $sql = 'SELECT id, name, about FROM productGroup WHERE isActive = true';
