@@ -4,6 +4,7 @@
  * @var bool $isAuthorized
  * @var bool $isMe
  * @var array $images
+ * @var array $userGoals
  */
 ?>
 
@@ -46,6 +47,13 @@
         <?php $i = 0; foreach ($images as $image): ?>
             <div class="image" data-id="<?=$i?>" data-height="<?=$image['height']?>" data-width="<?=$image['width']?>" style="background-image: url('<?=$image['clientPath']?>')"></div>
         <?php $i++; endforeach; ?>
+    </div>
+    <div class="goals">
+        <strong>Цели знакомства</strong>
+        <br>
+        <?php foreach ($userGoals as $userGoal): ?>
+            <span><?=$userGoal['name']?></span>
+        <?php endforeach; ?>
     </div>
     <div class="about">
         <?php if (!empty($user['about'])): ?>

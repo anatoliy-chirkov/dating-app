@@ -7,6 +7,8 @@
  * @var array $googleGeo
  * @var int $page
  * @var int $pages
+ * @var array $goals
+ * @var array $selectedGoalsId
  */
 ?>
 
@@ -43,6 +45,16 @@
                     </select>
                 </label>
             </div>
+            <div class="form-group city-group">
+                <label>
+                    Цели партнера <br>
+                    <select name="goalId[]" class="goals-select" multiple="">
+                        <?php foreach ($goals as $goal): ?>
+                            <option value="<?=$goal['id']?>" <?=in_array($goal['id'], $selectedGoalsId) ? 'selected' : ''?>><?=$goal['name']?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            </div>
         </div>
 
         <div class="button-group">
@@ -68,7 +80,7 @@
     <div class="pagination">
         <? for($i = 1; $i <= $pages; $i++): ?>
             <? if ($i != $page): ?>
-                <a class="page-button" href="?page=<?=$i?>&ageFrom=<?=$ageFrom?>&ageTo=<?=$ageTo?><?php foreach($googleGeo as $googleGeoSingle): echo '&googleGeoId[]=' . $googleGeoSingle['id']; endforeach; ?><?php foreach($sex as $sexItem): echo '&sex[]=' . $sexItem; endforeach; ?>"><?=$i?></a>
+                <a class="page-button" href="?page=<?=$i?>&ageFrom=<?=$ageFrom?>&ageTo=<?=$ageTo?><?php foreach($googleGeo as $googleGeoSingle): echo '&googleGeoId[]=' . $googleGeoSingle['id']; endforeach; ?><?php foreach($selectedGoalsId as $goalId): echo '&goalId[]=' . $goalId; endforeach; ?><?php foreach($sex as $sexItem): echo '&sex[]=' . $sexItem; endforeach; ?>"><?=$i?></a>
             <? else: ?>
                 <div class="page-button active"><?=$page?></div>
             <? endif; ?>
@@ -101,5 +113,10 @@
                 };
             }
         }
+    });
+
+    $(".goals-select").select2({
+        width: '100%',
+        placeholder: "Выберите цели",
     });
 </script>

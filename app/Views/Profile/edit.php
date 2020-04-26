@@ -3,6 +3,8 @@
  * @var array $me
  * @var string $googleApiKey
  * @var string $cityString
+ * @var array $goals
+ * @var array $userGoalsId
  * @var \Services\NotificationService\Notification $notification
  */
 ?>
@@ -50,6 +52,16 @@
                 </div>
                 <div class="form-group">
                     <label>
+                        Цели<br>
+                        <select id="goals-select" name="goalId[]" multiple="">
+                            <?php foreach ($goals as $goal): ?>
+                                <option value="<?=$goal['id']?>" <?=in_array($goal['id'], $userGoalsId) ? 'selected' : ''?>><?=$goal['name']?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
                         <div>Возраст</div>
                         <input type="number" name="age" value="<?=$me['age']?>">
                     </label>
@@ -86,3 +98,10 @@
     hideMenuAndShowContent();
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?=$googleApiKey?>&libraries=places&language=ru&callback=initGeoSearch" async defer></script>
+<script src="/node_modules/select2/dist/js/select2.full.js" type="application/javascript"></script>
+<script>
+    $("#goals-select").select2({
+        width: '200px',
+        placeholder: "Выберите цели",
+    });
+</script>

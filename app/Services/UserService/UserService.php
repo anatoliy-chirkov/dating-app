@@ -4,6 +4,7 @@ namespace Services\UserService;
 
 use Core\Http\File;
 use Core\ServiceContainer;
+use Repositories\GoalRepository;
 use Repositories\UserRepository\UserRepository;
 use Services\ImageService;
 
@@ -32,10 +33,17 @@ class UserService
         }
 
         $this->userRepository->createUser($user);
+        $userId = $this->userRepository->getIdByEmail($user->email);
 
         if ($mainUserPhoto) {
-            $userId = $this->userRepository->getIdByEmail($user->email);
             $this->imageService->saveMainPhoto($mainUserPhoto, $userId);
+        }
+
+        // save user goals
+        /** @var GoalRepository $goalRepository */
+        $goalRepository = ServiceContainer::getInstance()->get('goal_repository');
+        foreach ($requestData['goalId'] as $goalId) {
+            $goalRepository->saveUserGoal($userId, $goalId);
         }
 
         return $this->userRepository->getByEmail($user->email);

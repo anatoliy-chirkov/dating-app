@@ -21,6 +21,12 @@ class GoalRepository
         return $this->dbContext->query($sql);
     }
 
+    public function removeUserGoals(int $userId)
+    {
+        $sql = 'DELETE FROM userGoal WHERE userId = ?';
+        $this->dbContext->query($sql, [$userId]);
+    }
+
     public function saveUserGoal(int $userId, int $goalId)
     {
         $sql = 'INSERT INTO userGoal (userId, goalId) VALUES (?, ?)';
@@ -35,6 +41,6 @@ FROM userGoal ug
 INNER JOIN goal g ON g.id = ug.goalId 
 WHERE ug.userId = ?
 SQL;
-        $this->dbContext->query($sql, [$userId]);
+        return $this->dbContext->query($sql, [$userId]);
     }
 }

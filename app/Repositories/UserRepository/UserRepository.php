@@ -155,22 +155,23 @@ SQL;
         return empty($rows) ? [] : $rows[0];
     }
 
-    public function search(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, int $page = 1)
+    public function search(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, array $goalsId = null, int $page = 1)
     {
         $sql = <<<SQL
 SELECT user.*, g.fullName AS city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
 FROM user 
 LEFT JOIN image ON image.userId = user.id AND image.isMain = 1 
 LEFT JOIN googleGeo AS g ON g.id = user.googleGeoId 
+LEFT JOIN userGoal AS ug ON ug.userId = user.id 
 SQL;
-        $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
+        $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId, $goalsId);
         $sql .= ' ' . 'ORDER BY isTop DESC, raisedAt DESC';
         $sql .= ' ' . (new Page($page, self::RESULTS_PER_PAGE_ON_SEARCH))->getSql();
 
         return $this->dbContext->query($sql);
     }
 
-    public function count(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null): int
+    public function count(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, array $goalsId = null): int
     {
         $sql = <<<SQL
 SELECT count(user.id) 
@@ -181,14 +182,18 @@ SQL;
             $sql .= ' ' . 'INNER JOIN googleGeo g ON g.id = user.googleGeoId';
         }
 
-        $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId);
+        if ($goalsId !== null) {
+            $sql .= ' ' . 'INNER JOIN userGoal ug ON ug.userId = user.id';
+        }
+
+        $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId, $goalsId);
 
         return $this->dbContext->query($sql)[0][0];
     }
 
-    private function addSQLWhereStatementToSearch(string $sql, array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null)
+    private function addSQLWhereStatementToSearch(string $sql, array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, array $goalsId = null)
     {
-        if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $googleGeoId) {
+        if ((array_search('man', $sex) !== false || array_search('woman', $sex) !== false) || $ageFrom || $ageTo || $googleGeoId || $goalsId) {
             $sql .= ' ' . 'WHERE';
         }
 
@@ -216,7 +221,13 @@ SQL;
         if ($googleGeoId !== null) {
             $sql = $this->addSQLOperatorAND($sql);
             $googleGeoIdIN = implode(', ', $googleGeoId);
-            $sql .= ' ' . "g.id IN ({$googleGeoIdIN}) OR g.parentId IN ({$googleGeoIdIN})";
+            $sql .= ' ' . "(g.id IN ({$googleGeoIdIN}) OR g.parentId IN ({$googleGeoIdIN}))";
+        }
+
+        if ($goalsId !== null) {
+            $sql = $this->addSQLOperatorAND($sql);
+            $goalsIdIN = implode(', ', $goalsId);
+            $sql .= ' ' . "ug.goalId IN ({$goalsIdIN})";
         }
 
         return $sql;
@@ -224,7 +235,7 @@ SQL;
 
     private function addSQLOperatorAND(string $sql)
     {
-        if (preg_match('/WHERE \w+/', $sql) === 1) {
+        if (preg_match('/WHERE [\w|(]/', $sql) === 1) {
             $sql .= ' ' . 'AND';
         }
 

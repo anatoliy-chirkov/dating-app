@@ -1,6 +1,7 @@
 <?php
 /**
  * @var string $googleApiKey
+ * @var array $goals
  */
 ?>
 <div class="register">
@@ -35,6 +36,16 @@
                 Город<br>
                 <input autocomplete="off" id="google-location-search" type="text" placeholder="Выберите город из списка" style="width: 200px">
                 <input type="text" name="city" id="city-hidden-input" hidden>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Цели<br>
+                <select id="goals-select" name="goalId[]" multiple="">
+                    <?php foreach ($goals as $goal): ?>
+                        <option value="<?=$goal['id']?>"><?=$goal['name']?></option>
+                    <?php endforeach; ?>
+                </select>
             </label>
         </div>
 
@@ -85,3 +96,10 @@
 </div>
 <script type="application/javascript" src="/js/googleGeo.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?=$googleApiKey?>&libraries=places&language=ru&callback=initGeoSearch" async defer></script>
+<script src="/node_modules/select2/dist/js/select2.full.js" type="application/javascript"></script>
+<script>
+    $("#goals-select").select2({
+        width: '200px',
+        placeholder: "Выберите цели",
+    });
+</script>

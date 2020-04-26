@@ -74,6 +74,11 @@ class AuthController extends SiteController implements IProtected
 
     public function register(Request $request)
     {
+        $viewPayload = [
+            'googleApiKey' => ServiceContainer::getInstance()->get('env')->get('GOOGLE_API_KEY'),
+            'goals' => ServiceContainer::getInstance()->get('goal_repository')->getAll(),
+        ];
+
         if ($request->isPost()) {
             /** @var Validator $validator */
             $validator = ServiceContainer::getInstance()->get('validator');
@@ -88,11 +93,12 @@ class AuthController extends SiteController implements IProtected
                 'password' => 'required',
                 'repeatPassword' => 'required',
                 'city' => 'required',
+                'goalId' => 'required',
             ]);
 
             if (!$isValid) {
                 $notificationService->set('error', $validator->getFirstError());
-                return $this->render();
+                return $this->render($viewPayload);
             }
 
             $mainPhoto = $request->file('main_photo');
@@ -101,18 +107,18 @@ class AuthController extends SiteController implements IProtected
             if ($mainPhoto !== null) {
                 if (!in_array($mainPhoto->getExtension(), ['jpg', 'jpeg'])) {
                     $notificationService->set('error', 'Файл должен иметь расширение jpg / jpeg');
-                    return $this->render();
+                    return $this->render($viewPayload);
                 }
 
                 if ($mainPhoto->getSizeInKb() > 5000) {
                     $notificationService->set('error', 'Максимальный размер файла 5 мегабайт, пожалуйста сожмите фото или загрузите другое');
-                    return $this->render();
+                    return $this->render($viewPayload);
                 }
             }
 
             if ($request->post('password') !== $request->post('repeatPassword')) {
                 $notificationService->set('error', 'Пароли не совпадают');
-                return $this->render();
+                return $this->render($viewPayload);
             }
 
             /** @var GoogleGeoService $googleGeoService */
@@ -120,7 +126,7 @@ class AuthController extends SiteController implements IProtected
 
             if (!$googleGeoService->isValidCityString($request->post('city'))) {
                 $notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
-                return $this->render();
+                return $this->render($viewPayload);
             }
 
             /** @var UserService $userService */
@@ -132,7 +138,7 @@ class AuthController extends SiteController implements IProtected
                 /** @var NotificationService $notificationService */
                 $notificationService = ServiceContainer::getInstance()->get('notification_service');
                 $notificationService->set('error', $e->getMessage());
-                return $this->render();
+                return $this->render($viewPayload);
             }
 
             /** @var AuthService $authService */
@@ -142,9 +148,9 @@ class AuthController extends SiteController implements IProtected
             $request->redirect('/');
         }
 
-        return $this->render([
-            'googleApiKey' => ServiceContainer::getInstance()->get('env')->get('GOOGLE_API_KEY')
-        ]);
+
+
+        return $this->render($viewPayload);
     }
 
     public function logout(Request $request)

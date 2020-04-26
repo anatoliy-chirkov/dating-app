@@ -7,6 +7,7 @@ use Core\Controllers\IProtected;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Core\Validation\Validator;
+use Repositories\GoalRepository;
 use Repositories\ImageRepository;
 use Repositories\TokenRepository;
 use Repositories\UserRepository\UserRepository;
@@ -31,8 +32,28 @@ class ProfileController extends SiteController implements IProtected
 
     public function edit(Request $request)
     {
+        /** @var AuthService $authService */
+        $authService = ServiceContainer::getInstance()->get('auth_service');
+        $me = $authService->getUser();
+
         $GOOGLE_API_KEY = ServiceContainer::getInstance()->get('env')->get('GOOGLE_API_KEY');
         $NOT_CHANGED_CITY_STRING = 'notChanged';
+
+        /** @var GoalRepository $goalRepository */
+        $goalRepository = ServiceContainer::getInstance()->get('goal_repository');
+        $userGoalsId = [];
+
+        foreach ($goalRepository->getUserGoals($me['id']) as $userGoal) {
+            $userGoalsId[] = $userGoal['id'];
+        }
+
+        $viewPayload = [
+            'googleApiKey' => $GOOGLE_API_KEY,
+            'cityString' => $NOT_CHANGED_CITY_STRING,
+            'LAYOUT_NOTIFICATION_OFF' => true,
+            'goals' => $goalRepository->getAll(),
+            'userGoalsId' => $userGoalsId,
+        ];
 
         if ($request->isPost()) {
             /** @var Validator $validator */
@@ -49,11 +70,7 @@ class ProfileController extends SiteController implements IProtected
                 || !$validator->validateXss($request->post('about'))
             ) {
                 $notificationService->set('error', 'Обязательные поля не заполнены или данные содержат недопустимые символы');
-                return $this->render([
-                    'googleApiKey' => $GOOGLE_API_KEY,
-                    'cityString' => $NOT_CHANGED_CITY_STRING,
-                    'LAYOUT_NOTIFICATION_OFF' => true,
-                ]);
+                return $this->render($viewPayload);
             }
 
             /** @var GoogleGeoService $googleGeoService */
@@ -64,16 +81,8 @@ class ProfileController extends SiteController implements IProtected
                 && !$googleGeoService->isValidCityString($request->post('city'))
             ) {
                 $notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
-                return $this->render([
-                    'googleApiKey' => $GOOGLE_API_KEY,
-                    'cityString' => $NOT_CHANGED_CITY_STRING,
-                    'LAYOUT_NOTIFICATION_OFF' => true,
-                ]);
+                return $this->render($viewPayload);
             }
-
-            /** @var AuthService $authService */
-            $authService = ServiceContainer::getInstance()->get('auth_service');
-            $me = $authService->getUser();
 
             if ($CITY_HAS_BEEN_CHANGED) {
                 /** @var GoogleGeoService $googleGeoService */
@@ -100,11 +109,7 @@ class ProfileController extends SiteController implements IProtected
             $notificationService->set('success', 'Данные обновлены');
         }
 
-        return $this->render([
-            'googleApiKey' => $GOOGLE_API_KEY,
-            'cityString' => $NOT_CHANGED_CITY_STRING,
-            'LAYOUT_NOTIFICATION_OFF' => true,
-        ]);
+        return $this->render($viewPayload);
     }
 
     public function addPhoto(Request $request)

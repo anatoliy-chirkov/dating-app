@@ -5,6 +5,7 @@ namespace Controllers;
 use Controllers\Shared\SiteController;
 use Core\Http\Request;
 use Core\ServiceContainer;
+use Repositories\GoalRepository;
 use Repositories\GoogleGeoRepository;
 use Repositories\ImageRepository;
 use Repositories\UserRepository\UserRepository;
@@ -24,19 +25,23 @@ class UserController extends SiteController
             $request->get('ageFrom'),
             $request->get('ageTo'),
             $request->get('googleGeoId'),
+            $request->get('goalId'),
             $request->get('page', 1)
         );
         $count = $userRepository->count(
             $request->get('sex', []),
             $request->get('ageFrom'),
             $request->get('ageTo'),
-            $request->get('googleGeoId')
+            $request->get('googleGeoId'),
+            $request->get('goalId')
         );
 
         $pages = ceil($count / 20);
 
         /** @var GoogleGeoRepository $googleGeoRepository */
         $googleGeoRepository = ServiceContainer::getInstance()->get('google_geo_repository');
+        /** @var GoalRepository $goalRepository */
+        $goalRepository = ServiceContainer::getInstance()->get('goal_repository');
 
         return $this->render([
             'users' => $users,
@@ -44,6 +49,8 @@ class UserController extends SiteController
             'ageFrom' => $request->get('ageFrom', ''),
             'ageTo' => $request->get('ageTo', ''),
             'googleGeo' => $googleGeoRepository->getByIdArray($request->get('googleGeoId', [])),
+            'goals' => $goalRepository->getAll(),
+            'selectedGoalsId' => $request->get('goalId', []),
             'page' => $request->get('page', 1),
             'pages' => $pages,
         ]);
@@ -78,10 +85,14 @@ class UserController extends SiteController
         $imageRepository = ServiceContainer::getInstance()->get('image_repository');
         $images = $imageRepository->getUserImages($userId);
 
+        /** @var GoalRepository $goalRepository */
+        $goalRepository = ServiceContainer::getInstance()->get('goal_repository');
+
         return $this->render([
             'user' => $user,
             'isMe' => isset($me) ? $me['id'] === $user['id'] : false,
             'images' => $images,
+            'userGoals' => $goalRepository->getUserGoals($user['id']),
         ]);
     }
 }
