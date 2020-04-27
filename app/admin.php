@@ -52,6 +52,9 @@ $serviceContainer
     ->set('goal_repository', new \Repositories\GoalRepository())
     ->set('product_repository', new \Admin\Repositories\ProductRepository())
     ->set('counter_repository', new \Admin\Repositories\CounterRepository())
+    ->set('purchase_repository', new \Admin\Repositories\PurchaseRepository())
+    ->set('bill_repository', new \Admin\Repositories\BillRepository())
+    ->set('log_repository', new \Admin\Repositories\LogRepository())
 
     // Services
     ->set('auth_service', new \Services\AuthService())

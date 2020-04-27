@@ -11,6 +11,7 @@ use Core\DotEnv;
 use Core\Http\Request;
 use Core\ServiceContainer;
 use Repositories\BillRepository;
+use Repositories\PurchaseRepository;
 use Repositories\UserRepository\UserRepository;
 use Services\ActionService\Action;
 use Services\ActionService\IAction;
@@ -175,6 +176,10 @@ class ShopController extends SiteController implements IProtected
         $expiredAt = $carbonStartExpiredAt->addHours($product['duration'])->toDateTimeString();
 
         $productRepository->addProductToUser($productId, $user['id'], $createdAt, $expiredAt);
+
+        /** @var PurchaseRepository $purchaseRepository */
+        $purchaseRepository = ServiceContainer::getInstance()->get('purchase_repository');
+        $purchaseRepository->create($user['id'], $productId, $product['price']);
 
         foreach ($productRepository->getProductCommands($productId) as $command) {
             /** @var Command $commandObject */

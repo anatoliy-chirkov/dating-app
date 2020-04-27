@@ -155,7 +155,7 @@ SQL;
         return empty($rows) ? [] : $rows[0];
     }
 
-    public function search(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, array $goalsId = null, int $page = 1)
+    public function search(array $sex = [], int $ageFrom = null, int $ageTo = null, array $googleGeoId = null, array $goalsId = null, int $page = 1, int $resultsPerPage = self::RESULTS_PER_PAGE_ON_SEARCH)
     {
         $sql = <<<SQL
 SELECT user.*, g.fullName AS city, CASE WHEN image.clientPath is NULL THEN '/img/default.jpg' ELSE image.clientPath END AS clientPath 
@@ -166,7 +166,7 @@ LEFT JOIN userGoal AS ug ON ug.userId = user.id
 SQL;
         $sql = $this->addSQLWhereStatementToSearch($sql, $sex, $ageFrom, $ageTo, $googleGeoId, $goalsId);
         $sql .= ' ' . 'ORDER BY isTop DESC, raisedAt DESC';
-        $sql .= ' ' . (new Page($page, self::RESULTS_PER_PAGE_ON_SEARCH))->getSql();
+        $sql .= ' ' . (new Page($page, $resultsPerPage))->getSql();
 
         return $this->dbContext->query($sql);
     }

@@ -32,9 +32,21 @@ return [
         [IMethod::GET]
     ),
     new Route(
+        '/payments/bills/search',
+        PaymentController::class,
+        'searchBills',
+        [IMethod::GET]
+    ),
+    new Route(
         '/payments/purchases',
         PaymentController::class,
         'purchases',
+        [IMethod::GET]
+    ),
+    new Route(
+        '/payments/purchases/search',
+        PaymentController::class,
+        'searchPurchases',
         [IMethod::GET]
     ),
 
@@ -114,6 +126,12 @@ return [
     ),
 
     new Route(
+        '/users/search',
+        UserController::class,
+        'search',
+        [IMethod::GET]
+    ),
+    new Route(
         '/users',
         UserController::class,
         'all',
@@ -125,10 +143,17 @@ return [
         'all',
         [IMethod::GET]
     ),
+
     new Route(
         '/logs',
         LogController::class,
         'all',
+        [IMethod::GET]
+    ),
+    new Route(
+        '/logs/search',
+        LogController::class,
+        'search',
         [IMethod::GET]
     ),
 ];
