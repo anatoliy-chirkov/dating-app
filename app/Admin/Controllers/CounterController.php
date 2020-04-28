@@ -4,11 +4,11 @@ namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
 use Admin\Repositories\CounterRepository;
-use Core\Controllers\IProtected;
-use Core\Http\Request;
-use Core\ServiceContainer;
-use Core\Validation\Validator;
-use Services\NotificationService\NotificationService;
+use Shared\Core\Controllers\IProtected;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
+use Shared\Core\Validation\Validator;
+use Client\Services\NotificationService\NotificationService;
 
 class CounterController extends AdminController implements IProtected
 {
@@ -20,7 +20,7 @@ class CounterController extends AdminController implements IProtected
     public function all()
     {
         /** @var CounterRepository $counterRepository */
-        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+        $counterRepository = App::get('counter');
 
         return $this->render([
             'counters' => $counterRepository->counters(),
@@ -31,17 +31,17 @@ class CounterController extends AdminController implements IProtected
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = ServiceContainer::getInstance()->get('validator');
+            $validator = App::get('validator');
 
             if (!$validator->isValid($request->post(), ['name' => 'required'])) {
                 /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService = App::get('notificationService');
                 $notificationService->set('error', $validator->getFirstError());
                 return $this->render();
             }
 
             /** @var CounterRepository $counterRepository */
-            $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+            $counterRepository = App::get('counter');
             $counterRepository->createCounter(
                 $request->post('name'), !empty($request->post('isActive')), $request->post('about')
             );
@@ -55,15 +55,15 @@ class CounterController extends AdminController implements IProtected
     public function edit(Request $request, int $id)
     {
         /** @var CounterRepository $counterRepository */
-        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+        $counterRepository = App::get('counter');
 
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = ServiceContainer::getInstance()->get('validator');
+            $validator = App::get('validator');
 
             if (!$validator->isValid($request->post(), ['id' => 'required', 'name' => 'required'])) {
                 /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService = App::get('notificationService');
                 $notificationService->set('error', $validator->getFirstError());
                 return $this->render();
             }
@@ -83,7 +83,7 @@ class CounterController extends AdminController implements IProtected
     public function counterActions(Request $request, int $counterId)
     {
         /** @var CounterRepository $counterRepository */
-        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+        $counterRepository = App::get('counter');
 
         return $this->render([
             'counterActions' => $counterRepository->counterActions($counterId),
@@ -95,11 +95,11 @@ class CounterController extends AdminController implements IProtected
     public function createCounterAction(Request $request, int $counterId)
     {
         /** @var CounterRepository $counterRepository */
-        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+        $counterRepository = App::get('counter');
 
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = ServiceContainer::getInstance()->get('validator');
+            $validator = App::get('validator');
 
             if (!$validator->isValid($request->post(), [
                 'type' => 'required',
@@ -107,7 +107,7 @@ class CounterController extends AdminController implements IProtected
                 'multiplier' => 'required',
             ])) {
                 /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService = App::get('notificationService');
                 $notificationService->set('error', $validator->getFirstError());
                 return $this->render([
                     'actions' => $counterRepository->actions(),
@@ -133,11 +133,11 @@ class CounterController extends AdminController implements IProtected
     public function editCounterAction(Request $request, int $counterId, int $id)
     {
         /** @var CounterRepository $counterRepository */
-        $counterRepository = ServiceContainer::getInstance()->get('counter_repository');
+        $counterRepository = App::get('counter');
 
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = ServiceContainer::getInstance()->get('validator');
+            $validator = App::get('validator');
 
             if (!$validator->isValid($request->post(), [
                 'type' => 'required',
@@ -145,7 +145,7 @@ class CounterController extends AdminController implements IProtected
                 'multiplier' => 'required',
             ])) {
                 /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService = App::get('notificationService');
                 $notificationService->set('error', $validator->getFirstError());
                 return $this->render([
                     'actions' => $counterRepository->actions(),

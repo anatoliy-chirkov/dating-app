@@ -1,0 +1,114 @@
+.nav .brand .text {
+    /*display: none;*/
+}
+.nav .nav-container {
+    display: flex;
+    align-items: center;
+}
+
+.nav .brand {
+    margin-right: 14px;
+}
+.nav .brand a {
+    display: flex;
+    align-items: center;
+    color: #333;
+    margin-right: 0;
+    font-weight: 500;
+    font-size: 1.15rem;
+}
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    background: #fff;
+}
+.nav .nav-container {
+    padding: 0 1.5rem;
+    height: 55px;
+    max-width: 850px;
+    margin: auto;
+    justify-content: space-between;
+    -webkit-transition: height .3s ease;
+    transition: height .3s ease;
+}
+.nav .links a, .nav .links-left a {
+    font-size: 1.05rem;
+    font-weight: 400;
+    padding: .75rem;
+    color: rgba(0,0,0,.6);
+    line-height: 1.2;
+    text-align: center;
+}
+.nav .links {
+    flex-direction: row;
+    justify-content: flex-end;
+    flex: 1 1;
+}
+.nav .links-left {
+    flex-direction: row;
+    justify-content: flex-start;
+    flex: 1 1;
+}
+.nav .links-left a {
+    width: fit-content;
+}
+.nav .links, .nav .links a, .nav .links-left, .nav .links-left a, .nav .links button {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-size: 1.2rem;
+    color: rgba(0,0,0,.6);
+}
+.nav.scroll {
+    box-shadow: 1px 2px 18px rgba(0,0,0,.1);
+}
+.favicon {
+    height: 23px;
+    width: 23px;
+    min-width: 23px;
+    margin-right: 1rem;
+    margin-bottom: 0;
+}
+.brand .mobile-logo {
+    display: block;
+}
+.brand .logo {
+    display: none;
+}
+@media (min-width: 620px) {
+    .brand .mobile-logo {
+        display: none;
+    }
+    .brand .logo {
+        display: block;
+    }
+    .favicon {
+        margin-right: 1rem;
+    }
+    .nav .nav-container {
+        height: 60px;
+        padding: 0 2rem;
+    }
+    .nav .brand .text {
+        display: block;
+    }
+    .nav .links {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        height: 100%;
+    }
+    .nav .links a {
+        font-size: 1.2rem;
+        margin: 0 .5rem;
+        padding: 1rem;
+        border-bottom: 2px solid transparent;
+        border-radius: 10px;
+    }
+    .nav.scroll .nav-container {
+        height: 60px;
+    }
+}

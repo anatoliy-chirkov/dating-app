@@ -3,11 +3,11 @@
 namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
-use Core\Controllers\IProtected;
-use Core\Http\Request;
-use Core\ServiceContainer;
-use Repositories\UserRepository\UserRepository;
-use Services\IsUserOnlineService;
+use Shared\Core\Controllers\IProtected;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
+use Client\Repositories\UserRepository\UserRepository;
+use Client\Services\IsUserOnlineService;
 
 class UserController extends AdminController implements IProtected
 {
@@ -28,7 +28,7 @@ class UserController extends AdminController implements IProtected
         $page = $offset / $length + 1;
 
         /** @var UserRepository $userRepository */
-        $userRepository = ServiceContainer::getInstance()->get('user_repository');
+        $userRepository = App::get('user');
 
         $usersCount = $userRepository->count();
         $usersHTML = [];
@@ -36,7 +36,7 @@ class UserController extends AdminController implements IProtected
         foreach ($userRepository->search([], null, null, null, null, $page, $length) as $user) {
             $imgLink = str_replace('admin.', '', $_SERVER['HTTP_HOST']) . $user['clientPath'];
             /** @var IsUserOnlineService $isOnlineService */
-            $isOnlineService = ServiceContainer::getInstance()->get('is_user_online_service');
+            $isOnlineService = App::get('onlineService');
             $profileLink = str_replace('admin.', '', $_SERVER['HTTP_HOST']) . '/user/' . $user['id'];
 
             // COLUMNS VIEWS

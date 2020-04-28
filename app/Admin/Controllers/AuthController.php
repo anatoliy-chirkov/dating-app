@@ -3,10 +3,10 @@
 namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
-use Core\Controllers\IProtected;
-use Core\DotEnv;
-use Core\Http\Request;
-use Core\ServiceContainer;
+use Shared\Core\Controllers\IProtected;
+use Shared\Core\DotEnv;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
 
 class AuthController extends AdminController implements IProtected
 {
@@ -19,7 +19,7 @@ class AuthController extends AdminController implements IProtected
     {
         if ($request->isPost()) {
             /** @var DotEnv $dotEnv */
-            $dotEnv = ServiceContainer::getInstance()->get('env');
+            $dotEnv = App::get('env');
 
             if ($request->post('login') === $dotEnv->get('ADMIN_LOGIN')
                 && $request->post('password') === $dotEnv->get('ADMIN_PASSWORD')

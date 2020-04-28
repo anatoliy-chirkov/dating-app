@@ -6,9 +6,9 @@ use Admin\Controllers\Shared\AdminController;
 use Admin\Repositories\BillRepository;
 use Admin\Repositories\PurchaseRepository;
 use Carbon\Carbon;
-use Core\Controllers\IProtected;
-use Core\Http\Request;
-use Core\ServiceContainer;
+use Shared\Core\Controllers\IProtected;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
 
 class PaymentController extends AdminController implements IProtected
 {
@@ -33,7 +33,7 @@ class PaymentController extends AdminController implements IProtected
         $length = (int) $request->get('length');
 
         /** @var BillRepository $billRepository */
-        $billRepository = ServiceContainer::getInstance()->get('bill_repository');
+        $billRepository = App::get('bill');
 
         $billsCount = $billRepository->count();
         $billsHTML = [];
@@ -71,7 +71,7 @@ HTML;
         $length = (int) $request->get('length');
 
         /** @var PurchaseRepository $purchaseRepository */
-        $purchaseRepository = ServiceContainer::getInstance()->get('purchase_repository');
+        $purchaseRepository = App::get('purchase');
 
         $purchasesCount = $purchaseRepository->count();
         $purchasesHTML = [];

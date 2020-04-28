@@ -2,7 +2,7 @@
 
 namespace Admin\Controllers\Shared;
 
-use Core\Controllers\BaseController;
+use Shared\Core\Controllers\BaseController;
 
 abstract class AdminController extends BaseController
 {

@@ -4,10 +4,10 @@ namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
 use Admin\Repositories\ProductRepository;
-use Core\Http\Request;
-use Core\ServiceContainer;
-use Core\Validation\Validator;
-use Services\NotificationService\NotificationService;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
+use Shared\Core\Validation\Validator;
+use Client\Services\NotificationService\NotificationService;
 
 class ProductGroupController extends AdminController
 {
@@ -16,7 +16,7 @@ class ProductGroupController extends AdminController
 
     public function __construct()
     {
-        $this->productRepository = ServiceContainer::getInstance()->get('product_repository');
+        $this->productRepository = App::get('product');
     }
 
     public function all()
@@ -30,14 +30,14 @@ class ProductGroupController extends AdminController
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = ServiceContainer::getInstance()->get('validator');
+            $validator = App::get('validator');
 
             if (!$validator->isValid($request->post(), [
                 'name' => 'required',
                 'about' => 'required',
             ])) {
                 /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService = App::get('notificationService');
                 $notificationService->set('error', $validator->getFirstError());
             } else {
                 $this->productRepository->addProductGroup(
@@ -57,7 +57,7 @@ class ProductGroupController extends AdminController
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = ServiceContainer::getInstance()->get('validator');
+            $validator = App::get('validator');
 
             if (!$validator->isValid($request->post(), [
                 'id' => 'required',
@@ -65,7 +65,7 @@ class ProductGroupController extends AdminController
                 'about' => 'required',
             ])) {
                 /** @var NotificationService $notificationService */
-                $notificationService = ServiceContainer::getInstance()->get('notification_service');
+                $notificationService = App::get('notificationService');
                 $notificationService->set('error', $validator->getFirstError());
             } else {
                 $this->productRepository->editProductGroup(

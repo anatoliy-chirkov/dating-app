@@ -5,11 +5,11 @@ namespace Admin\Controllers;
 use Admin\Controllers\Shared\AdminController;
 use Admin\Repositories\ProductRepository;
 use Admin\Services\AdvantageService;
-use Core\Controllers\IProtected;
-use Core\Http\Request;
-use Core\ServiceContainer;
-use Core\Validation\Validator;
-use Services\NotificationService\NotificationService;
+use Shared\Core\Controllers\IProtected;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
+use Shared\Core\Validation\Validator;
+use Client\Services\NotificationService\NotificationService;
 
 class ProductController extends AdminController implements IProtected
 {
@@ -23,7 +23,7 @@ class ProductController extends AdminController implements IProtected
 
     public function __construct()
     {
-        $this->productRepository = ServiceContainer::getInstance()->get('product_repository');
+        $this->productRepository = App::get('product');
     }
 
     public function all()
@@ -80,7 +80,7 @@ class ProductController extends AdminController implements IProtected
     {
         // VALIDATE
         /** @var Validator $validator */
-        $validator = ServiceContainer::getInstance()->get('validator');
+        $validator = App::get('validator');
         $validate = [
             'name' => 'required',
             'groupId' => 'required',
@@ -95,7 +95,7 @@ class ProductController extends AdminController implements IProtected
         if (!$isValidOther || !$isValidActionCommand) {
             // VALIDATION ERROR (!)
             /** @var NotificationService $notificationService */
-            $notificationService = ServiceContainer::getInstance()->get('notification_service');
+            $notificationService = App::get('notificationService');
             $notificationService->set('error', 'Some fields was filled not correct');
             return false;
         } else {
@@ -152,7 +152,7 @@ class ProductController extends AdminController implements IProtected
                 }
             }
 //            /** @var AdvantageService $advantageService */
-//            $advantageService = ServiceContainer::getInstance()->get('advantage_service');
+//            $advantageService = App::get('advantage_service');
 //            $args = [
 //                $groupId,
 //                $request->post('name'),

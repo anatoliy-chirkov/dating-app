@@ -3,7 +3,7 @@
 namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
-use Core\Controllers\IProtected;
+use Shared\Core\Controllers\IProtected;
 
 class BotController extends AdminController implements IProtected
 {

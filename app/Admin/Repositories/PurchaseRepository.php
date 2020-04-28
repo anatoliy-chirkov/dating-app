@@ -2,7 +2,7 @@
 
 namespace Admin\Repositories;
 
-use Core\Repository;
+use Shared\Core\Repository;
 
 class PurchaseRepository extends Repository
 {
@@ -27,7 +27,7 @@ SQL;
             $sql .= ' ' . "OFFSET {$offset}";
         }
 
-        return $this->context->query($sql, $params);
+        return $this->connection->all($sql, $params);
     }
 
     public function count(string $dateFrom = null, string $dateTo = null, int $userId = null)
@@ -36,6 +36,6 @@ SQL;
 SELECT count(id) FROM purchase 
 SQL;
 
-        return $this->context->query($sql)[0][0];
+        return $this->connection->value($sql);
     }
 }

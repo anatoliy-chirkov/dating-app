@@ -2,7 +2,7 @@
 
 namespace Admin\Repositories;
 
-use Core\Repository;
+use Shared\Core\Repository;
 
 class LogRepository extends Repository
 {
@@ -16,12 +16,12 @@ class LogRepository extends Repository
             $sql .= ' ' . "OFFSET {$offset}";
         }
 
-        return $this->context->query($sql);
+        return $this->connection->all($sql);
     }
 
     public function count()
     {
         $sql = 'SELECT count(id) FROM log';
-        return $this->context->query($sql)[0][0];
+        return $this->connection->value($sql);
     }
 }

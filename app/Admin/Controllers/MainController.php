@@ -3,9 +3,9 @@
 namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
-use Core\Http\Request;
-use Core\ServiceContainer;
-use Repositories\UserRepository\UserRepository;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
+use Client\Repositories\UserRepository\UserRepository;
 
 class MainController extends AdminController
 {
@@ -16,7 +16,7 @@ class MainController extends AdminController
         }
 
         /** @var UserRepository $userRepository */
-        $userRepository = ServiceContainer::getInstance()->get('user_repository');
+        $userRepository = App::get('user');
 
         return $this->render([
             'usersCount' => $userRepository->count()

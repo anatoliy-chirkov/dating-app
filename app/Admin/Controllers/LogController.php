@@ -6,9 +6,9 @@ use Admin\Controllers\Shared\AdminController;
 use Admin\Repositories\BillRepository;
 use Admin\Repositories\LogRepository;
 use Carbon\Carbon;
-use Core\Controllers\IProtected;
-use Core\Http\Request;
-use Core\ServiceContainer;
+use Shared\Core\Controllers\IProtected;
+use Shared\Core\Http\Request;
+use Shared\Core\App;
 
 class LogController extends AdminController implements IProtected
 {
@@ -28,7 +28,7 @@ class LogController extends AdminController implements IProtected
         $length = (int) $request->get('length');
 
         /** @var LogRepository $logRepository */
-        $logRepository = ServiceContainer::getInstance()->get('log_repository');
+        $logRepository = App::get('log');
 
         $logsCount = $logRepository->count();
         $logsHTML = [];
