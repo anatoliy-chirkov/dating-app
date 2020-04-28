@@ -11,3 +11,4 @@ app/FrontendAssets/yarn-error.log
 app/Admin/FrontendAssets/node_modules
 app/Admin/FrontendAssets/dist
 app/Admin/FrontendAssets/src/assets/lib
+app/LovePlanetParser/node_modules

@@ -1,0 +1,13 @@
+{
+	"name": "parser",
+	"version": "0.0.1",
+	"devDependencies": {
+		"jsdom": "^15.1.0",
+		"puppeteer": "^1.16.0",
+		"request": "^2.88.0"
+	},
+	"dependencies": {
+		"mysql2": "^1.6.5",
+		"sequelize": "^5.8.6"
+	}
+}
