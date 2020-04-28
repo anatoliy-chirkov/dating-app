@@ -5,22 +5,23 @@
  * @var array $boughtProducts
  * @var array $counters
  */
+use Client\Services\LangService\Text;
 ?>
 
 <div class="shop-page">
     <div class="finances">
-        <h2>💳 Кошелек</h2>
+        <h2>💳 <?=Text::get('wallet')?></h2>
         <div class="balance">
-            <div><?=$me['money']?> руб</div>
+            <div><?=$me['money']?> <?=Text::get('rub')?></div>
         </div>
         <div class="put-money">
-            <h3>Пополнить</h3>
+            <h3><?=Text::get('putMoney')?></h3>
             <form method="POST" action="/shop/put-money">
                 <div class="form-group" style="margin-top: 0;">
                     <input name="amount" placeholder="Сумма" type="number">
                 </div>
                 <div class="button-group">
-                    <button type="submit">Пополнить</button>
+                    <button type="submit"><?=Text::get('putMoney')?></button>
                 </div>
             </form>
             <div>

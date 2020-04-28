@@ -3,10 +3,11 @@
  * @var string $googleApiKey
  * @var array $goals
  */
+use Client\Services\LangService\Text;
 ?>
 <div class="register">
     <form method="POST" action="/register" enctype="multipart/form-data">
-        <h1>Регистрация</h1>
+        <h1><?=Text::get('signUp')?></h1>
 
         <div class="form-title">Общее</div>
         <div class="form-group">
@@ -90,7 +91,7 @@
         </div>
 
         <div class="form-group button-group">
-            <button type="submit">Продолжить</button>
+            <button type="submit"><?=Text::get('next')?></button>
         </div>
     </form>
 </div>

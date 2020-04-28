@@ -2,6 +2,7 @@
 
 use Client\Services\ActionService\Action;
 use Client\Services\ActionService\IAction;
+use Client\Services\LangService\Text;
 
 /**
  * @var array $chats
@@ -36,8 +37,8 @@ use Client\Services\ActionService\IAction;
                             <?php if (strlen($chat['text']) > 22): ?>
                                 <?=mb_substr($chat['text'], 0, 22) . '…'?>
                             <?php else: ?>
-                                <?=$chat['authorId'] === $me['id'] ? 'Вы: ' : ''?>
-                                <?=!empty($chat['text']) ? $chat['text'] : 'Изображение'?>
+                                <?=$chat['authorId'] === $me['id'] ? Text::get('you') . ': ' : ''?>
+                                <?=!empty($chat['text']) ? $chat['text'] : Text::get('image')?>
                                 <?=$chat['authorId'] === $me['id'] && !$chat['isRead'] ? '<span class="circle not-read"></span>' : ''?>
                             <?php endif; ?>
                         </div>
@@ -61,7 +62,7 @@ use Client\Services\ActionService\IAction;
                     <?php $isYourMessage = $message['userId'] === $me['id']; ?>
                     <div class="message <?=$isYourMessage && !$message['isRead'] ? 'not-read' : ''?>" data-id="<?=$message['id']?>" data-isyour="<?=$isYourMessage ? 1 : 0?>">
                         <div class="about">
-                            <div class="title" <?=!$isYourMessage ? 'style="color: #5183f5;"' : ''?>><?=$isYourMessage ? 'Вы' : $message['name']?><span class="time"><?=$message['createdAt']?></span></div>
+                            <div class="title" <?=!$isYourMessage ? 'style="color: #5183f5;"' : ''?>><?=$isYourMessage ? Text::get('you') : $message['name']?><span class="time"><?=$message['createdAt']?></span></div>
                             <div class="content"><?=$message['text']?></div>
                             <?php if (!empty($message['attachment'])): ?>
                             <div class="attachment-wrap">
@@ -94,7 +95,7 @@ use Client\Services\ActionService\IAction;
                         <svg fill="#aaa" height="22" viewBox="-96 0 512 512" width="22" xmlns="http://www.w3.org/2000/svg"><path d="m160 512c-88.234375 0-160-71.765625-160-160v-224c0-11.796875 9.558594-21.332031 21.332031-21.332031 11.777344 0 21.335938 9.535156 21.335938 21.332031v224c0 64.683594 52.628906 117.332031 117.332031 117.332031s117.332031-52.648437 117.332031-117.332031v-234.667969c0-41.171875-33.492187-74.664062-74.664062-74.664062-41.175781 0-74.667969 33.492187-74.667969 74.664062v213.335938c0 17.640625 14.355469 32 32 32s32-14.359375 32-32v-202.667969c0-11.796875 9.558594-21.332031 21.332031-21.332031 11.777344 0 21.335938 9.535156 21.335938 21.332031v202.667969c0 41.171875-33.496094 74.664062-74.667969 74.664062s-74.667969-33.492187-74.667969-74.664062v-213.335938c0-64.679687 52.628907-117.332031 117.335938-117.332031 64.703125 0 117.332031 52.652344 117.332031 117.332031v234.667969c0 88.234375-71.765625 160-160 160zm0 0"/></svg>                </div>
                     <input id="file-input" type="file" name="file" hidden>
                     <input type="text" name="text" placeholder="Ваше сообщение" autocomplete="off">
-                    <button type="submit">Отправить</button>
+                    <button type="submit"><?=Text::get('send')?></button>
                 </div>
                 <div class="attachment-content"></div>
             </form>

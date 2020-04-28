@@ -7,25 +7,26 @@
  * @var array $userGoalsId
  * @var \Services\NotificationService\Notification $notification
  */
+use Client\Services\LangService\Text;
 ?>
 <div class="profile-settings">
-    <h1><span class="mobile-back"></span>Настройки профиля</h1>
+    <h1><span class="mobile-back"></span><?=Text::get('profileSettings')?></h1>
 
     <div class="settings-view">
         <div class="setting-list">
             <a href="/profile#content" class="setting">
                 <div class="title-wrap">
-                    <div class="title">Мои фото</div>
+                    <div class="title"><?=Text::get('myPhotos')?></div>
                 </div>
             </a>
             <a href="/profile/edit" class="setting active">
                 <div class="title-wrap">
-                    <div class="title">Личная информация</div>
+                    <div class="title"><?=Text::get('personalInfo')?></div>
                 </div>
             </a>
             <a href="/profile/change-password" class="setting">
                 <div class="title-wrap">
-                    <div class="title">Сменить пароль</div>
+                    <div class="title"><?=Text::get('changePassword')?></div>
                 </div>
             </a>
         </div>

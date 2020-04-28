@@ -10,6 +10,7 @@
  * @var int $countNotReadMessages
  * @var int $countNotSeenVisits
  */
+use Client\Services\LangService\Text;
 ?>
 <html lang="en">
 <head>
@@ -87,8 +88,8 @@
                 <div style="background-image: url('<?=$me['clientPath']?>'); height: 24px; width: 24px; background-size: cover; background-position: center center; border-radius: 24px;"></div>
             </a>
             <? else: ?>
-                <a href="/login" class="login-button">Вход</a>
-                <a href="/register" class="register-button">Регистрация</a>
+                <a href="/login" class="login-button"><?=Text::get('signIn')?></a>
+                <a href="/register" class="register-button"><?=Text::get('signUp')?></a>
             <? endif; ?>
         </div>
     </div>

@@ -1,3 +1,6 @@
+<?php
+use Client\Services\LangService\Text;
+?>
 <div class="login">
     <input type="email" name="email" hidden>
     <input type="password" name="password" hidden>
@@ -19,7 +22,7 @@
             </label>
         </div>
         <div class="form-group button-group">
-            <button type="submit">Продолжить</button>
+            <button type="submit"><?=Text::get('next')?></button>
         </div>
     </form>
 </div>

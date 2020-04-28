@@ -10,34 +10,35 @@
  * @var array $goals
  * @var array $selectedGoalsId
  */
+use Client\Services\LangService\Text;
 ?>
 
 <div class="main search-page">
     <form method="GET" action="/search">
-        <h4>Поиск</h4>
+        <h4><?=Text::get('search')?></h4>
 
         <div class="search-wrap">
             <div class="search">
                 <div class="form-group sex-group">
-                    <label>Показать<br>
+                    <label><?=Text::get('show')?><br>
                         <input type="checkbox" id="sexChoice1" name="sex[]" value="man" <?php if(array_search('man', $sex) !== false): echo 'checked'; endif; ?>>
-                        <label for="sexChoice1">👨 Мужчину</label>
+                        <label for="sexChoice1"><?=Text::get('ISearchMan')?></label>
                         <br>
                         <input type="checkbox" id="sexChoice2" name="sex[]" value="woman" <?php if(array_search('woman', $sex) !== false): echo 'checked'; endif; ?>>
-                        <label for="sexChoice2">👩 Девушку</label>
+                        <label for="sexChoice2"><?=Text::get('ISearchWoman')?></label>
                     </label>
                 </div>
             </div>
             <div class="form-group age-group">
-                <div>Возраст</div>
+                <div><?=Text::get('age')?></div>
                 <div class="range">
-                    <label><input type="number" name="ageFrom" value="<?=$ageFrom?>" placeholder="от"></label>
-                    <label>-<input type="number" name="ageTo" value="<?=$ageTo?>" placeholder="до" style="margin-left: 10px"></label>
+                    <label><input type="number" name="ageFrom" value="<?=$ageFrom?>" placeholder="<?=Text::get('from')?>"></label>
+                    <label>-<input type="number" name="ageTo" value="<?=$ageTo?>" placeholder="<?=Text::get('to')?>" style="margin-left: 10px"></label>
                 </div>
             </div>
             <div class="form-group city-group">
                 <label>
-                    Город <br>
+                    <?=Text::get('city')?> <br>
                     <select name="googleGeoId[]" class="google-geo-select" multiple="">
                         <?php foreach ($googleGeo as $googleGeoSingle): ?>
                             <option value="<?=$googleGeoSingle['id']?>" selected><?=$googleGeoSingle['fullName']?></option>
@@ -47,7 +48,7 @@
             </div>
             <div class="form-group city-group">
                 <label>
-                    Цели партнера <br>
+                    <?=Text::get('partnerGoals')?> <br>
                     <select name="goalId[]" class="goals-select" multiple="">
                         <?php foreach ($goals as $goal): ?>
                             <option value="<?=$goal['id']?>" <?=in_array($goal['id'], $selectedGoalsId) ? 'selected' : ''?>><?=$goal['name']?></option>
@@ -58,7 +59,7 @@
         </div>
 
         <div class="button-group">
-            <button type="submit">Найти</button>
+            <button type="submit"><?=Text::get('find')?></button>
         </div>
     </form>
 

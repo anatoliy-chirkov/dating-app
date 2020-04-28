@@ -4,6 +4,7 @@
  * @var int $page
  * @var int $pages
  */
+use Client\Services\LangService\Text;
 ?>
 
 <div id="visits-page">

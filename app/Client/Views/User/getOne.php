@@ -6,6 +6,7 @@
  * @var array $images
  * @var array $userGoals
  */
+use Client\Services\LangService\Text;
 ?>
 
 <link rel="stylesheet" href="/node_modules/photoswipe/dist/photoswipe.css">
@@ -35,7 +36,7 @@
                     <?php if (!$isMe): ?>
                         <a class="button" href="/user/<?=$user['id']?>/chat#last-message">Написать сообщение</a>
                     <?php else: ?>
-                        <a class="button button-white" href="/profile">Настройки профиля</a>
+                        <a class="button button-white" href="/profile"><?=Text::get('profileSettings')?></a>
                     <?php endif; ?>
                 <?php else: ?>
                     <div class="message-need-auth">Чтобы написать сообщение <a href="/login">войдите</a> или <a href="/register">зарегестрируйтесь</a></div>
@@ -49,7 +50,7 @@
         <?php $i++; endforeach; ?>
     </div>
     <div class="goals">
-        <strong>Цели знакомства</strong>
+        <strong><?=Text::get('datingGoals')?></strong>
         <br>
         <?php foreach ($userGoals as $userGoal): ?>
             <span><?=$userGoal['name']?></span>
@@ -57,7 +58,7 @@
     </div>
     <div class="about">
         <?php if (!empty($user['about'])): ?>
-            <strong>О себе</strong>
+            <strong><?=Text::get('userAbout')?></strong>
             <br>
             <span><?=$user['about']?></span>
         <?php endif; ?>

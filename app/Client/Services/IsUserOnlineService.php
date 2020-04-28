@@ -4,6 +4,8 @@ namespace Client\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Client\Services\LangService\Resolver;
+use Client\Services\LangService\Text;
 
 class IsUserOnlineService
 {
@@ -34,7 +36,8 @@ class IsUserOnlineService
         if (($diffInMinutes < 5 || $isConnected) && $diffInMinutes < 60) {
             return $this->getHTML(self::ACTIVE, 'Online');
         } else {
-            $text = 'Был' . ($sex === 'man' ? '' : 'а') . ' ' . $lastConnectedDate->locale('ru')
+            $text =  ($sex === 'man' ? Text::get('heWasOnline') : Text::get('sheWasOnline')) . ' '
+                . $lastConnectedDate->locale(Resolver::getLang())
                     ->diffForHumans($nowDate, [
                         'syntax' => CarbonInterface::DIFF_RELATIVE_TO_NOW,
                         'options' => Carbon::ONE_DAY_WORDS

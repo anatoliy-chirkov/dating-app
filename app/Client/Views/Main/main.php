@@ -3,56 +3,57 @@
  * @var array $men
  * @var array $women
  */
+use Client\Services\LangService\Text;
 ?>
 
 <div class="main">
     <div class="heading">
         <div class="title">
-            <h1>Знакомства</h1>
-            <div>Для разного формата отношений</div>
+            <h1><?=Text::get('mainTitle')?></h1>
+            <div><?=Text::get('mainSubtitle')?></div>
             <div style="font-size: 16px;margin-top: 20px;">
-                🔒 Переписки и личные данные защищены
+                <?=Text::get('mainDesc')?>
             </div>
         </div>
 
         <form method="GET" action="/search">
-            <h4>Поиск</h4>
+            <h4><?=Text::get('search')?></h4>
 
             <div class="search-wrap">
                 <div class="search">
                     <div class="form-group sex-group">
-                        <label>Показать<br>
+                        <label><?=Text::get('show')?><br>
                             <input type="checkbox" id="sexChoice1" name="sex[]" value="man">
-                            <label for="sexChoice1">👨 Мужчину</label>
+                            <label for="sexChoice1"><?=Text::get('ISearchMan')?></label>
                             <br>
                             <input type="checkbox" id="sexChoice2" name="sex[]" value="woman">
-                            <label for="sexChoice2">👩 Девушку</label>
+                            <label for="sexChoice2"><?=Text::get('ISearchWoman')?></label>
                         </label>
                     </div>
                     <div class="form-group age-group">
-                        <div>Возраст</div>
+                        <div><?=Text::get('age')?></div>
                         <div class="range">
-                            <label><input type="number" name="ageFrom" placeholder="от"></label>
-                            <label>-<input type="number" name="ageTo" placeholder="до" style="margin-left: 10px"></label>
+                            <label><input type="number" name="ageFrom" placeholder="<?=Text::get('from')?>"></label>
+                            <label>-<input type="number" name="ageTo" placeholder="<?=Text::get('to')?>" style="margin-left: 10px"></label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group city-group">
                     <label>
-                        Город <br>
+                        <?=Text::get('city')?> <br>
                         <select name="googleGeoId[]" class="google-geo-select" multiple=""></select>
                     </label>
                 </div>
             </div>
 
             <div class="button-group">
-                <button type="submit">Найти</button>
+                <button type="submit"><?=Text::get('find')?></button>
             </div>
         </form>
     </div>
 
     <?php if (!empty($women)): ?>
-    <h3>Девушки</h3>
+    <h3><?=Text::get('women')?></h3>
     <div class="results">
         <?php for ($i = 0; count($women) < 4 ? $i < count($women) : $i < 4; $i++): ?>
             <a href="/user/<?=$women[$i]['id']?>" class="profile">
@@ -71,7 +72,7 @@
     <?php endif; ?>
 
     <?php if (!empty($men)): ?>
-    <h3>Мужчины</h3>
+    <h3><?=Text::get('men')?></h3>
     <div class="results">
         <?php for ($i = 0; count($men) < 4 ? $i < count($men) : $i < 4; $i++): ?>
             <a href="/user/<?=$men[$i]['id']?>" class="profile">

@@ -2,6 +2,7 @@
 
 namespace Client\Controllers\Shared;
 
+use Client\Services\LangService\Resolver;
 use Shared\Core\Controllers\BaseController;
 use Shared\Core\App;
 use Client\Repositories\UserRepository\UserRepository;
@@ -10,6 +11,13 @@ use Client\Services\ActionService\IAction;
 
 abstract class SiteController extends BaseController
 {
+    public function __construct()
+    {
+        if (isset($_GET['lang'])) {
+            Resolver::setLang($_GET['lang']);
+        }
+    }
+
     final protected function render($vars = []): string
     {
         $vars['socketUrl']    = App::get('env')->get('SOCKET_URL');

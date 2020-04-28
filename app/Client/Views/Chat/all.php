@@ -2,9 +2,10 @@
 /**
  * @var array $chats
  */
+use Client\Services\LangService\Text;
 ?>
 <div class="chats" id="chat-list-page">
-    <div class="heading" style="border-bottom: 1px solid #efefef">Выберите диалог</div>
+    <div class="heading" style="border-bottom: 1px solid #efefef"><?=Text::get('chooseChat')?></div>
 
     <div class="chat-view">
         <div class="chat-list">
@@ -21,8 +22,8 @@
                             <?php if (strlen($chat['text']) > 22): ?>
                                 <?=mb_substr($chat['text'], 0, 22) . '…'?>
                             <?php else: ?>
-                                <?=$chat['authorId'] === $me['id'] ? 'Вы: ' : ''?>
-                                <?=!empty($chat['text']) ? $chat['text'] : 'Изображение'?>
+                                <?=$chat['authorId'] === $me['id'] ? Text::get('you') . ': ' : ''?>
+                                <?=!empty($chat['text']) ? $chat['text'] : Text::get('image')?>
                                 <?=$chat['authorId'] === $me['id'] && !$chat['isRead'] ? '<span class="circle not-read"></span>' : ''?>
                             <?php endif; ?>
                         </div>
@@ -42,7 +43,7 @@
                     justify-content: center;
                     text-align: center;
                 ">
-                    <div>Выберите диалог или создайте новый. Начать новый диалог можно на странице интересующего пользователя</div>
+                    <div><?=Text::get('chatStub')?></div>
                 </div>
             </div>
         </div>
