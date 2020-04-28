@@ -1,7 +1,11 @@
 <?php
 
-require __DIR__ . '/../app/Core/DotEnv.php';
-$env = new Core\DotEnv(__DIR__ . '/..' . '/.env');
+require __DIR__ . '/Shared/Core/DotEnv.php';
+require __DIR__ . '/Shared/Core/Singleton.php';
+require __DIR__ . '/Shared/Core/App.php';
+
+Shared\Core\App::setParam('envPath', __DIR__ . '/../' . '.env');
+$env = new Shared\Core\DotEnv();
 
 return
 [
