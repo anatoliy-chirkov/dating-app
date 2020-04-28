@@ -55,7 +55,6 @@ class CreateShopModule extends AbstractMigration
         $productTable = $this->table('product');
         $productTable
             ->addColumn('name', 'string', ['limit' => 255])
-            ->addColumn('type', 'enum', ['values' => ['access', 'command', 'both']])
             ->addColumn('groupId', 'integer')
             ->addColumn('duration', 'integer')
             ->addColumn('price', 'double')

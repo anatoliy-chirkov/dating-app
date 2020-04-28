@@ -1,6 +1,5 @@
 <?php
 
-
 use Phinx\Seed\AbstractSeed;
 
 class ActionSeeder extends AbstractSeed

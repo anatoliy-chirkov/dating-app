@@ -60,23 +60,23 @@ class ProductRepository extends Repository
         return $this->connection->all($sql);
     }
 
-    public function addProduct(string $name, string $type, int $groupId, int $duration, float $price, bool $isFree, bool $isActive): int
+    public function addProduct(string $name, int $groupId, int $duration, float $price, bool $isFree, bool $isActive): int
     {
-        $sql = 'INSERT INTO product (name, type, groupId, duration, price, isFree, isActive) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        $this->connection->exec($sql, [$name, $type, $groupId, $duration, $price, $isFree, $isActive]);
+        $sql = 'INSERT INTO product (name, groupId, duration, price, isFree, isActive) VALUES (?, ?, ?, ?, ?, ?)';
+        $this->connection->exec($sql, [$name, $groupId, $duration, $price, $isFree, $isActive]);
 
         $sql = 'SELECT id FROM product ORDER BY id DESC LIMIT 1';
         return $this->connection->value($sql);
     }
 
-    public function updateProduct(int $id, string $name, string $type, int $groupId, int $duration, float $price, bool $isFree, bool $isActive)
+    public function updateProduct(int $id, string $name, int $groupId, int $duration, float $price, bool $isFree, bool $isActive)
     {
         $sql = <<<SQL
 UPDATE product 
-SET name = ?, type = ?, groupId = ?, duration = ?, price = ?, isFree = ?, isActive = ? 
+SET name = ?, groupId = ?, duration = ?, price = ?, isFree = ?, isActive = ? 
 WHERE id = ? 
 SQL;
-        $this->connection->exec($sql, [$name, $type, $groupId, $duration, $price, $isFree, $isActive, $id]);
+        $this->connection->exec($sql, [$name, $groupId, $duration, $price, $isFree, $isActive, $id]);
     }
 
     // ACTIONS

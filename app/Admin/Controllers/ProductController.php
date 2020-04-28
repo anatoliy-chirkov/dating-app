@@ -4,7 +4,6 @@ namespace Admin\Controllers;
 
 use Admin\Controllers\Shared\AdminController;
 use Admin\Repositories\ProductRepository;
-use Admin\Services\AdvantageService;
 use Shared\Core\Controllers\IProtected;
 use Shared\Core\Http\Request;
 use Shared\Core\App;
@@ -105,7 +104,6 @@ class ProductController extends AdminController implements IProtected
                 $this->productRepository->updateProduct(
                     $request->post('id'),
                     $request->post('name'),
-                    '',
                     $request->post('groupId'),
                     $request->post('duration', 0),
                     $request->post('price', 0),
@@ -131,7 +129,6 @@ class ProductController extends AdminController implements IProtected
             } else {
                 $id = $this->productRepository->addProduct(
                     $request->post('name'),
-                    '',
                     $request->post('groupId'),
                     $request->post('duration'),
                     $request->post('price', 0),
