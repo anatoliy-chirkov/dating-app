@@ -16,19 +16,27 @@ class HttpErrorHandler
                 $logRepository->log($_SERVER['REQUEST_URI'], $e->getCode(), $e->getMessage());
                 header("Location: http://{$_SERVER['HTTP_HOST']}{$_SERVER['HTTP_REFERER']}");
                 break;
+            case 0:
+                self::screen(500, $e->getMessage());
+                break;
             default:
                 header("HTTP/1.0 {$e->getCode()}");
-                echo <<<HTML
+                self::screen($e->getCode(), $e->getMessage());
+        }
+    }
+
+    private static function screen(int $code, string $message)
+    {
+        echo <<<HTML
 <html>
     <header>
-        <title>{$e->getMessage()}</title>
+        <title>{$message}</title>
     </header>
     <body style="text-align: center;margin-top: 46px;">
-        <h1>{$e->getCode()}</h1>
-        <div>{$e->getMessage()}</div>
+        <h1>{$code}</h1>
+        <div>{$message}</div>
     </body>
 </html>
 HTML;
-        }
     }
 }

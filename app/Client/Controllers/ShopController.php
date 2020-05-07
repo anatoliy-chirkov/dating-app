@@ -220,6 +220,9 @@ class ShopController extends SiteController implements IProtected
             'publicKey' => $dotEnv->get('QIWI_PUBLIC_KEY'),
             'amount' => $amount,
             'billId' => $billId,
+            'customFields' => [
+                'themeCode' => 'Anatolyi-Ch1mqBoXCPB'
+            ],
             'successUrl' => 'http://ankira.local/shop',
         ];
 

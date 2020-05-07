@@ -74,7 +74,7 @@ use Client\Services\LangService\Text;
         <div class="form-group">
             <label>
                 Изображение профиля<br>
-                <input type="file" name="main_photo">
+                <input type="file" name="mainPhoto">
             </label>
         </div>
         <div class="form-group">

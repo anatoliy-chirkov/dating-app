@@ -1,0 +1,163 @@
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+upstream websocket {
+    server php:8080;
+}
+
+server {
+    listen      80 default_server;
+    server_name _ ;
+    return 503  "No server is currently configured for the requested host." ;
+}
+
+server {
+    server_name ankira.online www.ankira.online ankira.ru www.ankira.ru;
+    root /var/www/app/Client;
+    index main.php;
+
+    client_max_body_size 5M;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /main.php?$args;
+    }
+
+    location ~* \.(svg|gif|jpg|jpeg|png|tif|css|swf|js|flv|xml|mp3|ico|mp4|html|htm|pdf|wav) {
+        root /var/www/app/Client/FrontendAssets;
+        try_files $uri = 404;
+        access_log off;
+        log_not_found off;
+        expires max;
+    }
+
+    location ~ \.php$ {
+        try_files $uri = 404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location ~* (\.ht|\.hg|\.git|\.svn).* {
+        return 404;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/ankira.ru/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/ankira.ru/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    server_name admin.ankira.online admin.ankira.ru;
+    root /var/www/app/Admin;
+    index main.php;
+
+    client_max_body_size 5M;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /main.php?$args;
+    }
+
+    location ~* \.(svg|gif|jpg|jpeg|png|tif|css|swf|js|flv|xml|mp3|ico|mp4|html|htm|pdf|wav) {
+        root /var/www/app/Admin/FrontendAssets/dist;
+        try_files $uri = 404;
+        access_log off;
+        log_not_found off;
+        expires max;
+    }
+
+    location ~ \.php$ {
+        try_files $uri = 404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+}
+
+    location ~* (\.ht|\.hg|\.git|\.svn).* {
+        return 404;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+#    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+#    listen 443 ssl; # managed by Certbot
+#    ssl_certificate /etc/letsencrypt/live/ankira.ru/fullchain.pem; # managed by Certbot
+#    ssl_certificate_key /etc/letsencrypt/live/ankira.ru/privkey.pem; # managed by Certbot
+#    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+#    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    listen 8080 ssl;
+    server_name ankira.online www.ankira.online ankira.ru www.ankira.ru;
+
+    location / {
+        proxy_pass http://websocket;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_read_timeout 300s;
+    }
+
+    ssl_certificate /etc/letsencrypt/live/ankira.ru/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/ankira.ru/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+	if ($host = www.ankira.online) {
+		return 301 https://$host$request_uri;
+	} # managed by Certbot
+
+        if ($host = ankira.online) {
+                return 301 https://$host$request_uri;
+        } # managed by Certbot
+
+	if ($host = www.ankira.ru) {
+		return 301 https://$host$request_uri;
+	} # managed by Certbot
+
+        if ($host = ankira.ru) {
+                return 301 https://$host$request_uri;
+        } # managed by Certbot
+
+        if ($host = admin.ankira.online) {
+                return 301 https://$host$request_uri;
+        }
+
+        if ($host = admin.ankira.ru) {
+                return 301 https://$host$request_uri;
+        }
+
+	listen 80;
+	listen [::]:80;
+
+	server_name ankira.ru www.ankira.ru ankira.online www.ankira.online;
+	return 404; # managed by Certbot
+}

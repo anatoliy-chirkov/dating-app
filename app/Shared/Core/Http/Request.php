@@ -48,6 +48,11 @@ class Request
         return $this->method === IMethod::POST;
     }
 
+    public function all()
+    {
+        return array_merge($_FILES, $_POST, $_GET);
+    }
+
     public function post(string $key = null, $default = null)
     {
         if ($key === null) {

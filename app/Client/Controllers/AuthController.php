@@ -27,17 +27,15 @@ class AuthController extends SiteController implements IProtected
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
-
-            $isValid = $validator->isValid($request->post(), [
-                'email' => 'required,email',
-                'password' => 'required',
+            $validator = App::get('validator', $request->post(), [
+                'email' => 'required|email',
+                'password' => 'required|min:6',
             ]);
 
-            if (!$isValid) {
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render();
             }
 
@@ -83,49 +81,30 @@ class AuthController extends SiteController implements IProtected
         ];
 
         if ($request->isPost()) {
-            /** @var Validator $validator */
-            $validator = App::get('validator');
             /** @var NotificationService $notificationService */
             $notificationService = App::get('notificationService');
 
-            $isValid = $validator->isValid($request->post(), [
-                'sex' => 'required',
-                'age' => 'required',
-                'name' => 'required',
-                'email' => 'required,email',
-                'password' => 'required',
-                'repeatPassword' => 'required',
+            /** @var Validator $validator */
+            $validator = App::get('validator', $request->all(), [
+                'sex' => 'required|in:man,woman',
+                'age' => 'required|integer',
+                'name' => 'required|string|max:100',
+                'email' => 'required|email',
+                'password' => 'required|min:6',
+                'repeatPassword' => 'required|same:password',
                 'city' => 'required',
-                'goalId' => 'required',
+                'goalId' => 'required|array',
+                'goalId.*' => 'integer',
+                'mainPhoto' => 'nullable|exclude_if:mainPhoto.error,4|image|max:5000',
             ]);
 
-            if (!$isValid) {
-                $notificationService->set('error', $validator->getFirstError());
-                return $this->render($viewPayload);
-            }
-
-            $mainPhoto = $request->file('main_photo');
-
-            // TODO: move this logic to validator
-            if ($mainPhoto !== null) {
-                if (!in_array($mainPhoto->getExtension(), ['jpg', 'jpeg'])) {
-                    $notificationService->set('error', 'Файл должен иметь расширение jpg / jpeg');
-                    return $this->render($viewPayload);
-                }
-
-                if ($mainPhoto->getSizeInKb() > 5000) {
-                    $notificationService->set('error', 'Максимальный размер файла 5 мегабайт, пожалуйста сожмите фото или загрузите другое');
-                    return $this->render($viewPayload);
-                }
-            }
-
-            if ($request->post('password') !== $request->post('repeatPassword')) {
-                $notificationService->set('error', 'Пароли не совпадают');
+            if (!$validator->isValid()) {
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render($viewPayload);
             }
 
             /** @var GoogleGeoService $googleGeoService */
-            $googleGeoService = App::get('google_geo_service');
+            $googleGeoService = App::get('googleGeoService');
 
             if (!$googleGeoService->isValidCityString($request->post('city'))) {
                 $notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
@@ -136,7 +115,7 @@ class AuthController extends SiteController implements IProtected
             $userService = App::get('userService');
 
             try {
-                $user = $userService->createUser($request->post(), $mainPhoto);
+                $user = $userService->createUser($request->post(), $request->file('mainPhoto'));
 
                 /** @var CounterRepository $counterRepository */
                 $counterRepository = App::get('counter');

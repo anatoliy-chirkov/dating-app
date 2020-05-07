@@ -56,20 +56,23 @@ class ProfileController extends SiteController implements IProtected
         ];
 
         if ($request->isPost()) {
-            /** @var Validator $validator */
-            $validator = App::get('validator');
             /** @var NotificationService $notificationService */
             $notificationService = App::get('notificationService');
 
             $CITY_HAS_BEEN_CHANGED = $request->post('city') !== $NOT_CHANGED_CITY_STRING;
 
-            if (
-                !$validator->isValid($request->post(), ['name' => 'required', 'age' => 'required', 'city' => 'required'])
-                || !$validator->validateXss($request->post('weight'))
-                || !$validator->validateXss($request->post('height'))
-                || !$validator->validateXss($request->post('about'))
-            ) {
-                $notificationService->set('error', 'Обязательные поля не заполнены или данные содержат недопустимые символы');
+            /** @var Validator $validator */
+            $validator = App::get('validator', $request->all(), [
+                'name' => 'required',
+                'age' => 'required|integer',
+                'city' => 'required',
+                'height' => 'nullable|integer',
+                'weight' => 'nullable|integer',
+                'about' => 'nullable',
+            ]);
+
+            if (!$validator->isValid()) {
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render($viewPayload);
             }
 
@@ -158,12 +161,14 @@ class ProfileController extends SiteController implements IProtected
         $me = $authService->getUser();
 
         /** @var Validator $validator */
-        $validator = App::get('validator');
+        $validator = App::get('validator', $request->all(), [
+            'mainPhoto' => 'required'
+        ]);
 
-        if (!$validator->isValid($request->post(), ['mainPhoto' => 'required'])) {
+        if (!$validator->isValid()) {
             /** @var NotificationService $notificationService */
             $notificationService = App::get('notificationService');
-            $notificationService->set('error', $validator->getFirstError());
+            $notificationService->set('error', $validator->getErrorsAsString());
             $request->redirect('/profile#content');
         }
 
@@ -214,9 +219,7 @@ class ProfileController extends SiteController implements IProtected
             $me = $authService->getUser();
 
             /** @var Validator $validator */
-            $validator = App::get('validator');
-
-            $isValidInGeneral = $validator->isValid($request->post(), [
+            $validator = App::get('validator', $request->all(), [
                 'oldPassword' => 'required',
                 'newPassword' => 'required',
                 'newPasswordRepeat' => 'required',
@@ -224,8 +227,8 @@ class ProfileController extends SiteController implements IProtected
 
             try {
                 // VALIDATION
-                if (!$isValidInGeneral) {
-                    throw new \Exception($validator->getFirstError());
+                if (!$validator->isValid()) {
+                    throw new \Exception($validator->getErrorsAsString());
                 }
 
                 $isValidPassword = $authService->checkPasswordsByUserId($me['id'], $request->post('oldPassword'));

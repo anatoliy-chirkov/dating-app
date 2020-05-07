@@ -78,16 +78,17 @@ class ProductController extends AdminController implements IProtected
     private function save(Request $request, string $type): bool
     {
         // VALIDATE
-        /** @var Validator $validator */
-        $validator = App::get('validator');
-        $validate = [
+        $validationRules = [
             'name' => 'required',
             'groupId' => 'required',
         ];
         if ($type === 'update') {
-            $validate = array_merge($validate, ['id' => 'required']);
+            $validationRules = array_merge($validationRules, ['id' => 'required']);
         }
-        $isValidOther = $validator->isValid($request->post(), $validate);
+
+        /** @var Validator $validator */
+        $validator = App::get('validator', $request->all(), $validationRules);
+        $isValidOther = $validator->isValid();
         $isValidActionCommand = $request->post('actionId') || $request->post('commandId');
         // VALIDATE END
 

@@ -30,15 +30,15 @@ class ProductGroupController extends AdminController
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
-
-            if (!$validator->isValid($request->post(), [
+            $validator = App::get('validator', $request->post(), [
                 'name' => 'required',
                 'about' => 'required',
-            ])) {
+            ]);
+
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
             } else {
                 $this->productRepository->addProductGroup(
                     $request->post('name'),
@@ -57,16 +57,16 @@ class ProductGroupController extends AdminController
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
-
-            if (!$validator->isValid($request->post(), [
+            $validator = App::get('validator', $request->post(), [
                 'id' => 'required',
                 'name' => 'required',
                 'about' => 'required',
-            ])) {
+            ]);
+
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
             } else {
                 $this->productRepository->editProductGroup(
                     $request->post('id'),

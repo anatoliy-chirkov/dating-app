@@ -23,12 +23,12 @@ class App extends Singleton
         self::getInstance()->bindings[$key] = $className;
     }
 
-    public static function get(string $key)
+    public static function get(string $key, ...$args)
     {
         $app = self::getInstance();
 
         if (empty($app->instances[$key])) {
-            return new $app->bindings[$key];
+            return new $app->bindings[$key](...$args);
         }
 
         return $app->instances[$key];

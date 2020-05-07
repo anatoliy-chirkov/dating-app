@@ -31,12 +31,14 @@ class CounterController extends AdminController implements IProtected
     {
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
+            $validator = App::get('validator', $request->post(), [
+                'name' => 'required'
+            ]);
 
-            if (!$validator->isValid($request->post(), ['name' => 'required'])) {
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render();
             }
 
@@ -59,12 +61,15 @@ class CounterController extends AdminController implements IProtected
 
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
+            $validator = App::get('validator', $request->post(), [
+                'id' => 'required',
+                'name' => 'required'
+            ]);
 
-            if (!$validator->isValid($request->post(), ['id' => 'required', 'name' => 'required'])) {
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render();
             }
 
@@ -99,16 +104,16 @@ class CounterController extends AdminController implements IProtected
 
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
-
-            if (!$validator->isValid($request->post(), [
+            $validator = App::get('validator', $request->post(), [
                 'type' => 'required',
                 'actionId' => 'required',
                 'multiplier' => 'required',
-            ])) {
+            ]);
+
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render([
                     'actions' => $counterRepository->actions(),
                 ]);
@@ -137,16 +142,16 @@ class CounterController extends AdminController implements IProtected
 
         if ($request->isPost()) {
             /** @var Validator $validator */
-            $validator = App::get('validator');
-
-            if (!$validator->isValid($request->post(), [
+            $validator = App::get('validator', $request->post(), [
                 'type' => 'required',
                 'actionId' => 'required',
                 'multiplier' => 'required',
-            ])) {
+            ]);
+
+            if (!$validator->isValid()) {
                 /** @var NotificationService $notificationService */
                 $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getFirstError());
+                $notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render([
                     'actions' => $counterRepository->actions(),
                 ]);

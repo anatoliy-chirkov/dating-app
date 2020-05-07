@@ -95,9 +95,11 @@ class ChatController extends SiteController implements IProtected
     public function getMessages(Request $request, $chatId)
     {
         /** @var Validator $validator */
-        $validator = App::get('validator');
+        $validator = App::get('validator', $request->get(), [
+            'offset' => 'required'
+        ]);
 
-        if (!$validator->isValid($request->get(), ['offset' => 'required'])) {
+        if (!$validator->isValid()) {
             $this->renderJson([
                 'data' => [],
                 'error' => true,
