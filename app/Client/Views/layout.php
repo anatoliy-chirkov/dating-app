@@ -37,12 +37,18 @@ use Client\Services\LangService\Text;
     <div class="nav-container">
         <div class="brand">
             <a aria-current="page" class="" href="/">
-                <svg class="logo" xmlns="http://www.w3.org/2000/svg" width="100px" height="40px">
-                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)" font-size="24px" x="0px" y="28px"><tspan font-size="24px" font-family="Chalkboard" fill="#000000">Ankira</tspan></text>
-                </svg>
-                <svg class="mobile-logo" xmlns="http://www.w3.org/2000/svg" width="52px" height="40px">
-                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)" font-size="24px" x="0px" y="28px"><tspan font-size="24px" font-family="Chalkboard" fill="#000000">Ankr</tspan></text>
-                </svg>
+
+                <div style="background-image: url('/img/ankira-shortcut-color.png');
+                height: 37px;
+    width: 37px;
+    background-size: contain;
+    background-repeat: no-repeat;"></div>
+<!--                <svg class="logo" xmlns="http://www.w3.org/2000/svg" width="100px" height="40px">-->
+<!--                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)" font-size="24px" x="0px" y="28px"><tspan font-size="24px" font-family="Chalkboard" fill="#000000">Ankira</tspan></text>-->
+<!--                </svg>-->
+<!--                <svg class="mobile-logo" xmlns="http://www.w3.org/2000/svg" width="52px" height="40px">-->
+<!--                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)" font-size="24px" x="0px" y="28px"><tspan font-size="24px" font-family="Chalkboard" fill="#000000">Ankr</tspan></text>-->
+<!--                </svg>-->
             </a>
         </div>
         <div class="links">
