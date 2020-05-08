@@ -2,13 +2,16 @@
 /**
  * @var string $googleApiKey
  * @var array $goals
+ * @var \Client\Services\NotificationService\Notification $notification
  */
 use Client\Services\LangService\Text;
 ?>
 <div class="register">
     <form method="POST" action="/register" enctype="multipart/form-data">
         <h1><?=Text::get('signUp')?></h1>
-
+        <? if ($notification->isset()): ?>
+            <div class="notification <?=$notification->type?>"><?= $notification->message ?></div>
+        <? endif; ?>
         <div class="form-title">Общее</div>
         <div class="form-group">
             <label>

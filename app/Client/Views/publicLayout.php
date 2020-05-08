@@ -18,10 +18,11 @@ use Client\Services\LangService\Text;
     <meta name="description" content="<?= $description ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1">
 
-    <link rel="stylesheet" href="/css/main.css">
+<!--    <link rel="stylesheet" href="/css/main.css">-->
     <link rel="stylesheet" href="/css/general/base.css">
     <link rel="stylesheet" href="/css/general/nav.css">
     <link rel="stylesheet" href="/css/general/main-content.css">
+    <link rel="stylesheet" href="/css/general/notification.css">
 
     <link rel="stylesheet" href="/css/my.css">
     <link rel="stylesheet" href="/node_modules/select2/dist/css/select2.css">
@@ -52,7 +53,7 @@ background-repeat: no-repeat;"></div>
     </div>
 </div>
 <main id="main-content">
-    <div class="container">
+    <div class="container" style="position: relative;">
         <? require_once $innerViewPath; ?>
     </div>
 </main>

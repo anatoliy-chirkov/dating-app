@@ -1,5 +1,9 @@
 <?php
 use Client\Services\LangService\Text;
+
+/**
+ * @var \Client\Services\NotificationService\Notification $notification
+ */
 ?>
 <div class="login">
     <input type="email" name="email" hidden>
@@ -8,6 +12,10 @@ use Client\Services\LangService\Text;
     <form method="POST" action="/login">
         <h1>Войдите в свой аккаунт</h1>
         <div>или <a href="/register">зарегестрируйтесь</a></div>
+
+        <? if ($notification->isset()): ?>
+            <div class="notification <?=$notification->type?>"><?= $notification->message ?></div>
+        <? endif; ?>
 
         <div class="form-group">
             <label>

@@ -30,7 +30,6 @@ use Client\Services\LangService\Text;
                 <div class="image" style="background-image: url('<?=$women[$i]['clientPath']?>')"></div>
                 <div class="about-wrap">
                     <div class="about"><span class="name"><?=$women[$i]['name']?></span>, <?=$women[$i]['age']?></div>
-                    <?=Shared\Core\App::get('onlineService')->getViewElement($women[$i]['sex'], $women[$i]['isConnected'], $women[$i]['lastConnected'])?>
                     <div class="city"><?=$women[$i]['city']?></div>
                 </div>
             </a>

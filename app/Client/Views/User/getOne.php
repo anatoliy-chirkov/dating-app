@@ -12,7 +12,16 @@ use Client\Services\LangService\Text;
 <link rel="stylesheet" href="/node_modules/photoswipe/dist/photoswipe.css">
 <link rel="stylesheet" href="/node_modules/photoswipe/dist/default-skin/default-skin.css">
 
-<div class="profile-page">
+<div
+        class="profile-page"
+    <?php if (!$isAuthorized): ?>
+        style="
+            background-color: #f6f6f6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: -40px;"
+    <?php endif; ?>
+>
     <div class="main-info">
         <div class="avatar-box">
             <div
@@ -30,7 +39,9 @@ use Client\Services\LangService\Text;
                 <?php endif; ?>
             </div>
             <div class="city"><?=$user['city']?></div>
+            <?php if ($isAuthorized): ?>
             <?=Shared\Core\App::get('onlineService')->getViewElement($user['sex'], $user['isConnected'], $user['lastConnected'])?>
+            <?php endif; ?>
             <div class="button-group">
                 <?php if ($isAuthorized): ?>
                     <?php if (!$isMe): ?>
