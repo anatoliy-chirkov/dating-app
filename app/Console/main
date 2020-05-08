@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+define('ROOT_PATH', __DIR__ . '/../..');
+define('APP_PATH', __DIR__ . '/..');
+
+require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/../Shared/Core/Autoloader.php';
+
+use Symfony\Component\Console\Application;
+use Shared\Core\Autoloader;
+use Shared\Core\App;
+
+Autoloader::register();
+
+App::setParam('envPath', ROOT_PATH.'/.env');
+App::bind('env', Shared\Core\DotEnv::class);
+App::bind('sqlConnection', Shared\Core\Db\SQLConnection::class);
+App::bind('user', Client\Repositories\UserRepository\UserRepository::class);
+
+$application = new Application();
+
+$commandsDirContents = scandir(__DIR__.'/Command');
+$commandsFiles = array_diff($commandsDirContents, ['.', '..']);
+$commands = array_map(static function(string $file) {
+    return 'Console\Command\\' . str_replace('.php', '', $file);
+}, $commandsFiles);
+
+foreach ($commands as $command) {
+    $application->add(new $command);
+}
+
+$application->run();

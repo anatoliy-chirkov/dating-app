@@ -11,6 +11,7 @@
         "nesbot/carbon": "^2.32",
         "robmorgan/phinx": "^0.12.1",
         "qiwi/bill-payments-php-sdk": "^0.1.2",
-        "illuminate/validation": "^7.10"
+        "illuminate/validation": "^7.10",
+        "symfony/console": "^5.0"
     }
 }
