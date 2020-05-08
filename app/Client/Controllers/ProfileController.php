@@ -25,17 +25,12 @@ class ProfileController extends SiteController implements IProtected
 
     public function settings()
     {
-        $me = $this->getMe();
-        $images = $this->getImages($me['id']);
-        return $this->render(['images' => $images, 'me' => $me, 'LAYOUT_NOTIFICATION_OFF' => true]);
+        $images = $this->getImages($this->user['id']);
+        return $this->render(['images' => $images, 'LAYOUT_NOTIFICATION_OFF' => true]);
     }
 
     public function edit(Request $request)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $me = $authService->getUser();
-
         $GOOGLE_API_KEY = App::get('env')->get('GOOGLE_API_KEY');
         $NOT_CHANGED_CITY_STRING = 'notChanged';
 
@@ -43,7 +38,7 @@ class ProfileController extends SiteController implements IProtected
         $goalRepository = App::get('goal');
         $userGoalsId = [];
 
-        foreach ($goalRepository->getUserGoals($me['id']) as $userGoal) {
+        foreach ($goalRepository->getUserGoals($this->user['id']) as $userGoal) {
             $userGoalsId[] = $userGoal['id'];
         }
 
@@ -92,13 +87,13 @@ class ProfileController extends SiteController implements IProtected
                 $googleGeoService = App::get('google_geo_service');
                 $googleGeoId = $googleGeoService->saveIfNotExistAndGetId($request->post('city'));
             } else {
-                $googleGeoId = $me['googleGeoId'];
+                $googleGeoId = $this->user['googleGeoId'];
             }
 
             /** @var UserRepository $userRepository */
             $userRepository = App::get('user');
             $userRepository->update(
-                $me['id'],
+                $this->user['id'],
                 $request->post('name'),
                 $request->post('age'),
                 $googleGeoId,
@@ -134,13 +129,9 @@ class ProfileController extends SiteController implements IProtected
             }
 
             // SAVING
-            /** @var AuthService $authService */
-            $authService = App::get('authService');
-            $me = $authService->getUser();
-
             /** @var ImageService $imageService */
             $imageService = App::get('image_service');
-            $imageService->save($file, $me['id']);
+            $imageService->save($file, $this->user['id']);
 
             /** @var NotificationService $notificationService */
             $notificationService = App::get('notificationService');
@@ -156,10 +147,6 @@ class ProfileController extends SiteController implements IProtected
 
     public function chooseMainPhoto(Request $request)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $me = $authService->getUser();
-
         /** @var Validator $validator */
         $validator = App::get('validator', $request->all(), [
             'mainPhoto' => 'required'
@@ -174,7 +161,7 @@ class ProfileController extends SiteController implements IProtected
 
         /** @var ImageRepository $imageRepository */
         $imageRepository = App::get('image');
-        $imageRepository->markImageAsMain((int) $request->post('mainPhoto'), $me['id']);
+        $imageRepository->markImageAsMain((int) $request->post('mainPhoto'), $this->user['id']);
 
         /** @var NotificationService $notificationService */
         $notificationService = App::get('notificationService');
@@ -187,16 +174,12 @@ class ProfileController extends SiteController implements IProtected
     {
         $photoIds = $request->post('photo');
 
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $me = $authService->getUser();
-
         /** @var ImageService $imageService */
         $imageService = App::get('image_service');
 
         try {
             foreach ($photoIds as $photoId) {
-                $imageService->deleteOne($photoId, $me['id']);
+                $imageService->deleteOne($photoId, $this->user['id']);
             }
 
             /** @var NotificationService $notificationService */
@@ -216,7 +199,6 @@ class ProfileController extends SiteController implements IProtected
         if ($request->isPost()) {
             /** @var AuthService $authService */
             $authService = App::get('authService');
-            $me = $authService->getUser();
 
             /** @var Validator $validator */
             $validator = App::get('validator', $request->all(), [
@@ -231,7 +213,7 @@ class ProfileController extends SiteController implements IProtected
                     throw new \Exception($validator->getErrorsAsString());
                 }
 
-                $isValidPassword = $authService->checkPasswordsByUserId($me['id'], $request->post('oldPassword'));
+                $isValidPassword = $authService->checkPasswordsByUserId($this->user['id'], $request->post('oldPassword'));
 
                 if (!$isValidPassword) {
                     throw new \Exception('Старый пароль введен неверно');
@@ -245,15 +227,14 @@ class ProfileController extends SiteController implements IProtected
                 /** @var UserRepository $userRepository */
                 $userRepository = App::get('user');
                 $userRepository->setNewPasswordHash(
-                    $me['id'], $authService->hashPassword($request->post('newPassword'))
+                    $this->user['id'], $authService->hashPassword($request->post('newPassword'))
                 );
 
                 if ($request->post('logoutEverywhere') === 'on') {
                     /** @var TokenRepository $tokenRepository */
                     $tokenRepository = App::get('token');
-                    $tokenRepository->removeAllUserTokens($me['id']);
-
-                    $authService->setUpToken($me['id']);
+                    $tokenRepository->removeAllUserTokens($this->user['id']);
+                    $authService->setUpToken($this->user['id']);
                 }
 
                 /** @var NotificationService $notificationService */
@@ -274,12 +255,5 @@ class ProfileController extends SiteController implements IProtected
         /** @var ImageRepository $imageRepository */
         $imageRepository = App::get('image');
         return $imageRepository->getUserImages($userId);
-    }
-
-    private function getMe()
-    {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        return $authService->getUser();
     }
 }

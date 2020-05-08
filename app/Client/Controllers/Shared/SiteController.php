@@ -11,10 +11,19 @@ use Client\Services\ActionService\IAction;
 
 abstract class SiteController extends BaseController
 {
+    protected $isAuthorized;
+    protected $user = [];
+
     public function __construct()
     {
         if (isset($_GET['lang'])) {
             Resolver::setLang($_GET['lang']);
+        }
+
+        $this->isAuthorized = $this->isAuthorized();
+
+        if ($this->isAuthorized) {
+            $this->user = App::get('authService')->getUser();
         }
     }
 
@@ -24,10 +33,8 @@ abstract class SiteController extends BaseController
         $vars['title']        = App::get('env')->get('APP_NAME');
         $vars['description']  = App::get('env')->get('APP_DESCRIPTION');
 
-        $isAuthorized  = $this->isAuthorized();
-
-        if ($isAuthorized) {
-            $vars['me'] = App::get('authService')->getUser();
+        if ($this->isAuthorized) {
+            $vars['me'] = $this->user;
             $vars['countNotReadMessages'] = App::get('message')->getCountNotReadMessages($vars['me']['id']);
             $vars['countNotSeenVisits'] = App::get('visit')->getNotSeenVisitsCount($vars['me']['id']);
 

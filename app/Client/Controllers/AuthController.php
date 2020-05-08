@@ -18,6 +18,22 @@ use Shared\Core\App;
 
 class AuthController extends SiteController implements IProtected
 {
+    /** @var NotificationService $notificationService */
+    private $notificationService;
+    /** @var AuthService $authService */
+    private $authService;
+    /** @var UserRepository $userRepository */
+    private $userRepository;
+
+    public function __construct()
+    {
+        $this->notificationService = App::get('notificationService');
+        $this->authService = App::get('authService');
+        $this->userRepository = App::get('user');
+
+        parent::__construct();
+    }
+
     public function getProtectedMethods()
     {
         return ['logout'];
@@ -33,40 +49,24 @@ class AuthController extends SiteController implements IProtected
             ]);
 
             if (!$validator->isValid()) {
-                /** @var NotificationService $notificationService */
-                $notificationService = App::get('notificationService');
-                $notificationService->set('error', $validator->getErrorsAsString());
+                $this->notificationService->set('error', $validator->getErrorsAsString());
                 return $this->render();
             }
-
-            /** @var AuthService $authService */
-            $authService = App::get('authService');
 
             try {
-                $isValidPassword = $authService->checkEmailAndPassword(
+                if (!$this->authService->checkEmailAndPassword(
                     $request->post('email'),
                     $request->post('password')
-                );
+                )) {
+                    throw new \Exception('Неверный пароль');
+                }
             } catch (\Exception $e) {
-                /** @var NotificationService $notificationService */
-                $notificationService = App::get('notificationService');
-                $notificationService->set('error', $e->getMessage());
+                $this->notificationService->set('error', $e->getMessage());
                 return $this->render();
             }
 
-            if (!$isValidPassword) {
-                /** @var NotificationService $notificationService */
-                $notificationService = App::get('notificationService');
-                $notificationService->set('error', 'Неверный пароль');
-                return $this->render();
-            }
-
-            /** @var UserRepository $userRepository */
-            $userRepository = App::get('user');
-            $user = $userRepository->getByEmail($request->post('email'));
-
-            $authService->setUpToken($user['id']);
-
+            $user = $this->userRepository->getByEmail($request->post('email'));
+            $this->authService->setUpToken($user['id']);
             $request->redirect('/');
         }
 
@@ -75,15 +75,19 @@ class AuthController extends SiteController implements IProtected
 
     public function register(Request $request)
     {
+        /** @var GoogleGeoService $googleGeoService */
+        $googleGeoService = App::get('googleGeoService');
+        /** @var UserService $userService */
+        $userService = App::get('userService');
+        /** @var CounterRepository $counterRepository */
+        $counterRepository = App::get('counter');
+
         $viewPayload = [
             'googleApiKey' => App::get('env')->get('GOOGLE_API_KEY'),
             'goals' => App::get('goal')->getAll(),
         ];
 
         if ($request->isPost()) {
-            /** @var NotificationService $notificationService */
-            $notificationService = App::get('notificationService');
-
             /** @var Validator $validator */
             $validator = App::get('validator', $request->all(), [
                 'sex' => 'required|in:man,woman',
@@ -99,26 +103,15 @@ class AuthController extends SiteController implements IProtected
             ]);
 
             if (!$validator->isValid()) {
-                $notificationService->set('error', $validator->getErrorsAsString());
+                $this->notificationService->set('error', $validator->getErrorsAsString());
+                return $this->render($viewPayload);
+            } else if (!$googleGeoService->isValidCityString($request->post('city'))) {
+                $this->notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
                 return $this->render($viewPayload);
             }
-
-            /** @var GoogleGeoService $googleGeoService */
-            $googleGeoService = App::get('googleGeoService');
-
-            if (!$googleGeoService->isValidCityString($request->post('city'))) {
-                $notificationService->set('error', 'Попробуйте выбрать город из списка еще раз');
-                return $this->render($viewPayload);
-            }
-
-            /** @var UserService $userService */
-            $userService = App::get('userService');
 
             try {
                 $user = $userService->createUser($request->post(), $request->file('mainPhoto'));
-
-                /** @var CounterRepository $counterRepository */
-                $counterRepository = App::get('counter');
                 $counters = $counterRepository->getActiveCounters();
 
                 foreach ($counters as $counter) {
@@ -128,16 +121,11 @@ class AuthController extends SiteController implements IProtected
                 Action::run(IAction::REGISTRATION, $user['id']);
 
             } catch (\Exception $e) {
-                /** @var NotificationService $notificationService */
-                $notificationService = App::get('notificationService');
-                $notificationService->set('error', $e->getMessage());
+                $this->notificationService->set('error', $e->getMessage());
                 return $this->render($viewPayload);
             }
 
-            /** @var AuthService $authService */
-            $authService = App::get('authService');
-            $authService->setUpToken($user['id']);
-
+            $this->authService->setUpToken($user['id']);
             $request->redirect('/');
         }
 
@@ -146,10 +134,7 @@ class AuthController extends SiteController implements IProtected
 
     public function logout(Request $request)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $authService->removeToken();
-
+        $this->authService->removeToken();
         $request->redirect('/');
     }
 }

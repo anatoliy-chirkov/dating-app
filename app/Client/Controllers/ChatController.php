@@ -25,34 +25,26 @@ class ChatController extends SiteController implements IProtected
 
     public function all(Request $request)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $user = $authService->getUser();
-
         /** @var ChatRepository $chatRepository */
         $chatRepository = App::get('chat');
-        $chats = $chatRepository->getChatsByUserId($user['id']);
+        $chats = $chatRepository->getChatsByUserId($this->user['id']);
 
         return $this->render(['chats' => $chats]);
     }
 
     public function concrete(Request $request, $userId)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $me = $authService->getUser();
-
         /** @var UserRepository $userRepository */
         $userRepository = App::get('user');
         $receiver = $userRepository->getById($userId);
 
         /** @var ChatRepository $chatRepository */
         $chatRepository = App::get('chat');
-        $chatId = $chatRepository->getChatIdByUsers([$me['id'], $receiver['id']]);
+        $chatId = $chatRepository->getChatIdByUsers([$this->user['id'], $receiver['id']]);
 
         /** @var ChatRepository $chatRepository */
         $chatRepository = App::get('chat');
-        $chats = $chatRepository->getChatsByUserId($me['id']);
+        $chats = $chatRepository->getChatsByUserId($this->user['id']);
 
         $isNewChat = false;
 
@@ -66,7 +58,7 @@ class ChatController extends SiteController implements IProtected
                     ->isoFormat('D MMMM, HH:mm');
             }
 
-            $messageRepository->setAllMessagesWasRead($chatId, $me['id']);
+            $messageRepository->setAllMessagesWasRead($chatId, $this->user['id']);
             $messagesCount = $messageRepository->getAllMessagesCount($chatId);
         } else {
             $isNewChat = true;

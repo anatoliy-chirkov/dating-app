@@ -9,7 +9,6 @@ use Shared\Core\Controllers\IProtected;
 use Shared\Core\Http\Request;
 use Shared\Core\App;
 use Client\Repositories\VisitRepository;
-use Client\Services\AuthService;
 
 class VisitController extends SiteController implements IProtected
 {
@@ -20,15 +19,11 @@ class VisitController extends SiteController implements IProtected
 
     public function see(Request $request)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-        $me = $authService->getUser();
-
         /** @var VisitRepository $visitRepository */
         $visitRepository = App::get('visit');
-        $visitRepository->setAllVisitsHasSeen($me['id']);
-        $visits = $visitRepository->getPageVisits($me['id'], $request->get('page', 1));
-        $visitsCount = $visitRepository->getPageVisitsCount($me['id']);
+        $visitRepository->setAllVisitsHasSeen($this->user['id']);
+        $visits = $visitRepository->getPageVisits($this->user['id'], $request->get('page', 1));
+        $visitsCount = $visitRepository->getPageVisitsCount($this->user['id']);
 
         $pages = ceil($visitsCount / 14);
 
