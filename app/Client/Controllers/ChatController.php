@@ -95,7 +95,7 @@ class ChatController extends SiteController implements IProtected
             $this->renderJson([
                 'data' => [],
                 'error' => true,
-                'errorText' => 'Argument offset not valid',
+                'errorText' => $validator->getErrorsAsString(),
             ]);
         }
 
@@ -120,28 +120,23 @@ class ChatController extends SiteController implements IProtected
 
     public function saveAttachment(Request $request)
     {
-        $chatId     = $request->post('chatId');
-        $attachment = $request->file('attachment');
+        /** @var Validator $validator */
+        $validator = App::get('validator', $request->all(), [
+            'chatId' => 'required|integer',
+            'attachment' => 'required|image|max:5000',
+        ]);
 
-        if (!in_array($attachment->getExtension(), ['jpg', 'jpeg'])) {
+        if (!$validator->isValid()) {
             $this->renderJson([
                 'data' => [],
                 'error' => true,
-                'errorText' => 'Not valid extension',
-            ]);
-        }
-
-        if ($attachment->getSizeInKb() > 5000) {
-            $this->renderJson([
-                'data' => [],
-                'error' => true,
-                'errorText' => 'Max file size in 5 MB',
+                'errorText' => $validator->getErrorsAsString(),
             ]);
         }
 
         /** @var AttachmentService $attachmentService */
         $attachmentService = App::get('attachmentService');
-        $attachment = $attachmentService->save($attachment, $chatId);
+        $attachment = $attachmentService->save($request->file('attachment'), $request->post('chatId'));
 
         $this->renderJson([
             'data' => [

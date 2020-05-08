@@ -21,7 +21,7 @@ class UserObjectFactory
                 }
             } else if ($key === 'city') {
                 /** @var GoogleGeoService $googleGeoService */
-                $googleGeoService = App::get('google_geo_service');
+                $googleGeoService = App::get('googleGeoService');
                 $user->googleGeoId = $googleGeoService->saveIfNotExistAndGetId($value);
             } else {
                 $user->$key = empty($value) ? null : $value;

@@ -113,25 +113,19 @@ class ProfileController extends SiteController implements IProtected
     public function addPhoto(Request $request)
     {
         try {
-            $file = $request->file('photo');
+            /** @var Validator $validator */
+            $validator = App::get('validator', $request->all(), [
+                'photo' => 'required|image|max:5000',
+            ]);
 
-            // VALIDATION
-            if ($file === null) {
-                throw new \Exception('Фото - обязательное поле');
-            }
-
-            if (!in_array($file->getExtension(), ['jpg', 'jpeg'])) {
-                throw new \Exception('Файл должен иметь расширение jpg / jpeg');
-            }
-
-            if ($file->getSizeInKb() > 5000) {
-                throw new \Exception('Максимальный размер файла 5 мегабайт, пожалуйста сожмите фото или загрузите другое');
+            if (!$validator->isValid()) {
+                throw new \Exception($validator->getErrorsAsString());
             }
 
             // SAVING
             /** @var ImageService $imageService */
-            $imageService = App::get('image_service');
-            $imageService->save($file, $this->user['id']);
+            $imageService = App::get('imageService');
+            $imageService->save($request->file('photo'), $this->user['id']);
 
             /** @var NotificationService $notificationService */
             $notificationService = App::get('notificationService');
@@ -175,7 +169,7 @@ class ProfileController extends SiteController implements IProtected
         $photoIds = $request->post('photo');
 
         /** @var ImageService $imageService */
-        $imageService = App::get('image_service');
+        $imageService = App::get('imageService');
 
         try {
             foreach ($photoIds as $photoId) {
@@ -200,30 +194,20 @@ class ProfileController extends SiteController implements IProtected
             /** @var AuthService $authService */
             $authService = App::get('authService');
 
-            /** @var Validator $validator */
-            $validator = App::get('validator', $request->all(), [
-                'oldPassword' => 'required',
-                'newPassword' => 'required',
-                'newPasswordRepeat' => 'required',
-            ]);
-
             try {
-                // VALIDATION
+                /** @var Validator $validator */
+                $validator = App::get('validator', $request->all(), [
+                    'oldPassword' => 'required',
+                    'newPassword' => 'required|min:6',
+                    'newPasswordRepeat' => 'required|same:newPassword',
+                ]);
+
                 if (!$validator->isValid()) {
                     throw new \Exception($validator->getErrorsAsString());
-                }
-
-                $isValidPassword = $authService->checkPasswordsByUserId($this->user['id'], $request->post('oldPassword'));
-
-                if (!$isValidPassword) {
+                } else if (!$authService->checkPasswordsByUserId($this->user['id'], $request->post('oldPassword'))) {
                     throw new \Exception('Старый пароль введен неверно');
                 }
 
-                if ($request->post('newPassword') !== $request->post('newPasswordRepeat')) {
-                    throw new \Exception('Новые пароли не совпадают');
-                }
-
-                // LOGIC
                 /** @var UserRepository $userRepository */
                 $userRepository = App::get('user');
                 $userRepository->setNewPasswordHash(

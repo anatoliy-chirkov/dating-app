@@ -20,7 +20,7 @@ class UserService
     public function __construct()
     {
         $this->userRepository = App::get('user');
-        $this->imageService = App::get('image_service');
+        $this->imageService = App::get('imageService');
         $this->userObjectFactory = new UserObjectFactory();
     }
 
