@@ -13,6 +13,7 @@ use Client\Repositories\VisitRepository;
 use Client\Services\ActionService\Action;
 use Client\Services\ActionService\IAction;
 use Client\Services\AuthService;
+use Shared\Core\Router\Exceptions\PageNotFoundException;
 
 class UserController extends SiteController
 {
@@ -58,21 +59,16 @@ class UserController extends SiteController
 
     public function getOne(Request $request, $userId)
     {
-        /** @var AuthService $authService */
-        $authService = App::get('authService');
-
-        if ($authService->verifyCookieToken()) {
-            $me = $authService->getUser();
-
-            if ($me['id'] !== $userId) {
+        if ($this->isAuthorized) {
+            if ($this->user['id'] !== $userId) {
 
                 if (
                     !Action::hasRestrictedProduct(IAction::HIDE_VISIT)
-                    || !Action::check(IAction::HIDE_VISIT, $me['id'])
+                    || !Action::check(IAction::HIDE_VISIT, $this->user['id'])
                 ) {
                     /** @var VisitRepository $visitRepository */
                     $visitRepository = App::get('visit');
-                    $visitRepository->saveVisit($userId, $me['id']);
+                    $visitRepository->saveVisit($userId, $this->user['id']);
                 }
             }
         }
@@ -80,6 +76,10 @@ class UserController extends SiteController
         /** @var UserRepository $userRepository */
         $userRepository = App::get('user');
         $user = $userRepository->getById($userId);
+
+        if ($user === null) {
+            throw new PageNotFoundException();
+        }
 
         /** @var ImageRepository $imageRepository */
         $imageRepository = App::get('image');
@@ -90,7 +90,7 @@ class UserController extends SiteController
 
         return $this->render([
             'user' => $user,
-            'isMe' => isset($me) ? $me['id'] === $user['id'] : false,
+            'isMe' => isset($this->user) ? $this->user['id'] === $user['id'] : false,
             'images' => $images,
             'userGoals' => $goalRepository->getUserGoals($user['id']),
         ]);
