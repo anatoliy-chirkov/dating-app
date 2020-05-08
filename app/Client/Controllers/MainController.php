@@ -11,13 +11,15 @@ class MainController extends SiteController
 {
     public function main(Request $request)
     {
+        if ($this->isAuthorized) {
+            return (new UserController())->search($request);
+        }
+
         /** @var UserRepository $userRepository */
         $userRepository = App::get('user');
-        $men = $userRepository->search($request->get('sex', ['man']));
-        $women = $userRepository->search($request->get('sex', ['woman']));
+        $women = $userRepository->search();
 
         return $this->render([
-            'men' => $men,
             'women' => $women,
         ]);
     }

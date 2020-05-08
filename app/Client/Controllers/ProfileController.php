@@ -72,7 +72,7 @@ class ProfileController extends SiteController implements IProtected
             }
 
             /** @var GoogleGeoService $googleGeoService */
-            $googleGeoService = App::get('google_geo_service');
+            $googleGeoService = App::get('googleGeoService');
 
             if (
                 $CITY_HAS_BEEN_CHANGED
@@ -84,7 +84,7 @@ class ProfileController extends SiteController implements IProtected
 
             if ($CITY_HAS_BEEN_CHANGED) {
                 /** @var GoogleGeoService $googleGeoService */
-                $googleGeoService = App::get('google_geo_service');
+                $googleGeoService = App::get('googleGeoService');
                 $googleGeoId = $googleGeoService->saveIfNotExistAndGetId($request->post('city'));
             } else {
                 $googleGeoId = $this->user['googleGeoId'];

@@ -63,4 +63,9 @@ abstract class SiteController extends BaseController
     {
         return CLIENT_PATH . '/' . self::VIEWS_FOLDER;
     }
+
+    protected function getLayoutName(): string
+    {
+        return $this->isAuthorized ? parent::getLayoutName() : 'publicLayout.php';
+    }
 }

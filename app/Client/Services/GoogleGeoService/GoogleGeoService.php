@@ -12,7 +12,7 @@ class GoogleGeoService
 
     public function __construct()
     {
-        $this->googleGeoRepository = App::get('google_geo');
+        $this->googleGeoRepository = App::get('googleGeo');
     }
 
     public function isValidCityString(string $cityString)
