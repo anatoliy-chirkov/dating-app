@@ -2,7 +2,7 @@
 
 namespace Client\Services;
 
-use Shared\Core\Http\File;
+use Shared\Core\Http\UploadedFile;
 use Shared\Core\App;
 use Client\Repositories\ImageRepository;
 
@@ -16,7 +16,7 @@ class ImageService
         $this->imageRepository = App::get('image');
     }
 
-    public function save(File $file, int $userId)
+    public function save(UploadedFile $file, int $userId)
     {
         [$userImgServerDir, $userImgClientDir] = $this->getUserImgDirs($userId);
 
@@ -26,7 +26,7 @@ class ImageService
         return $this->imageRepository->getByClientPath($file->getClientPath());
     }
 
-    public function saveMainPhoto(File $file, int $userId)
+    public function saveMainPhoto(UploadedFile $file, int $userId)
     {
         [$userImgServerDir, $userImgClientDir] = $this->getUserImgDirs($userId);
 
@@ -51,7 +51,7 @@ class ImageService
 
     private function getUserImgDirs(int $userId)
     {
-        $usersImgDir = App::get('usersImgDir');
+        $usersImgDir = App::getParam('usersImgDir');
 
         return [
             $usersImgDir['server'] . '/' . $userId,

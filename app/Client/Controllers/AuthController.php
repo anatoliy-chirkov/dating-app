@@ -99,7 +99,7 @@ class AuthController extends SiteController implements IProtected
                 'city' => 'required',
                 'goalId' => 'required|array',
                 'goalId.*' => 'integer',
-                'mainPhoto' => 'nullable|exclude_if:mainPhoto.error,4|image|max:5000',
+                'mainPhoto' => 'nullable|image|max:5000',
             ]);
 
             if (!$validator->isValid()) {

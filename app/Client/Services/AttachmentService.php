@@ -2,10 +2,9 @@
 
 namespace Client\Services;
 
-use Shared\Core\Http\File;
+use Shared\Core\Http\UploadedFile;
 use Shared\Core\App;
 use Client\Repositories\AttachmentRepository;
-use Client\Repositories\ImageRepository;
 
 class AttachmentService
 {
@@ -17,7 +16,7 @@ class AttachmentService
         $this->attachmentRepository = App::get('attachment');
     }
 
-    public function save(File $file, int $chatId)
+    public function save(UploadedFile $file, int $chatId)
     {
         [$userImgServerDir, $userImgClientDir] = $this->getChatsImgDirs($chatId);
 
@@ -30,7 +29,7 @@ class AttachmentService
 
     private function getChatsImgDirs(int $chatId)
     {
-        $chatsImgDir = App::get('chatsImgDir');
+        $chatsImgDir = App::getParam('chatsImgDir');
 
         return [
             $chatsImgDir['server'] . '/' . $chatId,

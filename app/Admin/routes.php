@@ -1,7 +1,7 @@
 <?php
 
-use Shared\Core\Http\IMethod;
 use Shared\Core\Router\Route;
+use Shared\Core\Http\Request;
 use Admin\Controllers\{MainController, AuthController, PaymentController, ProductController, UserController,
     BotController, LogController, CounterController, ProductGroupController};
 
@@ -10,150 +10,150 @@ return [
         '/',
         MainController::class,
         'main',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/login',
         AuthController::class,
         'login',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/logout',
         AuthController::class,
         'logout',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
 
     new Route(
         '/payments/bills',
         PaymentController::class,
         'bills',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/payments/bills/search',
         PaymentController::class,
         'searchBills',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/payments/purchases',
         PaymentController::class,
         'purchases',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/payments/purchases/search',
         PaymentController::class,
         'searchPurchases',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
 
     new Route(
         '/product-groups',
         ProductGroupController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/product-groups/create',
         ProductGroupController::class,
         'create',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/product-groups/:id',
         ProductGroupController::class,
         'edit',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/products',
         ProductController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/products/create',
         ProductController::class,
         'create',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/products/:id',
         ProductController::class,
         'edit',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
 
     new Route(
         '/counters',
         CounterController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/counters/create',
         CounterController::class,
         'create',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/counters/:id',
         CounterController::class,
         'edit',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
 
     new Route(
         '/counters/:id/actions',
         CounterController::class,
         'counterActions',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/counters/:id/actions/create',
         CounterController::class,
         'createCounterAction',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/counters/:id/actions/:id',
         CounterController::class,
         'editCounterAction',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
 
     new Route(
         '/users/search',
         UserController::class,
         'search',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/users',
         UserController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/bots',
         BotController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
 
     new Route(
         '/logs',
         LogController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/logs/search',
         LogController::class,
         'search',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
 ];

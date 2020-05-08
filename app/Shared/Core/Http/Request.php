@@ -2,23 +2,22 @@
 
 namespace Shared\Core\Http;
 
-class Request
+use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\ServerBag;
+
+class Request extends SymfonyRequest
 {
-    private $uri;
-    private $method;
-    private $postData;
-    private $getData;
-    private $rawData;
-
-    public function __construct()
+    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
     {
-        $requestUriArr = explode('?', $_SERVER['REQUEST_URI'], 2);
-
-        $this->uri      = $requestUriArr[0];
-        $this->method   = $_SERVER['REQUEST_METHOD'];
-        $this->postData = $_POST;
-        $this->getData  = $_GET;
-        $this->rawData  = file_get_contents("php://input");
+        $this->request = new ParameterBag($_POST);
+        $this->query = new ParameterBag($_GET);
+        $this->cookies = new ParameterBag($_COOKIE);
+        $this->files = new FileBag($_FILES);
+        $this->server = new ServerBag($_SERVER);
+        $this->headers = new HeaderBag($this->server->getHeaders());
+        $this->content = file_get_contents("php://input");
     }
 
     public function redirect(string $to, $type = 'internal')
@@ -35,56 +34,50 @@ class Request
 
     public function getUri()
     {
-        return $this->uri;
+        return $this->getRequestUri();
     }
 
     public function getMethod()
     {
-        return $this->method;
+        return $this->getRealMethod();
     }
 
     public function isPost()
     {
-        return $this->method === IMethod::POST;
+        return $this->isMethod(self::METHOD_POST);
     }
 
     public function all()
     {
-        return array_merge($_FILES, $_POST, $_GET);
+        return array_merge($this->files->all(), $this->request->all(), $this->query->all());
     }
 
     public function post(string $key = null, $default = null)
     {
         if ($key === null) {
-            return $this->postData;
+            return $this->request->all();
         }
 
-        return empty($this->postData[$key]) ? $default : $this->postData[$key];
+        return $this->request->get($key, $default);
     }
 
     public function get(string $key = null, $default = null)
     {
         if ($key === null) {
-            return $this->getData;
+            return $this->query->all();
         }
 
-        return empty($this->getData[$key]) ? $default : $this->getData[$key];
+        return $this->query->get($key, $default);
     }
 
-    public function file(string $key): ?File
+    public function file(string $key): ?UploadedFile
     {
-        if (empty($_FILES[$key])) {
-            return null;
-        }
-
-        $file = is_array($_FILES[$key][0]) ? new File($_FILES[$key][0]) : new File($_FILES[$key]);
-
-        return $file->isNotLoaded() ? null : $file;
+        return $this->files->get($key);
     }
 
     public function decodedJson(string $key = null)
     {
-        $decoded = json_decode($this->rawData);
+        $decoded = @json_decode($this->content);
 
         if (!$key) {
             return $decoded;

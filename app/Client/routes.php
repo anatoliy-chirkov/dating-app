@@ -1,6 +1,6 @@
 <?php
 
-use Shared\Core\Http\IMethod;
+use Shared\Core\Http\Request;
 use Shared\Core\Router\Route;
 use Client\Controllers\{MainController, AuthController, ChatController, ShopController,
     UserController, ProfileController, GeoController, VisitController};
@@ -10,132 +10,132 @@ return [
         '/',
         MainController::class,
         'main',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/search',
         UserController::class,
         'search',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/user/:id',
         UserController::class,
         'getOne',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/chats',
         ChatController::class,
         'all',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/user/:id/chat',
         ChatController::class,
         'concrete',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/chat/:chatId/get-messages',
         ChatController::class,
         'getMessages',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/save-message-attachment',
         ChatController::class,
         'saveAttachment',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
     new Route(
         '/visits',
         VisitController::class,
         'see',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/shop',
         ShopController::class,
         'main',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/shop/buy/:productId',
         ShopController::class,
         'buy',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/shop/put-money',
         ShopController::class,
         'putMoney',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
     new Route(
         '/payments/qiwi-callback',
         ShopController::class,
         'successPutMoneyCallback',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
     new Route(
         '/profile',
         ProfileController::class,
         'settings',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/profile/edit',
         ProfileController::class,
         'edit',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/profile/change-password',
         ProfileController::class,
         'changePassword',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/profile/add-photo',
         ProfileController::class,
         'addPhoto',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
     new Route(
         '/profile/choose-main-photo',
         ProfileController::class,
         'chooseMainPhoto',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
     new Route(
         '/profile/delete-photo',
         ProfileController::class,
         'deletePhoto',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
     new Route(
         '/geo-search',
         GeoController::class,
         'search',
-        [IMethod::GET]
+        [Request::METHOD_GET]
     ),
     new Route(
         '/register',
         AuthController::class,
         'register',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/login',
         AuthController::class,
         'login',
-        [IMethod::GET, IMethod::POST]
+        [Request::METHOD_GET, Request::METHOD_POST]
     ),
     new Route(
         '/logout',
         AuthController::class,
         'logout',
-        [IMethod::POST]
+        [Request::METHOD_POST]
     ),
 ];

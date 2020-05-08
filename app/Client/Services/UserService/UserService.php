@@ -2,7 +2,7 @@
 
 namespace Client\Services\UserService;
 
-use Shared\Core\Http\File;
+use Shared\Core\Http\UploadedFile;
 use Shared\Core\App;
 use Client\Repositories\GoalRepository;
 use Client\Repositories\UserRepository\UserRepository;
@@ -24,7 +24,7 @@ class UserService
         $this->userObjectFactory = new UserObjectFactory();
     }
 
-    public function createUser(array $requestData, File $mainUserPhoto = null)
+    public function createUser(array $requestData, UploadedFile $mainUserPhoto = null)
     {
         $user = $this->userObjectFactory->build($requestData);
 
